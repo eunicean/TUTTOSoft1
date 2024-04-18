@@ -8,12 +8,27 @@ export async function buscarUsuarioPorEmail(email) {
         console.log(usuarios);
     } catch (error) {
         console.error('Error al buscar usuario:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
+buscarUsuarioPorEmail('mariaa@uvg.edu.gt')
+export async function verificarUsuario(email,constrasenia) {
+    const conexion = await conn;
+    try {
+        const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}' AND password = '${constrasenia}'`);
+        console.log(usuarios);
+        let result;
+        if (usuarios.length > 0) {
+            result = 'true';
+        } else {
+            result = 'false';
+        }
+        console.log(result);
+
+    } catch (error) {
+        console.error('Datos incorrectos del usuario:', error);
+    }
+}
+verificarUsuario('mariaa@uvg.edu.gt', 'hash2')
 
 // Función para crear un nuevo usuario
 export async function crearUsuario(id, username, email) {
@@ -23,10 +38,6 @@ export async function crearUsuario(id, username, email) {
         console.log(result);
     } catch (error) {
         console.error('Error al crear usuario:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
 
@@ -38,10 +49,6 @@ export async function eliminarUsuarioPorID(id) {
         console.log(result);
     } catch (error) {
         console.error('Error al eliminar usuario:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
 
@@ -53,10 +60,6 @@ export async function borrarChatsConUsuario(idChat) {
         console.log(usuarios);
     } catch (error) {
         console.error('Error al borrar chats:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
 
@@ -68,10 +71,6 @@ export async function verSesionesEnCurso() {
         console.log(sesion);
     } catch (error) {
         console.error('Error al ver sesiones en curso:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 } //changes to do: add the userId to the sessionTo list, change from curdate from dated to list all the 
 
@@ -83,10 +82,6 @@ export async function borrarSesion(date) {
         console.log(sesion);
     } catch (error) {
         console.error('Error al borrar sesión:', error);
-    } finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
 
@@ -103,10 +98,6 @@ export async function obtenerEstudiantes() {
         console.log(estudiantes);
     } catch (error) {
         console.error('Error al obtener estudiantes:', error);
-    } finally {
-        if (pool) {
-            pool.end();
-        }
     }
 }
 
@@ -124,10 +115,6 @@ export async function obtenerMensajesDeChat(idChat) {
         console.log(mensajes);
     } catch (error) {
         console.error('Error al obtener mensajes de chat:', error);
-    } finally {
-        if (pool) {
-            pool.end();
-        }
     }
 }
 
@@ -144,10 +131,6 @@ export async function obtenerSesionesPlanificadas() {
         console.log(sesiones);
     } catch (error) {
         console.error('Error al obtener sesiones planificadas:', error);
-    } finally {
-        if (pool) {
-            pool.end();
-        }
     }
 }
 
@@ -165,10 +148,6 @@ export async function obtenerReportesDeAusencia() {
         console.log(reportes);
     } catch (error) {
         console.error('Error al obtener reportes de ausencia:', error);
-    } finally {
-        if (pool) {
-            pool.end();
-        }
     }
 }
 
@@ -185,10 +164,6 @@ export async function obtenerDisponibilidadEstudiantes() {
         console.log(disponibilidad);
     } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
-    } finally {
-        if (pool) {
-            pool.end();
-        }
     }
 }
 
@@ -201,11 +176,6 @@ export async function obtenerHorasDisponiblesPersona(id) {
     catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
-    finally {
-        if (conexion) {
-            await conexion.end();
-        }
-    }
 }
 
 export async function ingresarNuevasHoras(hora, day, studentID) {
@@ -216,11 +186,6 @@ export async function ingresarNuevasHoras(hora, day, studentID) {
     }
     catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
-    }
-    finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
 
@@ -235,10 +200,5 @@ export async function eliminarHoras(hora, day, studentID) {
     }
     catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
-    }
-    finally {
-        if (conexion) {
-            await conexion.end();
-        }
     }
 }
