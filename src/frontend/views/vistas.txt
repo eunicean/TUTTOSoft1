@@ -1,0 +1,1 @@
+aqui iran todas vistas: login, menu, busquedas, chats, etc
