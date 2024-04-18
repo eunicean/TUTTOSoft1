@@ -34,11 +34,15 @@ app.get('/users/login', async (req, res) => {
   }
 });
 
-app.get('/users/register', async (req, res) => {
+app.post('/users/register', async (req, res) => {
   const { id, username, email } = req.query;
   try {
-    await crearUsuario(id, username, email); 
-    res.status(201).json({ message: 'User created successfully' }); 
+    const success = await crearUsuario(id, username, email); 
+    if (success) {
+      res.status(201).json({ message: 'User registered successfully' });
+    } else {
+        res.status(400).json({ error: 'Failed to register user' });
+    }
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' }); 
