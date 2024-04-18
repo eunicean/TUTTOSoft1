@@ -28,16 +28,16 @@ export async function verificarUsuario(email,constrasenia) {
 }
 
 // Función para crear un nuevo usuario
-export async function crearUsuario(id, username, email) {
+export async function crearUsuario(id, username, email, password) {
     const conexion = await conn;
     try {
-        const [result] = await conexion.execute(`INSERT INTO user (id, username, email) VALUES (${id}, '${username}', '${email}')`);
-        console.log(result);
+        const [result] = await conexion.execute(`INSERT INTO user (id, username, email, password) VALUES (${id}, '${username}', '${email}', '${password}')`);
+        return result.affectedRows === 1;
     } catch (error) {
         console.error('Error al crear usuario:', error);
     }
 }
-
+crearUsuario(922929, 'pedro e', 'pepe@gmail.com', '123')
 // Función para eliminar un usuario por ID
 export async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
