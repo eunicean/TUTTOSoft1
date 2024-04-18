@@ -10,25 +10,22 @@ export async function buscarUsuarioPorEmail(email) {
         console.error('Error al buscar usuario:', error);
     }
 }
-buscarUsuarioPorEmail('mariaa@uvg.edu.gt')
+
 export async function verificarUsuario(email,constrasenia) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}' AND password = '${constrasenia}'`);
-        console.log(usuarios);
         let result;
         if (usuarios.length > 0) {
-            result = 'true';
+            return true
         } else {
-            result = 'false';
+            return false
         }
-        console.log(result);
 
     } catch (error) {
         console.error('Datos incorrectos del usuario:', error);
     }
 }
-verificarUsuario('mariaa@uvg.edu.gt', 'hash2')
 
 // Función para crear un nuevo usuario
 export async function crearUsuario(id, username, email) {
