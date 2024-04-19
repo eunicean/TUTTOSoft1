@@ -35,9 +35,9 @@ app.get('/users/login', async (req, res) => {
 });
 
 app.post('/users/register', async (req, res) => {
-  const { id, username, email } = req.query;
+  const { id, username, email, password } = req.query;
   try {
-    const success = await crearUsuario(id, username, email); 
+    const success = await crearUsuario(id, username, email, password); 
     if (success) {
       res.status(201).json({ message: 'User registered successfully' });
     } else {
