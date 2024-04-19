@@ -37,7 +37,7 @@ export async function crearUsuario(id, username, email, password) {
         console.error('Error al crear usuario:', error);
     }
 }
-crearUsuario(922929, 'pedro e', 'pepe@gmail.com', '123')
+
 // Función para eliminar un usuario por ID
 export async function eliminarUsuarioPorID(id) {
     const conexion = await conn;

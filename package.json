@@ -26,6 +26,7 @@
     "randombytes": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
     "react-scripts": "^5.0.1",
     "readfilesync": "^1.1.5",
     "tls": "^0.0.1",
@@ -35,7 +36,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "react-scripts start",
-    "server": "nodemon src/connbackend/testing.js",
+    "server": "nodemon src/backend/main.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

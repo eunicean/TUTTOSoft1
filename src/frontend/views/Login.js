@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './Login.css';
-import Header from '../components/Header';
-import Button from '../components/Button';
-import Footer from '../components/Footer';
-import Register from './Register';
-import { handleRegisterClick, handleLoginClick } from '../ContainerActions'; 
+import Header from './components/Header.js';
+import Button from './components/Button.js';
+import Footer from './components/Footer.js';
+// import Register from './Register';
+// import { handleRegisterClick, handleLoginClick } from '../ContainerActions'; 
 
 // Custom Input Component
 const Input = ({ type, placeholder, value, onChange }) => (
@@ -86,10 +86,7 @@ const handleLogin = async (event) => {
     <div>
       <Header title={showRegisterView ? "Registro" : "Iniciar Sesión"} />
       <div className='container' id='container'>
-        {showRegisterView ? (
-          // Vista de registro
-          <Register />
-        ) : (
+        { (
           // Vista de inicio de sesión
           <div className='form-container sign-in'>
             <form onSubmit={handleLogin}>
