@@ -114,8 +114,35 @@
     z-index: 5;
     animation: move 0.6s;
 }
-
-
+.checkbox-label {
+    font-size: 11px; /* Reduce el tamaño de la fuente */
+    color: #666; /* Puedes cambiar el color para que sea menos prominente si lo deseas */
+    display: block; /* Asegura que el label ocupe su propia línea */
+    margin-left: 0; /* Asegura que el texto esté alineado con el borde izquierdo del campo de texto */
+  }
+  
+  .checkbox-container {
+    display: flex;
+    align-items: center; /* Centra el checkbox y el label verticalmente */
+    margin-top: 10px; /* Espacio arriba del checkbox */
+  }
+  
+.checkbox-label {
+    margin: 8px 0; /* Ajusta el margen según tus necesidades */
+  }
+  
+  .checkbox-label label {
+    font-size: 12px; /* Reduce el tamaño del texto del checkbox */
+    display: block; /* Asegura que el checkbox tenga su propia línea */
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 12px; /* Reduce el tamaño del texto del error */
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
 @keyframes move{
     0%, 49.99%{
         opacity: 0;

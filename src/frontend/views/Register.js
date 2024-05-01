@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
-import './Login.css'; // Reutilizando el mismo archivo CSS para mantener la coherencia
+import './Login.css'; // mantener el mismo diseño que el login
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('student'); // O el valor predeterminado que desees
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (event) => {
     event.preventDefault();
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
       return;
     }
     setError('');
     console.log('Registrando', { email, password, role });
-    // Aquí se añadiría la lógica para enviar los datos al servidor
+    // Implementa aquí tu lógica para enviar los datos al servidor
   };
 
   return (
@@ -32,20 +37,30 @@ const Register = () => {
             required
           />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Contraseña"
             required
           />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirmar Contraseña"
             required
           />
-          {error && <div style={{ color: 'red' }}>{error}</div>}
+          <div className="checkbox-container">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Mostrar Contraseña
+            </label>
+          </div>
+          {error && <div className="error-message">{error}</div>}
           <select value={role} onChange={(e) => setRole(e.target.value)} className="role-select">
             <option value="student">Estudiante</option>
             <option value="tutor">Tutor</option>
