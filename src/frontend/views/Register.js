@@ -1,58 +1,58 @@
 import React, { useState } from 'react';
+import './Login.css'; // Reutilizando el mismo archivo CSS para mantener la coherencia
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Nuevo estado para la confirmación de la contraseña
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('student'); // O el valor predeterminado que desees
-  const [error, setError] = useState(''); // Estado para manejar los errores de validación
+  const [error, setError] = useState('');
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    // Verifica que las contraseñas coincidan
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
-      return; // No continuar con el registro
+      return;
     }
-    // Si no hay error, limpia el mensaje de error y continúa con el registro
     setError('');
-    // Aquí añadirías la lógica para enviar los datos al servidor
     console.log('Registrando', { email, password, role });
-    // ...
+    // Aquí se añadiría la lógica para enviar los datos al servidor
   };
 
   return (
-    <div className="register-container">
-      <h1>Register</h1>
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm Password"
-          required
-        />
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="student">Student</option>
-          <option value="tutor">Tutor</option>
-        </select>
-        <button type="submit">Register</button>
-      </form>
+    <div className="container">
+      <div className="form-container sign-in">
+        <form onSubmit={handleRegister}>
+          <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para registrarte</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Correo Electrónico"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Contraseña"
+            required
+          />
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirmar Contraseña"
+            required
+          />
+          {error && <div style={{ color: 'red' }}>{error}</div>}
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="role-select">
+            <option value="student">Estudiante</option>
+            <option value="tutor">Tutor</option>
+          </select>
+          <button type="submit" className="boton-registrarse">Registrarse</button>
+        </form>
+      </div>
     </div>
   );
 };
