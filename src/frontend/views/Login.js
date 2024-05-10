@@ -84,11 +84,12 @@ const handleLogin = async (event) => {
 
   return (
     <div>
-      <Header title={showRegisterView ? "Registro" : "Iniciar Sesión"} />
       <div className='container' id='container'>
         { (
           // Vista de inicio de sesión
           <div className='form-container sign-in'>
+            <Header style={{ alignContent: 'center'}}
+             title={showRegisterView ? "Registro" : "Iniciar Sesión"} />
             <form onSubmit={handleLogin}>
               <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para iniciar sesión</span>
               <Input type="email" placeholder="Correo Electrónico" value={email} onChange={e => setEmail(e.target.value)} />

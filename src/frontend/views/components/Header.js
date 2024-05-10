@@ -2,6 +2,10 @@
 import React from 'react';
 
 function Header({ title}) {
-    return <h1>{title}</h1>;
+    const headerStyle = {
+        textAlign: 'center' // Alinea el texto en el centro
+      };
+    
+    return <h1 style={headerStyle}>{title}</h1>;
 }
 export default Header;
