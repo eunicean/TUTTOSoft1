@@ -87,7 +87,7 @@ const handleLogin = async (event) => {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/sessions" replace />; // remplazar por la primera vista...
+    return <Navigate to="/paginaPrincipal" replace />; // remplazar por la primera vista...
   }
 
 
