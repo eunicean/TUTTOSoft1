@@ -3,6 +3,7 @@ import './Login.css';
 import Header from './components/Header.js';
 import Button from './components/Button.js';
 import Footer from './components/Footer.js';
+import { Navigate } from 'react-router-dom';
 // import Register from './Register';
 // import { handleRegisterClick, handleLoginClick } from '../ContainerActions'; 
 
@@ -15,6 +16,8 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showRegisterView, setShowRegisterView] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
  useEffect(() => {
     const container = document.getElementById('container');
@@ -71,6 +74,7 @@ const handleLogin = async (event) => {
     const data = await response.json();
     console.log('Login Successful:', data);
     alert('Login Successful!');
+    setIsLoggedIn(true);
   } catch (error) {
     console.error('Login error:', error);
     alert('Login failed: Unexpected error occurred.');
@@ -81,6 +85,11 @@ const handleLogin = async (event) => {
   const toggleView = () => {
     setShowRegisterView(!showRegisterView);
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/sessions" replace />; // remplazar por la primera vista...
+  }
+
 
   return (
     <div>
