@@ -199,3 +199,18 @@ export async function eliminarHoras(hora, day, studentID) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
 }
+
+export async function obtenerTipoUsuarioPorId(userId){
+    const conexion = await conn;
+    try {
+        const [resultado] = await conexion.execute(
+            `SELECT typeuser FROM user WHERE id=?`,
+            [userId]
+        )
+        return [resultado];
+    } catch (error) {
+        console.error('Error al obtener el tipo de usuario:' , error);
+    }
+}
+
+obtenerTipoUsuarioPorId(21231);
