@@ -3,7 +3,8 @@ import cors from 'cors'
 import {
   verificarUsuario,
   crearUsuario,
-  obtenerTipoUsuarioPorId
+  obtenerTipoUsuarioPorId,
+  obtenerSesionesPlanificadasPorPersona
 }from './db.js'
 
 const app = express()
@@ -62,6 +63,22 @@ app.get('/users/type', async (req, res) => {
     }
   } catch (error) {
     console.error('Error obtaining user type:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
+  }
+});
+
+// Endpoint para obtener las sesiones planificadas por persona
+app.get('/users/sessions', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
+    if (sesiones) {
+      res.status(200).json({ sesiones }); // Devuelve las sesiones planificadas encontradas
+    } else {
+      res.status(404).json({ error: 'Sessions not found' }); // Devuelve un error si no se encuentran sesiones planificadas
+    }
+  } catch (error) {
+    console.error('Error obtaining planned sessions:', error);
     res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
   }
 });
