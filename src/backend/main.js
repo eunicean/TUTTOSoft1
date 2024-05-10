@@ -2,7 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import {
   verificarUsuario,
-  crearUsuario
+  crearUsuario,
+  obtenerTipoUsuarioPorId
 }from './db.js'
 
 const app = express()
@@ -46,6 +47,22 @@ app.post('/users/register', async (req, res) => {
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' }); 
+  }
+});
+
+// Endpoint para obtener el tipo de usuario por ID
+app.get('/users/type', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
+    if (tipoUsuario) {
+      res.status(200).json({ tipoUsuario }); // Devuelve el tipo de usuario encontrado
+    } else {
+      res.status(404).json({ error: 'User not found' }); // Devuelve un error si el usuario no se encuentra
+    }
+  } catch (error) {
+    console.error('Error obtaining user type:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
   }
 });
 
