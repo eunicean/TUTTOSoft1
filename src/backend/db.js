@@ -131,6 +131,24 @@ export async function obtenerSesionesPlanificadas() {
     }
 }
 
+export async function obtenerSesionesPlanificadasPorPersona(userId) {
+    const pool = await crearPoolConexion();
+    try {
+        const conexion = await pool.getConnection();
+        const [sesiones] = await conexion.execute(`
+            SELECT sp.id, c.namecourse, sp.dated, sp.start_hour, sp.end_hour, sp.mode, ss.id_student
+            FROM sessionPlanned sp 
+            JOIN course c ON sp.course_code = c.course_code
+            JOIN students_Session ss ON sp.id = ss.id_session
+            WHERE ss.id_student = ?
+        `, [userId]);
+        console.log(sesiones);
+        return [sesiones];
+    } catch (error) {
+        console.error('Error al obtener sesiones planificadas:', error);
+    }
+}
+
 // Reportes de ausencia junto con la información del remitente y del ausente
 export async function obtenerReportesDeAusencia() {
     const pool = await crearPoolConexion();
