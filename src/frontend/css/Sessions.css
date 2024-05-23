@@ -85,14 +85,14 @@ body, html {
   }
 
 
-  .select-container {
+  .session-filters {
     position: relative;
     display: inline-block;
     width: 100%;
     margin: 10px 0;
   }
   
-.select-container select {
+.session-filters select {
   width: 100%;
   padding: 10px 15px;
   background-color: #f7f7f7; /* Fondo gris claro */
@@ -107,19 +107,19 @@ body, html {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
 }
 
-.select-container:after {
-  content: '\25BC'; /* Unicode para flecha hacia abajo */
+.session-filters:after {
+  content: '▼';
   position: absolute;
   top: 50%;
   right: 15px;
-  transform: translateY(-50%);
+  transform: translateY(0%);
   color: #333; /* Flecha de color oscuro */
   pointer-events: none; /* El icono no debe afectar la funcionalidad del select */
-  font-size: 10px; /* Tamaño de la flecha */
+  font-size: 20px; /* Tamaño de la flecha */
 }
 
 /* Puedes agregar estilos adicionales para cuando se pasa el mouse por encima */
-.select-container select:hover {
+.session-filters select:hover {
   background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por encima */
 }
 

@@ -76,11 +76,13 @@ Button {
 /* Add a custom arrow to dropdown */
 .select-container:after {
   content: '▼';
-  position: absolute;
-  right: 15px;
-  top: calc(50% - 0.5em);
-  pointer-events: none;
-  color: #888;
+  position:absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(300%);
+  color: #333; /* Flecha de color oscuro */
+  pointer-events: none; /* El icono no debe afectar la funcionalidad del select */
+  font-size: 20px; /* Tamaño de la flecha */
 }
 
 /* Styling for error messages */
@@ -89,4 +91,9 @@ Button {
   font-size: 14px;
   text-align: center;
   width: 100%;
+}
+
+.register-container Button{
+    transform: translateX(45%);
+  
 }
