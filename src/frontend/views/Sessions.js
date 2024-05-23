@@ -21,7 +21,7 @@ function Sessions() {
     setLoading(true);
     setError(null); // Limpiar errores anteriores
     const token = localStorage.getItem('token');
-    const url = new URL('http://localhost:3001/sessions');
+    const url = new URL('http://localhost:5000/sessions');
 
     if (queryPeriodo) {
       url.searchParams.append('periodo', queryPeriodo);
