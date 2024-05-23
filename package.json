@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "type": "module",
-  "proxy": "http://localhost:3001",
+  "proxy": "http://127.0.0.1:5000",
   "author": "",
   "license": "ISC",
   "dependencies": {

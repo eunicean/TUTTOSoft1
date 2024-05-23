@@ -4,8 +4,7 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
     overflow: hidden;
-    width: 500px;
-    height: 500px;
+    width: 400px;
     max-width: 90%;
     min-height: 430px;
     margin-left: auto;
@@ -13,7 +12,6 @@
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    align-self: center;
 }
 
 #Loginsuggestions{
@@ -36,7 +34,6 @@
 .container span{
     font-size: 15px;
     padding: 15px;
-    text-align: center;
 }
 .container a{
     color: #333;
@@ -44,7 +41,7 @@
     text-decoration: none;
     margin: 15px 0 10px;
 }
-.container button{
+.container Button{
     background-color: #C67A53;
     color: #fff;
     font-size: 15px;
@@ -70,7 +67,7 @@
     margin-top: 10px;
     cursor: pointer;
 }
-.container button.hidden{
+.container Button.hidden{
     background-color: transparent;
     border-color: #fff;
 }
@@ -129,3 +126,20 @@
         z-index: 5;
     }
 }
+
+.password-input-container {
+    position: relative;
+  }
+
+  .password-input {
+    
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    
+  }

@@ -1,118 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import './Login.css';
-import Header from './components/Header.js';
-import Button from './components/Button.js';
-import Footer from './components/Footer.js';
-import { Navigate } from 'react-router-dom';
-// import Register from './Register';
-// import { handleRegisterClick, handleLoginClick } from '../ContainerActions'; 
+import React, { useState } from 'react';
+import '../css/Login.css';
+import Header from '../components/Header.js';
+import Button from '../components/Button.js';
+import Footer from '../components/Footer.js';
+import { useNavigate } from 'react-router-dom'; 
 
 // Custom Input Component
 const Input = ({ type, placeholder, value, onChange }) => (
   <input type={type} placeholder={placeholder} value={value} onChange={onChange} />
 );
 
-function App() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showRegisterView, setShowRegisterView] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate(); // Hook para la navegación
 
-
- useEffect(() => {
-    const container = document.getElementById('container');
-    const registerBtn = document.getElementById('register');
-    const loginBtn = document.getElementById('login');
-
-    if (container && registerBtn && loginBtn) {
-        const handleRegisterClick = () => {
-            container.classList.add("active");
-        };
-
-        const handleLoginClick = () => {
-            container.classList.remove("active");
-        };
-
-        registerBtn.addEventListener('click', handleRegisterClick);
-        loginBtn.addEventListener('click', handleLoginClick);
-
-        // Cleanup
-        return () => {
-            registerBtn.removeEventListener('click', handleRegisterClick);
-            loginBtn.removeEventListener('click', handleLoginClick);
-        };
-    }
-}, []);
-
-
-const handleLogin = async (event) => {
-  event.preventDefault();
-  console.log("Attempting to login with:", { email, password });
-
-  try {
-    const response = await fetch('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    console.log("Server response:", response);
-
-    if (!response.ok) {
-      try {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+  
+      if (!response.ok) {
         const errorData = await response.json();
         console.error('Server responded with:', errorData);
         alert(`Login failed: ${errorData.message}`);
-      } catch (jsonError) {
-        const errorText = await response.text();
-        console.error('Server responded with non-JSON:', errorText);
-        alert(`Login failed: ${errorText}`);
+        return;
       }
-      return;  // Exit the function after handling the error
+  
+      const data = await response.json();
+      localStorage.setItem('token', data.token); // Guarda el token recibido en localStorage
+      console.log('Login Successful:', data);
+      navigate('/sessions'); // Navega a las sesiones tras un inicio de sesión exitoso
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed: Unexpected error occurred.');
     }
-
-    const data = await response.json();
-    console.log('Login Successful:', data);
-    alert('Login Successful!');
-    setIsLoggedIn(true);
-  } catch (error) {
-    console.error('Login error:', error);
-    alert('Login failed: Unexpected error occurred.');
-  }
-};
-
-  // Alternar entre la vista de inicio de sesión y registro
-  const toggleView = () => {
-    setShowRegisterView(!showRegisterView);
   };
-
-  if (isLoggedIn) {
-    return <Navigate to="/paginaPrincipal" replace />; // remplazar por la primera vista...
-  }
-
 
   return (
     <div>
+      <Header title="Iniciar Sesión" />
       <div className='container' id='container'>
-        { (
-          // Vista de inicio de sesión
-          <div className='form-container sign-in'>
-            <form onSubmit={handleLogin}>
-            <Header title={showRegisterView ? "Registro" : "Iniciar Sesión"} />
-              <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para iniciar sesión</span>
-              <Input type="email" placeholder="Correo Electrónico" value={email} onChange={e => setEmail(e.target.value)} />
-              <Input type="password" placeholder="Ingresa tu contraseña" value={password} onChange={e => setPassword(e.target.value)} />
-              <Button type="submit">Iniciar Sesión</Button>
-              <button onClick={toggleView} className="toggle-view">Registrarse</button>
-            </form>
-          </div>
-        )}
+        <div className='form-container sign-in'>
+          <form onSubmit={handleLogin}>
+            <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para iniciar sesión</span>
+            <Input type="email" placeholder="Correo Electrónico" value={email} onChange={e => setEmail(e.target.value)} />
+            <Input type="password" placeholder="Ingresa tu contraseña" value={password} onChange={e => setPassword(e.target.value)} />
+            <Button type="submit">Iniciar Sesión</Button>
+            <Button onClick={() => navigate('/register')} className="toggle-view">Registrarse</Button>
+          </form>
+        </div>
       </div>
       <Footer />
     </div>
   );
 }
 
-export default App;
-
-
+export default Login;
