@@ -116,7 +116,7 @@ app.get('/profile', authenticateToken, async (req, res) => {
         let params = [userId];
 
         const [results] = await pool.query(query, params);
-        // console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
+        console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
         if (results.length > 0) {
             res.json({ success: true, user: results[0] });
         } else {
@@ -128,18 +128,6 @@ app.get('/profile', authenticateToken, async (req, res) => {
     }
 });
 
-
-app.post('/profile/update', authenticateToken, async (req, res) => {
-    const { username, email } = req.body;
-    try {
-        // Asumiendo que `db` es tu conexión a la base de datos y tiene un método para actualizar
-        await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
-        res.json({ success: true, message: 'Perfil actualizado correctamente.' });
-    } catch (error) {
-        console.error('Error en la base de datos:', error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor.' });
-    }
-});
 
 
 
