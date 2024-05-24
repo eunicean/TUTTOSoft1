@@ -92,7 +92,7 @@ const handleLogin = async (event) => {
 
 
   return (
-    <div>
+    <div style={{ backgroundColor:'#e06666', display: 'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', height:'100vh'}}>
       <div className='container' id='container'>
         { (
           // Vista de inicio de sesión
