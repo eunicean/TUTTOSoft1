@@ -112,23 +112,22 @@ app.post('/register', async (req, res) => {
 app.get('/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const query = 'SELECT typeuser FROM user WHERE id = ?';
-        const params = [userId];
+        let query = 'SELECT * FROM user WHERE id = ?';  // Asegúrate de seleccionar todos los campos necesarios
+        let params = [userId];
 
         const [results] = await pool.query(query, params);
-        console.log('Results:', results);  // Esto te ayudará a ver la estructura de results
-
+        console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
         if (results.length > 0) {
-            const typeuser = results[0].typeuser;  // Accediendo correctamente al campo typeuser
-            res.json({ success: true, typeuser });  // Responder con el tipo de usuario
+            res.json({ success: true, user: results[0] });
         } else {
-            res.json({ success: false, message: "User not found" });
+            res.status(404).json({ success: false, message: "Usuario no encontrado" });
         }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 
@@ -164,11 +163,11 @@ app.get('/sessions', authenticateToken, async (req, res) => {
 
         const [results] = await pool.query(query, params);
         console.log(results);
-        // if (results.length > 0) {
-        //     res.json({ success: true, sessions: results });
-        // } else {
-        //     res.json({ success: true, message: "No sessions found", sessions: [] });
-        // }
+        if (results.length > 0) {
+            res.json({ success: true, sessions: results });
+        } else {
+            res.json({ success: true, message: "No sessions found", sessions: [] });
+        }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });

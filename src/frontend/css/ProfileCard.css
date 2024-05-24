@@ -1,0 +1,33 @@
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.profile-card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    border-radius: 8px;
+}
+
+.profile-card h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.profile-card p {
+    color: #666;
+}
+
+.profile-card button {
+    background-color: #C67A53;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

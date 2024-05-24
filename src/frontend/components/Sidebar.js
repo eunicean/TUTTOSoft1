@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         <li><Link to="/calendar" onClick={closeSidebar}>Calendario</Link></li>
         <li><Link to="/session-history" onClick={closeSidebar}>Historial sesiones</Link></li>
         <li><Link to="/chat" onClick={closeSidebar}>Chat</Link></li>
-        <li><Link to="/logout" onClick={closeSidebar}>Cerrar sesión</Link></li>
+        {/* <li><Link to="/logout" onClick={closeSidebar}>Cerrar sesión</Link></li> */}
       </ul>
     </div>
   );

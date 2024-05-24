@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar.js';
-import StudentProfile from '../components/StudentProfile.js';
-import TutorProfile from '../components/TutorProfile.js';
-import AdminProfile from '../components/AdminProfile.js';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import '../css/ProfileCard.css'; // Asegúrate de que el CSS para la tarjeta esté correctamente definido
 
 function ProfileView() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [userType, setUserType] = useState(null);
+    const [user, setUser] = useState({});
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Hook para la navegación
 
     useEffect(() => {
         async function fetchProfile() {
@@ -24,12 +24,9 @@ function ProfileView() {
                         'Content-Type': 'application/json'
                     },
                 });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
                 const data = await response.json();
                 if (data.success) {
-                    setUserType(data.typeuser);  // Asegúrate de usar la propiedad correcta
+                    setUser(data.user);
                 } else {
                     throw new Error(data.message || 'Failed to fetch profile');
                 }
@@ -42,31 +39,27 @@ function ProfileView() {
         fetchProfile();
     }, []);
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
+        navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+    };
 
-    if (error) return <div>Error: {error}</div>;
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen); // Controlar la apertura y cierre de la barra lateral
+    const closeSidebar = () => setIsSidebarOpen(false); // Cerrar la barra lateral
 
-    let content;
-    console.log(userType);
-    switch (userType) {
-        case '1':
-            content = <StudentProfile />;
-            break;
-        case '2':
-            content = <TutorProfile />;
-            break;
-        
-        default:
-            content = <div>No se ha encontrado información de usuario.</div>;
-    }
+    if (error) return <div className="error-message">Error: {error}</div>;
 
     return (
         <>
-            <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
+            <button className="menu-toggle" onClick={toggleSidebar}>{isSidebarOpen ? 'Cerrar' : 'Menú'}</button>
             <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
             <div className="profile-container">
-                {content}
+                <div className="profile-card">
+                    <h2>{user.username || 'Nombre no disponible'}</h2>
+                    <p>Email: {user.email || 'Email no disponible'}</p>
+                    <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
+                    <button onClick={handleLogout}>Cerrar Sesión</button>
+                </div>
             </div>
         </>
     );
