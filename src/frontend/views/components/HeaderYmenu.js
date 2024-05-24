@@ -28,7 +28,6 @@ const Header = () => {
     justifyContent: 'space-between',
     alignItems: 'center',
     overflowX: 'hidden',
-    margin: '0'
   };
 
   const menuStyle = { 
@@ -93,7 +92,7 @@ const Header = () => {
         <a href="/pagina5" style={optionStyle}>Chat</a>
         <a href="/pagina6" style={optionStyle}>Cerrar mi sesión</a>
       </div>
-    </div>
+=    </div>
   );
 }
 

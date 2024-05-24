@@ -26,28 +26,32 @@ const PaginaPrincipal = () => {
     justifyContent: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#f0f0f0'
+    backgroundColor: '#f0f0f0',
   }
   const titulo = {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    //justifyContent: 'space-between',
+    // alignItems: 'center',
     padding: '20px', // Ajusta el padding según sea necesario
     backgroundColor: '#f0f0f0', // Ajusta el color de fondo según sea necesario
+    width: '100%'
   }
   const boton = {
-    marginLeft: 'auto', // Esto hace que el botón se alinee a la derecha
-  };
+    position: 'absolute',
+      right: '35vh', // Ubica el botón a 10vh del margen derecho de la pantall
+  }
   const sesiones ={
-    display: 'flex',
+    display: 'flex'
   }
   return (
     <div style={Principal}>
       <HeaderYmenu />
 
     <div style={titulo}>
-      <h1 style={{ fontSize:'7vh', fontFamily: 'arial', color: '#8E6B3A  '}}> Sesiones proximas</h1>
-      <Button  style={boton}> Ir a chat </Button>
+      <h1 style={{ position: 'relative', fontSize:'7vh', fontFamily: 'arial', color: '#8E6B3A', marginLeft:'10vh'}}> Sesiones proximas</h1>
+      <div style={boton}>
+      <Button> Ir a chat </Button>
+      </div>
     </div>
 
     <div style={sesiones}>

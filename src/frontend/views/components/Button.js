@@ -8,6 +8,8 @@ const buttonStyle = {
   borderRadius: '5px',
   cursor: 'pointer',
   transition: 'background-color 0.3s ease',
+  height : '9vh',
+  fontSize:'2.5vh'
 };
 
 const hoverStyle = {
