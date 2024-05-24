@@ -1,6 +1,6 @@
 import React from 'react';
 import HeaderYmenu from './components/HeaderYmenu.js';
-
+import Horario from './components/SlideHorario.js';
 const PaginaPrincipal = () => {
   const EstilosDivTarjetas = {
     display: 'flex', 
@@ -21,11 +21,7 @@ const PaginaPrincipal = () => {
       <HeaderYmenu />
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
         <h2 style={{ color: '#C19A6B' }}>Sesiones Próximas</h2>
-        <select style={{ marginBottom: '10px', padding: '5px', borderRadius: '5px', backgroundColor: '#C19A6B', color: 'white' }}>
-          <option value="manana">Mañana</option>
-          <option value="tarde">Tarde</option>
-          <option value="noche">Noche</option>
-        </select>
+        <Horario />
         <br />
         <button style={{ backgroundColor: '#C04000', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>Ir al Chat</button>
       </div>

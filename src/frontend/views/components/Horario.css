@@ -1,0 +1,19 @@
+.horario-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.horario-option {
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.horario-option.selected {
+    background-color: #C19A6B;
+    color: white;
+}
