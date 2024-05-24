@@ -74,7 +74,7 @@ const Header = () => {
   }
 
   return (
-    <div style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
+    <div style={{ overflowX: 'hidden', overflowY: 'hidden', width: '100%'}}>
       <div style={headerStyle}>
         <button onClick={() => window.history.back()} className="back-button" style={HomeButton}>
           Home

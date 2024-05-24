@@ -16,15 +16,24 @@ const PaginaPrincipal = () => {
     maxWidth: '300px', 
     margin: '0 10px' 
   }
+  const body = {
+    display: 'flex', 
+    width: '100vh'
+  }
+  const Principal = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#f0f0f0'
+  }
   return (
-    <div>
+    <div style={Principal}>
       <HeaderYmenu />
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <h2 style={{ color: '#C19A6B' }}>Sesiones Próximas</h2>
-        <Horario />
-        <br />
-        <button style={{ backgroundColor: '#C04000', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>Ir al Chat</button>
-      </div>
+    <div>
+    </div>
       <div style={EstilosDivTarjetas}> 
         <div style={DivTarjetas}>
           <h3>Tutoría de Matemáticas</h3>
@@ -42,7 +51,7 @@ const PaginaPrincipal = () => {
           <p>Tutor: Carlos López</p>
         </div>
       </div>
-    </div>
+      </div>
   );
 }
 
