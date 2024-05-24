@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../views/Login.js';
 import Sessions from '../views/Sessions.js';
 import Register from '../views/Register.js';
+import Profile from '../views/Profile.js';
 import '../css/Register.css';
 
 
@@ -14,6 +15,7 @@ const AppRouter = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>} />
         <Route path="/sessions" element={<Sessions />} />
+        <Route path="/Profile" element={<Profile />} />
         {/* Más rutas pueden ser agregadas aquí */}
       </Routes>
     </BrowserRouter>

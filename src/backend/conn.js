@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './.env' });
 
-console.log('Loaded Environment Variables:', process.env);
+// console.log('Loaded Environment Variables:', process.env);
 
 const {
     DATABASEHOSTNAME,
@@ -18,13 +18,13 @@ const {
 const certificate = DATABASESSLBASE64 ? Buffer.from(DATABASESSLBASE64, 'base64').toString('utf-8') : undefined;
 
 // Log the database connection settings before attempting to connect
-console.log({
-    Host: DATABASEHOSTNAME,
-    Port: 25060,
-    User: DATABASEUSERNAME,
-    Database: DATABASENAME,
-    SSL_Enabled: !!certificate
-});
+// console.log({
+//     Host: DATABASEHOSTNAME,
+//     Port: 25060,
+//     User: DATABASEUSERNAME,
+//     Database: DATABASENAME,
+//     SSL_Enabled: !!certificate
+// });
 
 // Create the database connection pool
 const pool = createPool({

@@ -108,6 +108,31 @@ app.post('/register', async (req, res) => {
     }
 });
 
+
+app.get('/profile', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const query = 'SELECT typeuser FROM user WHERE id = ?';
+        const params = [userId];
+
+        const [results] = await pool.query(query, params);
+        console.log('Results:', results);  // Esto te ayudará a ver la estructura de results
+
+        if (results.length > 0) {
+            const typeuser = results[0].typeuser;  // Accediendo correctamente al campo typeuser
+            res.json({ success: true, typeuser });  // Responder con el tipo de usuario
+        } else {
+            res.json({ success: false, message: "User not found" });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+
+
 // Period-based sessions endpoint
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
@@ -139,11 +164,11 @@ app.get('/sessions', authenticateToken, async (req, res) => {
 
         const [results] = await pool.query(query, params);
         console.log(results);
-        if (results.length > 0) {
-            res.json({ success: true, sessions: results });
-        } else {
-            res.json({ success: true, message: "No sessions found", sessions: [] });
-        }
+        // if (results.length > 0) {
+        //     res.json({ success: true, sessions: results });
+        // } else {
+        //     res.json({ success: true, message: "No sessions found", sessions: [] });
+        // }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -171,6 +196,7 @@ function getPeriodoTimes(periodo) {
     }
     return { tiempoInicio, tiempoFin };
 };
+
 
 const PORT = 5000;
 app.listen(PORT, () => {
