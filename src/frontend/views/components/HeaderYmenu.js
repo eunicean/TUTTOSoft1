@@ -21,13 +21,14 @@ const Header = () => {
     position: 'relative',
     zIndex: 2,
     backgroundColor: '#C19A6B',
-    height: '5vh',
+    height: '10vh',
     color: 'white',
     transition: headerTransition,
     width: menuOpen ? 'calc(100% - 15%)' : 'auto',
     justifyContent: 'space-between',
     alignItems: 'center',
     overflowX: 'hidden',
+    margin: '0'
   };
 
   const menuStyle = { 
@@ -74,7 +75,7 @@ const Header = () => {
   }
 
   return (
-    <div style={{ overflowX: 'hidden', overflowY: 'hidden', width: '100%'}}>
+    <div style={{ overflowX: 'hidden', overflowY: 'hidden', width: '100%', padding:0, margin: 0}}>
       <div style={headerStyle}>
         <button onClick={() => window.history.back()} className="back-button" style={HomeButton}>
           Home

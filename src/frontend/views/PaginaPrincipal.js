@@ -1,6 +1,7 @@
 import React from 'react';
 import HeaderYmenu from './components/HeaderYmenu.js';
 import Horario from './components/SlideHorario.js';
+import Button from './components/Button.js';
 const PaginaPrincipal = () => {
   const EstilosDivTarjetas = {
     display: 'flex', 
@@ -16,10 +17,6 @@ const PaginaPrincipal = () => {
     maxWidth: '300px', 
     margin: '0 10px' 
   }
-  const body = {
-    display: 'flex', 
-    width: '100vh'
-  }
   const Principal = {
     display: 'flex',
     flexDirection: 'column',
@@ -29,10 +26,16 @@ const PaginaPrincipal = () => {
     height: '100%',
     backgroundColor: '#f0f0f0'
   }
+  const titulo = {
+    display: 'flex', 
+    flexDirection: 'row'
+  }
   return (
     <div style={Principal}>
       <HeaderYmenu />
-    <div>
+    <div style={titulo}>
+      <h1> Sesiones proximas</h1>
+      <Button> Ir a chat </Button>
     </div>
       <div style={EstilosDivTarjetas}> 
         <div style={DivTarjetas}>
