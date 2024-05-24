@@ -1,7 +1,7 @@
 import React from 'react';
 
 const buttonStyle = {
-  backgroundColor: '#D2691E', /* Color chocolate claro */
+  backgroundColor: '#8E6B3A ', /* Color chocolate claro */
   color: 'white', /* Texto blanco */
   padding: '10px 20px',
   border: 'none',

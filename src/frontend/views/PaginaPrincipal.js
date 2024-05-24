@@ -14,8 +14,10 @@ const PaginaPrincipal = () => {
     color: 'white', 
     padding: '20px', 
     borderRadius: '10px', 
-    maxWidth: '300px', 
-    margin: '0 10px' 
+    maxWidth: '3000px', 
+    margin: '0 10px',
+    width: '100vh', 
+    marginTop :'2vh'
   }
   const Principal = {
     display: 'flex',
@@ -27,16 +29,32 @@ const PaginaPrincipal = () => {
     backgroundColor: '#f0f0f0'
   }
   const titulo = {
-    display: 'flex', 
-    flexDirection: 'row'
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '20px', // Ajusta el padding según sea necesario
+    backgroundColor: '#f0f0f0', // Ajusta el color de fondo según sea necesario
+  }
+  const boton = {
+    marginLeft: 'auto', // Esto hace que el botón se alinee a la derecha
+  };
+  const sesiones ={
+    display: 'flex',
   }
   return (
     <div style={Principal}>
       <HeaderYmenu />
+
     <div style={titulo}>
-      <h1> Sesiones proximas</h1>
-      <Button> Ir a chat </Button>
+      <h1 style={{ fontSize:'7vh', fontFamily: 'arial', color: '#8E6B3A  '}}> Sesiones proximas</h1>
+      <Button  style={boton}> Ir a chat </Button>
     </div>
+
+    <div style={sesiones}>
+      <h3> Horario:</h3>
+      <Horario />s
+      </div>
+
       <div style={EstilosDivTarjetas}> 
         <div style={DivTarjetas}>
           <h3>Tutoría de Matemáticas</h3>
