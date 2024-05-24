@@ -1,25 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './index.css';
-import Login from './frontend/views/Login.js';
-import PaginaPrincipal from './frontend/views/PaginaPrincipal.js';
-// import Sessions from './views/Sessions'; // Asegúrate de tener este componente
+import AppRouter from './frontend/routes/AppRouter.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path='/paginaPrincipal' element={<PaginaPrincipal/>} /> 
-        {/* <Route path="/sessions" element={<Sessions />} /> */}
-        {/* Puedes agregar más rutas aquí */}
-        {/* Ruta para manejar cualquier URL no reconocida */}
-        <Route path="*" element={<div>404 Not Found</div>} />
-      </Routes>
-    </BrowserRouter>
+    <AppRouter />  
   </React.StrictMode>
 );
 
