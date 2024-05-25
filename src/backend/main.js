@@ -116,7 +116,7 @@ app.get('/profile', authenticateToken, async (req, res) => {
         let params = [userId];
 
         const [results] = await pool.query(query, params);
-        console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
+        // console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
         if (results.length > 0) {
             res.json({ success: true, user: results[0] });
         } else {
@@ -129,7 +129,37 @@ app.get('/profile', authenticateToken, async (req, res) => {
 });
 
 
+app.post('/profile/update', authenticateToken, async (req, res) => {
+    const { username, email } = req.body;
+    try {
+        // Asumiendo que `db` es tu conexión a la base de datos y tiene un método para actualizar
+        await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
+        res.json({ success: true, message: 'Perfil actualizado correctamente.' });
+    } catch (error) {
+        console.error('Error en la base de datos:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor.' });
+    }
+});
 
+
+// Endpoint to create a new session
+app.post('/sessions/create', authenticateToken, async (req, res) => {
+    const { date, time, subject } = req.body;
+    const userId = req.user.id;  // Assuming you have access to the user's ID through the token
+
+    try {
+        const query = `INSERT INTO sessionPlanned (date, start_hour, course_code, id_student) VALUES (?, ?, ?, ?)`;
+        const params = [date, time, subject, userId];
+
+        // assuming you have a connection pool named pool
+        const [result] = await pool.query(query, params);
+        res.json({ success: true, message: "Session created successfully", session: { id: result.insertId, date, time, subject } });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message});
+        
+    }
+});
 
 
 // Period-based sessions endpoint

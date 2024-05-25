@@ -12,13 +12,7 @@ function Sessions() {
     const [error, setError] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
-    const [newSession, setNewSession] = useState({
-      subject: '',
-      date: '',
-      startHour: '',
-      endHour: ''
-    });
-
+    const [newSession, setNewSession] = useState({ subject: '', date: '', time: '' });
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);
@@ -47,20 +41,10 @@ function Sessions() {
             }
 
             const data = await response.json();
-            
             if (data.success) {
-              setSessions([
-                  ...sessions, 
-                  { 
-                      ...newSession,
-                      id: data.id,
-                      date: new Date(newSession.date).toLocaleDateString('es-ES'),
-                      time: `${newSession.startHour} - ${newSession.endHour}`
-                  }
-              ]);
-              setNewSession({ subject: '', date: '', startHour: '', endHour: '' }); // Reset the form
-          }
-           else {
+                setSessions([...sessions, { ...newSession, id: data.id }]);
+                setNewSession({ subject: '', date: '', time: '' }); // Reset the form
+            } else {
                 throw new Error(data.message || 'Failed to create session');
             }
         } catch (error) {
@@ -120,7 +104,6 @@ function Sessions() {
 
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
-
 
     return (
         <>

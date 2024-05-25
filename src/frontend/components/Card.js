@@ -1,10 +1,10 @@
 import React from 'react';
 
-const SessionCard = ({ date, time, subject }) => {
+const SessionCard = ({ date, startHour, endHour, subject }) => {
   return (
     <div className="session-card">
       <p>Fecha: {date}</p>
-      <p>Hora: {time}</p>
+      <p>Horario: {startHour} - {endHour}</p>  
       <p>Materia: {subject}</p>
     </div>
   );
