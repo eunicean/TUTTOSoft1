@@ -7,6 +7,7 @@ import Profile from '../views/Profile.js';
 import TestingView from '../views/testingView.js';
 import CancelView from '../views/CancelView.js';
 import CreateSession from '../views/createSession.js';
+import TutorProfile from '../views/TutorProfile.js';
 
 
 import '../css/Register.css';
@@ -24,6 +25,7 @@ const AppRouter = () => {
         <Route path="/sessions-info/:sessionId" element={<TestingView />} />
         <Route path="/cancel-session/:sessionId" element={<CancelView />} />
         <Route path="/sessions/create" element={<CreateSession />} />
+        <Route path='/TutorProfile' element={<TutorProfile />} />
         {/* Más rutas pueden ser agregadas aquí */}
       </Routes>
     </BrowserRouter>
