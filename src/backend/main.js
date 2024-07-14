@@ -227,6 +227,45 @@ function getPeriodoTimes(periodo) {
 };
 
 
+//Endpoint of an specific session, instead of a general view
+app.get('/session-info', authenticateToken, async (req, res) => {
+    const userId = req.user.id; // ID of the current user 
+    const typeuser = req.user.role; // Tipo de usuario, asumiendo que esto es parte del token
+
+    try {
+        let query = `
+            SELECT sp.*, u.name as tutorName, u2.name as studentName
+            FROM sessionPlanned sp
+            JOIN users u ON sp.tutor_id = u.id
+            JOIN users u2 ON sp.student_id = u2.id
+            WHERE sp.id IN (
+                SELECT ss.id_session
+                FROM students_Session ss
+                WHERE ss.id_student = ?
+            )`;
+
+        const params = [userId];
+
+        const [results] = await pool.query(query, params);
+        if (results.length > 0) {
+            const sessions = results.map(session => {
+                return {
+                    time: session.start_hour + ' - ' + session.end_hour,
+                    subject: session.subject,
+                    otherPartyName: userType === 'tutor' ? session.studentName : session.tutorName
+                };
+            });
+            res.json({ success: true, sessions });
+        } else {
+            res.json({ success: true, message: "No sessions found", sessions: [] });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
 const PORT = 5000;
 app.listen(PORT, () => {
   
