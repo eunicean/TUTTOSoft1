@@ -229,19 +229,19 @@ function getPeriodoTimes(periodo) {
 
 //Endpoint of an specific session, instead of a general view
 app.get('/session-info', authenticateToken, async (req, res) => {
-    const userId = req.user.id; // ID of the current user 
-    const typeuser = req.user.role; // Tipo de usuario, asumiendo que esto es parte del token
+    const userId = req.user.id;
+    const userType = req.user.role;  // Corrección aquí para coincidir con tu comentario
 
     try {
         let query = `
-            SELECT sp.*, u.name as tutorName, u2.name as studentName
+            SELECT sp.*, u.username as tutorName, u2.username as studentName
             FROM sessionPlanned sp
-            JOIN users u ON sp.tutor_id = u.id
-            JOIN users u2 ON sp.student_id = u2.id
+            JOIN user u ON sp.id = u.id
+            JOIN user u2 ON sp.id = u2.id
             WHERE sp.id IN (
                 SELECT ss.id_session
                 FROM students_Session ss
-                WHERE ss.id_student = ?
+                WHERE ss.id = ?
             )`;
 
         const params = [userId];
@@ -250,6 +250,7 @@ app.get('/session-info', authenticateToken, async (req, res) => {
         if (results.length > 0) {
             const sessions = results.map(session => {
                 return {
+                    date: session.dated, // Asegúrate de que esta columna existe y se envía
                     time: session.start_hour + ' - ' + session.end_hour,
                     subject: session.subject,
                     otherPartyName: userType === 'tutor' ? session.studentName : session.tutorName
@@ -264,6 +265,7 @@ app.get('/session-info', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 const PORT = 5000;
