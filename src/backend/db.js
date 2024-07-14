@@ -11,17 +11,15 @@ export async function buscarUsuarioPorEmail(email) {
     }
 }
 
-export async function verificarUsuario(email,constrasenia) {
+export async function verificarUsuario(email, contrasenia) {
     const conexion = await conn;
     try {
-        const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}' AND password = '${constrasenia}'`);
-        let result;
+        const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}' AND password = '${contrasenia}'`);
         if (usuarios.length > 0) {
-            return true
+            return true;
         } else {
-            return false
+            return false;
         }
-
     } catch (error) {
         console.error('Datos incorrectos del usuario:', error);
     }
@@ -37,11 +35,7 @@ export async function crearUsuario(id, username, email, password) {
         console.error('Error al crear usuario:', error);
     }
 }
-<<<<<<< HEAD
 
-=======
-//rearUsuario(922929, 'pedro e', 'pepe@gmail.com', '123')
->>>>>>> cancelar-sesion
 // Función para eliminar un usuario por ID
 export async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
@@ -73,7 +67,7 @@ export async function verSesionesEnCurso() {
     } catch (error) {
         console.error('Error al ver sesiones en curso:', error);
     }
-} //changes to do: add the userId to the sessionTo list, change from curdate from dated to list all the 
+}
 
 // Función para borrar una sesión
 export async function borrarSesion(date) {
@@ -88,9 +82,8 @@ export async function borrarSesion(date) {
 
 // Todos los usuarios que son estudiantes
 export async function obtenerEstudiantes() {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [estudiantes] = await conexion.execute(`
             SELECT u.id, u.username, u.email 
             FROM user u 
@@ -104,9 +97,8 @@ export async function obtenerEstudiantes() {
 
 // Todos los mensajes de un chat específico
 export async function obtenerMensajesDeChat(idChat) {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [mensajes] = await conexion.execute(`
             SELECT m.content, m.time_sent 
             FROM messages m 
@@ -121,9 +113,8 @@ export async function obtenerMensajesDeChat(idChat) {
 
 // Sesiones planificadas y su información de curso correspondiente
 export async function obtenerSesionesPlanificadas() {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [sesiones] = await conexion.execute(`
             SELECT sp.id, c.namecourse, sp.dated, sp.start_hour, sp.end_hour, sp.mode 
             FROM sessionPlanned sp 
@@ -136,9 +127,8 @@ export async function obtenerSesionesPlanificadas() {
 }
 
 export async function obtenerSesionesPlanificadasPorPersona(userId) {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [sesiones] = await conexion.execute(`
             SELECT sp.id, c.namecourse, sp.dated, sp.start_hour, sp.end_hour, sp.mode, ss.id_student
             FROM sessionPlanned sp 
@@ -155,9 +145,8 @@ export async function obtenerSesionesPlanificadasPorPersona(userId) {
 
 // Reportes de ausencia junto con la información del remitente y del ausente
 export async function obtenerReportesDeAusencia() {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [reportes] = await conexion.execute(`
             SELECT ar.comment, ar.id_session, u1.username AS 'Sender', u2.username AS 'Absent Party' 
             FROM ausentReport ar 
@@ -172,9 +161,8 @@ export async function obtenerReportesDeAusencia() {
 
 // Estudiantes y su disponibilidad
 export async function obtenerDisponibilidadEstudiantes() {
-    const pool = await crearPoolConexion();
+    const conexion = await conn;
     try {
-        const conexion = await pool.getConnection();
         const [disponibilidad] = await conexion.execute(`
             SELECT u.username, hd.hournumber, hd.day_week 
             FROM hoursdisponibility hd 
@@ -189,10 +177,9 @@ export async function obtenerDisponibilidadEstudiantes() {
 export async function obtenerHorasDisponiblesPersona(id) {
     const conexion = await conn;
     try {
-        const [horas] = await conexion.execute(`SELECT * FROM hoursdisponibility WHERE studentID = ?`, [id])
+        const [horas] = await conexion.execute(`SELECT * FROM hoursdisponibility WHERE studentID = ?`, [id]);
         console.log(horas);
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
 }
@@ -200,10 +187,9 @@ export async function obtenerHorasDisponiblesPersona(id) {
 export async function ingresarNuevasHoras(hora, day, studentID) {
     const conexion = await conn;
     try {
-        const [horas] = await conexion.execute(`INSERT INTO hoursdisponibility(hournumber, day_week, studentID) VALUES(?,?,?)`, [hora, day, studentID])
+        const [horas] = await conexion.execute(`INSERT INTO hoursdisponibility(hournumber, day_week, studentID) VALUES(?,?,?)`, [hora, day, studentID]);
         console.log(horas);
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
 }
@@ -214,10 +200,10 @@ export async function eliminarHoras(hora, day, studentID) {
         const [horas] = await conexion.execute(
             `DELETE FROM hoursdisponibility
             WHERE studentID = ? AND hournumber = ? AND day_week = ?`, 
-            [studentID, hora, day])
+            [studentID, hora, day]
+        );
         console.log(horas);
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
 }
@@ -228,11 +214,9 @@ export async function obtenerTipoUsuarioPorId(userId){
         const [resultado] = await conexion.execute(
             `SELECT typeuser FROM user WHERE id=?`,
             [userId]
-        )
+        );
         return [resultado];
     } catch (error) {
-        console.error('Error al obtener el tipo de usuario:' , error);
+        console.error('Error al obtener el tipo de usuario:', error);
     }
 }
-
-obtenerTipoUsuarioPorId(21231);

@@ -20,6 +20,8 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "is-root": "^3.0.0",
+    "jsonpointer": "^5.0.1",
+    "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.7",
     "net": "^1.0.2",
@@ -35,7 +37,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "react-scripts start",
-    "server": "nodemon src/connbackend/testing.js",
+    "server": "nodemon src/backend/main.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
