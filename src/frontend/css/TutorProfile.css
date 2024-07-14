@@ -1,0 +1,158 @@
+/* src/Vista.css */
+.vista-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.session-text {   
+  margin-top: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #ba996f;
+}
+
+.cancel-button {
+  margin-top: 40px;
+  padding: 10px 20px;
+  font-size: 20px;
+  background-color: #ba996f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #ff1a1a;
+}
+
+.content {
+  display: flex;
+}
+
+.card {
+  width: 25%; 
+  height: 75vh;
+  margin-left: 10vh;
+  padding: 20px;
+  border: 1px solid #C04000;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #ba996f;
+}
+
+.profile-pic {
+  width: 35vh;
+  height: 35vh;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.card-buttons button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card-buttons button:hover {
+  background-color: #ddd;
+}
+
+.info {
+  width: 50%;
+  padding: 2px;
+  margin-left: 15vh;
+}
+
+.TitulosInfo {
+  text-align: left;
+  color: brown; /* Cambia el color a café */
+  padding: 0; /* Elimina cualquier relleno adicional */
+  margin: 0; /* Elimina cualquier margen adicional */
+}
+
+.TitulosInfo h2 {
+  font-size: 45px; /* Ajusta el tamaño del texto h2 aquí */
+  margin-bottom: 100px;
+}
+
+.TitulosInfo h3 {
+  font-size: 45px; /* Ajusta el tamaño del texto h3 aquí */
+  margin-top: 100px;
+  margin-bottom: 200px;
+}
+
+.info h2, .info h3 {
+  margin: 10px 0;
+}
+
+.Info2 {
+  display: flex; 
+  flex-direction: row;
+  margin-top: 10vh;
+}
+.Notas, .DocsEstudiante {
+  margin-right: 20px;
+}
+.UploadBoxFile {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #ba996f;
+  text-align: center;
+  max-width: 300px;
+
+}
+.UploadBoxFile input[type="file"] {
+  margin-bottom: 10px;
+}
+.UploadBoxFile button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.UploadBoxFile button:hover {
+  background-color: #45a049;
+}
+.UploadBoxFile p {
+  margin-top: 10px;
+}
+.temas-card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #ba996f;
+}
+
+.temas-card h3 {
+  margin-bottom: 10px;
+}
+
+
+.temas-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.temas-card li {
+  padding: 5px 0;
+}
