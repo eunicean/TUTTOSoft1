@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Card from '../components/Card.js';
+import { useParams } from 'react-router-dom';
+import SpecificSession from '../components/SpecificSession.js';
 
 function TestingView() {
-    const [sessions, setSessions] = useState([]);
-    const [loading, setLoading] = useState(true);  // Estado para controlar el indicador de carga
+    const { sessionId } = useParams();
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true); // Estado para controlar el indicador de carga
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        let isMounted = true; // Flag para manejar el renderizado condicional
-        const fetchSessions = async () => {
+        const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = 'http://localhost:5000/session-info';
+            const url = `http://localhost:5000/session-info/${sessionId}`;
+
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -20,57 +22,47 @@ function TestingView() {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                if (data.success && isMounted) {
-                    setSessions(data.sessions);
-                    setError(null);
+                if (data.success) {
+                    setSession(data.session);
                 } else {
-                    setError(data.message || 'No sessions found');
+                    setError(data.message || 'No session found');
                 }
             } catch (error) {
-                if (isMounted) {
-                    setError(`Failed to fetch sessions: ${error.message}`);
-                }
+                setError(`Failed to fetch session: ${error.message}`);
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
-        fetchSessions();
-
-        return () => {
-            isMounted = false; // Evita que se llame a setState si el componente está desmontado
-        };
-    }, []);
+        fetchSession();
+    }, [sessionId]);
 
     if (loading) {
-        return <p>Loading...</p>; // Visualización mientras los datos están cargando
+        return <p>Loading...</p>; // Display while data is loading
     }
 
     if (error) {
-        return <p>{error}</p>; // Visualización de errores
+        return <p>Error: {error}</p>; // Display errors
     }
 
     return (
         <div>
-            {sessions.length > 0 ? (
-                sessions.map(session => (
-                    <Card
-                        key={session.id}
-                        date={session.date}
-                        startHour={session.startHour}
-                        endHour={session.endHour}
-                        subject={session.subject}
-                        otherPartyName={session.otherPartyName}
-                    />
-                ))
+            {session ? (
+                <SpecificSession
+                    key={session.id}
+                    date={new Date(session.date).toLocaleDateString('en-US')}
+                    startHour={session.startHour}
+                    endHour={session.endHour}
+                    subject={session.subject}
+                    tutorName={session.tutorName}
+                    studentName={session.studentName}
+                />
             ) : (
-                <p>No sessions available.</p>  // Mensaje si no hay sesiones
+                <p>No session available.</p> // Message if no session is available
             )}
         </div>
     );

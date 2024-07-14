@@ -227,45 +227,54 @@ function getPeriodoTimes(periodo) {
 };
 
 
-//Endpoint of an specific session, instead of a general view
-app.get('/session-info', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
-    const userType = req.user.role;  // Corrección aquí para coincidir con tu comentario
+// Endpoint for fetching detailed session information
+app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
+    const sessionId = req.params.sessionId;
 
     try {
         let query = `
-            SELECT sp.*, u.username as tutorName, u2.username as studentName
-            FROM sessionPlanned sp
-            JOIN user u ON sp.id = u.id
-            JOIN user u2 ON sp.id = u2.id
-            WHERE sp.id IN (
-                SELECT ss.id_session
-                FROM students_Session ss
-                WHERE ss.id = ?
-            )`;
+            SELECT 
+                sp.id,
+                sp.dated,
+                sp.start_hour,
+                sp.end_hour,
+                sp.course_code,
+                tutor.username as tutorName,
+                student.username as studentName
+            FROM 
+                sessionPlanned sp
+            JOIN 
+                user tutor ON sp.id_tutor = tutor.id
+            JOIN 
+                students_Session ss ON sp.id = ss.id_session
+            JOIN 
+                user student ON ss.id_student = student.id
+            WHERE 
+                sp.id = ?;
+        `;
 
-        const params = [userId];
+        const [results] = await pool.query(query, [sessionId]);
 
-        const [results] = await pool.query(query, params);
         if (results.length > 0) {
-            const sessions = results.map(session => {
-                return {
-                    date: session.dated, // Asegúrate de que esta columna existe y se envía
-                    time: session.start_hour + ' - ' + session.end_hour,
-                    subject: session.subject,
-                    otherPartyName: userType === 'tutor' ? session.studentName : session.tutorName
-                };
-            });
-            res.json({ success: true, sessions });
+            const session = results.map(row => ({
+                id: row.id,
+                date: row.dated, 
+                startHour: row.start_hour,
+                endHour: row.end_hour,
+                subject: row.course_code,
+                tutorName: row.tutorName,
+                studentName: row.studentName
+            }))[0];
+
+            res.json({ success: true, session });
         } else {
-            res.json({ success: true, message: "No sessions found", sessions: [] });
+            res.json({ success: false, message: "Session not found" });
         }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
 
 
 const PORT = 5000;

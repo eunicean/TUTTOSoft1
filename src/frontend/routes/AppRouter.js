@@ -17,7 +17,7 @@ const AppRouter = () => {
         <Route path="/register" element={<Register/>} />
         <Route path="/sessions" element={<Sessions />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/sessions-info" element={<TestingView />} />
+        <Route path="/sessions-info/:sessionId" element={<TestingView />} />
         {/* Más rutas pueden ser agregadas aquí */}
       </Routes>
     </BrowserRouter>
