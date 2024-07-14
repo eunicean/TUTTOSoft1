@@ -276,6 +276,38 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
+//Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
+app.post('/cancel-session', authenticateToken, async (req, res) => {
+    const { sessionId, reason } = req.body;
+    const userId = req.user.id; // Obtener el ID del usuario desde el token de autenticación
+
+    if (!sessionId || !reason) {
+        return res.status(400).json({ success: false, message: "Todos los campos son obligatorios" });
+    }
+
+    const connection = await pool.getConnection(); // Obtener una conexión de la piscina
+    try {
+        await connection.beginTransaction(); // Iniciar la transacción
+
+        // Insertar el motivo de cancelación en cancellationReasons
+        const cancelQuery = 'INSERT INTO cancellationReasons (session_id, user_id, reason) VALUES (?, ?, ?)';
+        await connection.query(cancelQuery, [sessionId, userId, reason]);
+
+        // Eliminar la sesión de sessionPlanned
+        const deleteQuery = 'DELETE FROM sessionPlanned WHERE id = ?';
+        await connection.query(deleteQuery, [sessionId]);
+
+        await connection.commit(); // Confirmar la transacción
+
+        res.json({ success: true, message: "Sesión cancelada y motivo guardado exitosamente" });
+    } catch (error) {
+        await connection.rollback(); // Revertir la transacción en caso de error
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Error interno del servidor" });
+    } finally {
+        connection.release(); // Liberar la conexión
+    }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
