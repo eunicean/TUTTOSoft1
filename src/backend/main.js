@@ -1,9 +1,20 @@
+<<<<<<< HEAD
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import pool from './conn.js'; 
 import dotenv from 'dotenv';
+=======
+import express from 'express'
+import cors from 'cors'
+import {
+  verificarUsuario,
+  crearUsuario,
+  obtenerTipoUsuarioPorId,
+  obtenerSesionesPlanificadasPorPersona
+}from './db.js'
+>>>>>>> cancelar-sesion
 
 dotenv.config();
 
@@ -67,6 +78,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // Registration endpoint
 app.post('/register', async (req, res) => {
     const { username, email, password, role } = req.body;
@@ -105,9 +117,20 @@ app.post('/register', async (req, res) => {
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
+=======
+app.post('/users/register', async (req, res) => {
+  const { id, username, email, password } = req.query;
+  try {
+    const success = await crearUsuario(id, username, email, password); 
+    if (success) {
+      res.status(201).json({ message: 'User registered successfully' });
+    } else {
+        res.status(400).json({ error: 'Failed to register user' });
+>>>>>>> cancelar-sesion
     }
 });
 
+<<<<<<< HEAD
 
 app.get('/profile', authenticateToken, async (req, res) => {
     try {
@@ -232,3 +255,40 @@ app.listen(PORT, () => {
   
     console.log(`Server running on http://localhost:${PORT}`);
 });
+=======
+// Endpoint para obtener el tipo de usuario por ID
+app.get('/users/type', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
+    if (tipoUsuario) {
+      res.status(200).json({ tipoUsuario }); // Devuelve el tipo de usuario encontrado
+    } else {
+      res.status(404).json({ error: 'User not found' }); // Devuelve un error si el usuario no se encuentra
+    }
+  } catch (error) {
+    console.error('Error obtaining user type:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
+  }
+});
+
+// Endpoint para obtener las sesiones planificadas por persona
+app.get('/users/sessions', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
+    if (sesiones) {
+      res.status(200).json({ sesiones }); // Devuelve las sesiones planificadas encontradas
+    } else {
+      res.status(404).json({ error: 'Sessions not found' }); // Devuelve un error si no se encuentran sesiones planificadas
+    }
+  } catch (error) {
+    console.error('Error obtaining planned sessions:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://127.0.0.1:${port}`)
+})
+>>>>>>> cancelar-sesion

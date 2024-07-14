@@ -1,0 +1,79 @@
+.cancelar-cita {
+    background-color: #f5d7bf;
+    padding: 20px;
+    border-radius: 10px;
+    width: 600px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header h1 {
+    color: #8b5e3c;
+  }
+  
+  .submit-button {
+    background-color: #8b5e3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .reason {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .reason label {
+    display: block;
+    font-weight: bold;
+    color: #8b5e3c;
+    margin-bottom: 5px;
+  }
+  
+  .reason textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+  }
+  
+  .tutor-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tutor-photo {
+    background-color: #e0a98c;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .tutor-details {
+    text-align: center;
+  }
+  
+  .tutor-details p {
+    margin: 5px 0;
+    color: #8b5e3c;
+    font-weight: bold;
+  }
+  
