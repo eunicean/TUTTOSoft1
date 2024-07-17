@@ -17,10 +17,10 @@ function Sessions() {
       subject: '',
       date: '',
       startHour: '',
-      endHour: ''
+      endHour: '',
+      mode: ''  // Añadir 'mode' en el estado
     });
     const navigate = useNavigate();
-
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);
@@ -32,7 +32,7 @@ function Sessions() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create'; // Adjust the URL as necessary
+        const url = 'http://localhost:5000/sessions/create';
 
         try {
             const response = await fetch(url, {
@@ -57,10 +57,12 @@ function Sessions() {
                       ...newSession,
                       id: data.id,
                       date: new Date(newSession.date).toLocaleDateString('es-ES'),
-                      time: `${newSession.startHour} - ${newSession.endHour}`
+                      startHour: newSession.startHour,
+                      endHour: newSession.endHour,
+                      mode: newSession.mode // Añadir 'mode' en los datos de la sesión
                   }
               ]);
-              setNewSession({ subject: '', date: '', startHour: '', endHour: '' }); // Reset the form
+              setNewSession({ subject: '', date: '', startHour: '', endHour: '', mode: '' });
           }
            else {
                 throw new Error(data.message || 'Failed to create session');
@@ -93,13 +95,15 @@ function Sessions() {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
             const data = await response.json();
             const transformedSessions = data.sessions.map((session) => ({
                 id: session.id,
-                date: new Date(session.dated).toLocaleDateString('es-ES'),
+                date: new Date(session.date).toLocaleDateString('es-ES'),
                 startHour: session.start_hour,
                 endHour: session.end_hour,
-                subject: `Curso: ${session.course_code}`,  // Asumiendo que 'subject' se mapea del 'course_code'
+                subject: `Curso: ${session.course_code}`,
+                mode: session.mode // Añadir 'mode' en los datos de la sesión
             }));
             setSessions(transformedSessions);
         } catch (error) {
@@ -125,8 +129,8 @@ function Sessions() {
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
 
-    const handleSessionClick = (sessionId) => {
-        navigate(`/sessions-info/${sessionId}`); // Navega a la página de detalles de la sesión
+    const handleSessionClick = (sessionId, session) => {
+        navigate(`/sessions-info/${sessionId}`, { state: session });
     };
 
     return (
@@ -150,17 +154,24 @@ function Sessions() {
                     <input type="date" name="date" value={newSession.date} onChange={handleInputChange} />
                     <input type="time" name="startHour" value={newSession.startHour} onChange={handleInputChange} />
                     <input type="time" name="endHour" value={newSession.endHour} onChange={handleInputChange} />
+                    <select className="select-container" name="mode" value={newSession.mode} onChange={handleInputChange}>
+                        <option value="">Selecciona la modalidad</option>
+                        <option value="VIRTUAL">VIRTUAL</option>
+                        <option value="PRESENCIAL">PRESENCIAL</option>
+                        <option value="AMBOS">AMBOS</option>
+                    </select>
                     <button onClick={submitNewSession}>Crear Sesión</button>
                 </div>
                 <div className='yes-sessions'>
                     {sessions.length > 0 ? (
                         sessions.map(session => (
-                            <button key={session.id} onClick={() => navigate(`/sessions-info/${session.id}`, { state: session })} className="session-card-button">
+                            <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="session-card-button">
                                 <SessionCard
                                     date={session.date}
                                     startHour={session.startHour}
                                     endHour={session.endHour}
                                     subject={session.subject}
+                                    mode={session.mode} // Añadir 'mode' en los datos de la sesión
                                 />
                             </button>
                         ))

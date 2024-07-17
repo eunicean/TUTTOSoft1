@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
+let currentMaxSessionId;
 
 const app = express();
 app.use(cors({
@@ -16,6 +17,23 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
+//Function to solve the autoincrement issue of the sessionPlanned table
+const getMaxSessionId = async () => {
+    const query = 'SELECT MAX(id) as maxId FROM sessionPlanned';
+    const [rows] = await pool.query(query);
+    return rows[0].maxId || 0; // Devolver 0 si la tabla está vacía
+};
+
+
+const initializeMaxSessionId = async () => {
+    currentMaxSessionId = await getMaxSessionId();
+    console.log(`Current max session ID is: ${currentMaxSessionId}`);
+};
+
+// Llamar a esta función al iniciar el servidor
+initializeMaxSessionId();
+
 
 // Middleware to authenticate token
 const authenticateToken = (req, res, next) => {
@@ -144,22 +162,24 @@ app.post('/profile/update', authenticateToken, async (req, res) => {
 
 // Endpoint to create a new session
 app.post('/sessions/create', authenticateToken, async (req, res) => {
-    const { date, time, subject } = req.body;
-    const userId = req.user.id;  // Assuming you have access to the user's ID through the token
+    const { date, startHour, endHour, subject, mode } = req.body;  // Incluye 'mode' en el cuerpo de la solicitud
+    const userId = req.user.id;  // Asumiendo que tienes acceso al ID del usuario a través del token
 
     try {
-        const query = `INSERT INTO sessionPlanned (date, start_hour, course_code, id_student) VALUES (?, ?, ?, ?)`;
-        const params = [date, time, subject, userId];
+        currentMaxSessionId += 1; // Incrementar el ID
 
-        // assuming you have a connection pool named pool
-        const [result] = await pool.query(query, params);
-        res.json({ success: true, message: "Session created successfully", session: { id: result.insertId, date, time, subject } });
+        const query = `INSERT INTO sessionPlanned (id, date, start_hour, end_hour, course_code, id_tutor, mode) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const params = [currentMaxSessionId, date, startHour, endHour, subject, userId, mode]; // Incluye 'mode' en los parámetros
+
+        // Asumiendo que tienes una conexión al pool de base de datos llamada pool
+        await pool.query(query, params);
+        res.json({ success: true, message: "Session created successfully", session: { id: currentMaxSessionId, date, startHour, endHour, subject, mode } });
     } catch (error) {
         console.error('Database error:', error);
-        res.status(500).json({ success: false, message});
-        
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 // Period-based sessions endpoint
@@ -235,7 +255,7 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
         let query = `
             SELECT 
                 sp.id,
-                sp.dated,
+                sp.date,
                 sp.start_hour,
                 sp.end_hour,
                 sp.course_code,
@@ -258,7 +278,7 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
         if (results.length > 0) {
             const session = results.map(row => ({
                 id: row.id,
-                date: row.dated, 
+                date: row.date, 
                 startHour: row.start_hour,
                 endHour: row.end_hour,
                 subject: row.course_code,

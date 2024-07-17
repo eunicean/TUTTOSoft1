@@ -78,7 +78,7 @@ function Sessions() {
             const data = await response.json();
             const transformedSessions = data.sessions.map((session) => ({
                 id: session.id,
-                date: new Date(session.dated).toLocaleDateString('es-ES'),
+                date: new Date(session.date).toLocaleDateString('es-ES'),
                 time: `${session.start_hour} - ${session.end_hour}`,
                 subject: `Curso: ${session.course_code}`,
             }));

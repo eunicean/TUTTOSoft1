@@ -85,14 +85,14 @@ body, html {
   }
 
 
-  .session-filters {
+  select {
     position: relative;
     display: inline-block;
     width: 100%;
     margin: 10px 0;
   }
   
-.session-filters select {
+select {
   width: 100%;
   padding: 10px 15px;
   background-color: #f7f7f7; /* Fondo gris claro */
@@ -107,7 +107,7 @@ body, html {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
 }
 
-.session-filters:after {
+select:after {
   content: '▼';
   position: absolute;
   top: 50%;
@@ -119,7 +119,7 @@ body, html {
 }
 
 /* Puedes agregar estilos adicionales para cuando se pasa el mouse por encima */
-.session-filters select:hover {
+select:hover {
   background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por encima */
 }
 
