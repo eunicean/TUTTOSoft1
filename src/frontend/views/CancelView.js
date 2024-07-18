@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../css/CancelSessionView.css';
+import Sidebar from '../components/Sidebar.js';
+import '../css/CancelSessionView.css'; // Ajusta la ruta según la estructura de carpetas
 
-function CancelSessionView({ sessionId }) {
+function CancelView({ sessionId }) {
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
 
-    // Maneja la cancelación de la sesión
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
         if (!reason) {
@@ -29,6 +28,7 @@ function CancelSessionView({ sessionId }) {
             const data = await response.json();
             if (response.ok) {
                 setMessage('Sesión cancelada y motivo guardado exitosamente');
+                setShowModal(false); // Close the modal after successful cancellation
             } else {
                 setMessage(`Error: ${data.message}`);
             }
@@ -38,38 +38,29 @@ function CancelSessionView({ sessionId }) {
         }
     };
 
-    // Navega a la página anterior
-    const handleBack = () => {
-        navigate(-1);
-    };
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const closeSidebar = () => setIsSidebarOpen(false);
 
-    // Abre la ventana emergente de confirmación
-    const confirmCancelSession = () => {
-        setShowModal(true);
-    };
-
-    // Cierra la ventana emergente de confirmación
-    const closeModal = () => {
-        setShowModal(false);
-    };
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
 
     return (
         <>
-            <div className="cancel-session-container">
-                <button className="menu-toggle" onClick={handleBack}>
+            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+            <div className={`cancel-session-container ${isSidebarOpen ? 'shifted' : ''}`}>
+                <button className="menu-toggle" onClick={toggleSidebar}>
                     <span className="menu-bar"></span>
                     <span className="menu-bar"></span>
                     <span className="menu-bar"></span>
                 </button>
-                <h1>Cancelar Cita</h1>
+                <h1>Cancelar Sesión</h1>
                 <div className="cancel-session-card">
                     <div className="cancel-session-reason">
                         <label>
-                            Motivo
+                            Motivo de la Cancelación:
                             <textarea 
                                 value={reason} 
                                 onChange={(e) => setReason(e.target.value)} 
-                                placeholder="Escriba aquí otras cosas que le gustaría decir"
                             />
                         </label>
                     </div>
@@ -81,20 +72,21 @@ function CancelSessionView({ sessionId }) {
                         </div>
                     </div>
                 </div>
-                <button className="submit-button" onClick={confirmCancelSession}>Enviar</button>
+                <button className="submit-button" onClick={openModal}>Cancelar Sesión</button>
                 {message && <p className="message">{message}</p>}
-            </div>
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <p>¿Seguro que deseas cancelar la sesión?</p>
-                        <button onClick={handleCancelSession}>Sí</button>
-                        <button onClick={closeModal}>No</button>
+
+                {showModal && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <p>¿Está seguro de que desea cancelar la sesión?</p>
+                            <button onClick={handleCancelSession}>Sí, cancelar sesión</button>
+                            <button onClick={closeModal}>No, volver</button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </>
     );
 }
 
-export default CancelSessionView;
+export default CancelView;
