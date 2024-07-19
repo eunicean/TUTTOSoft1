@@ -13,64 +13,39 @@ function Sessions() {
     const [error, setError] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
-    const [newSession, setNewSession] = useState({
-      subject: '',
-      date: '',
-      startHour: '',
-      endHour: '',
-      mode: ''  // Añadir 'mode' en el estado
-    });
+    const [user, setUser] = useState({});
     const navigate = useNavigate();
+
+    useEffect(() => {
+        async function fetchProfile() {
+            const token = localStorage.getItem('token');
+            const url = 'http://localhost:5000/profile';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setUser(data.user);
+                } else {
+                    throw new Error(data.message || 'Failed to fetch profile');
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                setError(error.message || 'Unknown error fetching profile');
+            }
+        }
+
+        fetchProfile();
+    }, []);
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);
-    };
-
-    const handleInputChange = (e) => {
-        setNewSession({ ...newSession, [e.target.name]: e.target.value });
-    };
-
-    const submitNewSession = async () => {
-        const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create';
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newSession),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            if (data.success) {
-              setSessions([
-                  ...sessions, 
-                  { 
-                      ...newSession,
-                      id: data.id,
-                      date: new Date(newSession.date).toLocaleDateString('es-ES'),
-                      startHour: newSession.startHour,
-                      endHour: newSession.endHour,
-                      mode: newSession.mode // Añadir 'mode' en los datos de la sesión
-                  }
-              ]);
-              setNewSession({ subject: '', date: '', startHour: '', endHour: '', mode: '' });
-          }
-           else {
-                throw new Error(data.message || 'Failed to create session');
-            }
-        } catch (error) {
-            console.error("Could not create session:", error);
-            setError(`Failed to create session: ${error.message || 'Unknown error'}`);
-        }
     };
 
     const fetchSessions = async (queryPeriodo = '') => {
@@ -103,7 +78,7 @@ function Sessions() {
                 startHour: session.start_hour,
                 endHour: session.end_hour,
                 subject: `Curso: ${session.course_code}`,
-                mode: session.mode // Añadir 'mode' en los datos de la sesión
+                mode: session.mode
             }));
             setSessions(transformedSessions);
         } catch (error) {
@@ -114,13 +89,12 @@ function Sessions() {
         }
     };
     
-
     useEffect(() => {
-        fetchSessions();  // Initial load without filters
+        fetchSessions();
     }, []);
 
     useEffect(() => {
-        fetchSessions(periodo);  // Reload on period change
+        fetchSessions(periodo);
     }, [periodo]);
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -149,19 +123,11 @@ function Sessions() {
                         <option value="noche">Noche</option>
                     </select>
                 </div>
-                <div className="create-session-form">
-                    <input name="subject" value={newSession.subject} onChange={handleInputChange} placeholder="Curso" />
-                    <input type="date" name="date" value={newSession.date} onChange={handleInputChange} />
-                    <input type="time" name="startHour" value={newSession.startHour} onChange={handleInputChange} />
-                    <input type="time" name="endHour" value={newSession.endHour} onChange={handleInputChange} />
-                    <select className="select-container" name="mode" value={newSession.mode} onChange={handleInputChange}>
-                        <option value="">Selecciona la modalidad</option>
-                        <option value="VIRTUAL">VIRTUAL</option>
-                        <option value="PRESENCIAL">PRESENCIAL</option>
-                        <option value="AMBOS">AMBOS</option>
-                    </select>
-                    <button onClick={submitNewSession}>Crear Sesión</button>
-                </div>
+                {user.typeuser === '2' && (  // Mostrar el botón solo si el usuario es un tutor
+                    <button onClick={() => navigate('/sessions/create')} className="create-session-button">
+                        Crear Nueva Sesión
+                    </button>
+                )}
                 <div className='yes-sessions'>
                     {sessions.length > 0 ? (
                         sessions.map(session => (
@@ -171,11 +137,10 @@ function Sessions() {
                                     startHour={session.startHour}
                                     endHour={session.endHour}
                                     subject={session.subject}
-                                    mode={session.mode} // Añadir 'mode' en los datos de la sesión
+                                    mode={session.mode}
                                 />
                             </button>
                         ))
-                        
                     ) : (
                         <div className="no-sessions">No hay sesiones disponibles.</div>
                     )}

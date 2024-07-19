@@ -48,6 +48,26 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+//Endpoint to show the username of the searched email
+app.get('/get-username-by-email', async (req, res) => {
+    const { email } = req.query;
+
+    try {
+        const query = 'SELECT username FROM user WHERE email = ?';
+        const [results] = await pool.query(query, [email]);
+
+        if (results.length > 0) {
+            res.json({ username: results[0].username });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 // Login endpoint
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -67,8 +87,13 @@ app.post('/login', async (req, res) => {
                 const user = results[0];
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
-                if (passwordMatch) {
-                    const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+                if (user) {
+                    const token = jwt.sign(
+                        { id: user.id, role: user.role },  // Incluye el rol en el token
+                        secretKey,
+                        { expiresIn: '1h' }
+                    );
+                    
                     res.json({ success: true, message: "Login successful", token });
                 } else {
                     res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -186,6 +211,7 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
+        const userType = req.user.typeuser; // Asumiendo que el tipo de usuario se almacena en el token
         const periodo = req.query.periodo;
         let query, params;
 
@@ -193,22 +219,41 @@ app.get('/sessions', authenticateToken, async (req, res) => {
 
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
-            query = `
-                SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ? AND (
-                    (sp.start_hour BETWEEN ? AND ?) OR
-                    (sp.end_hour BETWEEN ? AND ?)
-                )`;
-            params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
+            if (userType === '1') { // Si el usuario es un estudiante
+                query = `
+                    SELECT sp.* 
+                    FROM students_Session ss
+                    JOIN sessionPlanned sp ON ss.id_session = sp.id
+                    WHERE ss.id_student = ? AND (
+                        (sp.start_hour BETWEEN ? AND ?) OR
+                        (sp.end_hour BETWEEN ? AND ?)
+                    )`;
+                params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
+            } else { // Si el usuario es un tutor
+                query = `
+                    SELECT sp.* 
+                    FROM sessionPlanned sp
+                    WHERE sp.id_tutor = ? AND (
+                        (sp.start_hour BETWEEN ? AND ?) OR
+                        (sp.end_hour BETWEEN ? AND ?)
+                    )`;
+                params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
+            }
         } else {
-            query = `
-                SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ?`;
-            params = [userId];
+            if (userType === '1') { // Si el usuario es un estudiante
+                query = `
+                    SELECT sp.* 
+                    FROM students_Session ss
+                    JOIN sessionPlanned sp ON ss.id_session = sp.id
+                    WHERE ss.id_student = ?`;
+                params = [userId];
+            } else { // Si el usuario es un tutor
+                query = `
+                    SELECT sp.* 
+                    FROM sessionPlanned sp
+                    WHERE sp.id_tutor = ?`;
+                params = [userId];
+            }
         }
 
         const [results] = await pool.query(query, params);
@@ -223,6 +268,7 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 // Utility function for period times
 function getPeriodoTimes(periodo) {
