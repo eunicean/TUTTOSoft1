@@ -187,21 +187,38 @@ app.post('/profile/update', authenticateToken, async (req, res) => {
 
 // Endpoint to create a new session
 app.post('/sessions/create', authenticateToken, async (req, res) => {
-    const { date, startHour, endHour, subject, mode } = req.body;  // Incluye 'mode' en el cuerpo de la solicitud
-    const userId = req.user.id;  // Asumiendo que tienes acceso al ID del usuario a través del token
+    const { date, startHour, endHour, subject, mode, studentEmail } = req.body;
+    const tutorId = req.user.id;
 
     try {
-        currentMaxSessionId += 1; // Incrementar el ID
+        const studentQuery = 'SELECT id FROM user WHERE email = ?';
+        const [studentResult] = await pool.query(studentQuery, [studentEmail]);
 
-        const query = `INSERT INTO sessionPlanned (id, date, start_hour, end_hour, course_code, id_tutor, mode) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        const params = [currentMaxSessionId, date, startHour, endHour, subject, userId, mode]; // Incluye 'mode' en los parámetros
+        if (studentResult.length === 0) {
+            return res.status(400).json({ success: false, message: 'Student not found' });
+        }
 
-        // Asumiendo que tienes una conexión al pool de base de datos llamada pool
-        await pool.query(query, params);
-        res.json({ success: true, message: "Session created successfully", session: { id: currentMaxSessionId, date, startHour, endHour, subject, mode } });
+        const studentId = studentResult[0].id;
+
+        // Obtener el máximo id actual de la tabla
+        const maxIdQuery = 'SELECT MAX(id) AS maxId FROM sessionPlanned';
+        const [maxIdResult] = await pool.query(maxIdQuery);
+        const currentMaxSessionId = maxIdResult[0].maxId + 1;
+
+        const sessionQuery = 'INSERT INTO sessionPlanned (id, date, start_hour, end_hour, course_code, id_tutor, mode) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const sessionParams = [currentMaxSessionId, date, startHour, endHour, subject, tutorId, mode];
+
+        await pool.query(sessionQuery, sessionParams);
+
+        const studentsSessionQuery = 'INSERT INTO students_Session (id_session, id_student) VALUES (?, ?)';
+        const studentsSessionParams = [currentMaxSessionId, studentId];
+
+        await pool.query(studentsSessionQuery, studentsSessionParams);
+
+        res.json({ success: true, message: 'Session created successfully', session: { id: currentMaxSessionId, date, startHour, endHour, subject, mode, studentId } });
     } catch (error) {
         console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 
@@ -211,51 +228,28 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const userType = req.user.typeuser; // Asumiendo que el tipo de usuario se almacena en el token
         const periodo = req.query.periodo;
         let query, params;
-
         console.log("Selected period is: " + periodo);
-
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
-            if (userType === '1') { // Si el usuario es un estudiante
-                query = `
-                    SELECT sp.* 
-                    FROM students_Session ss
-                    JOIN sessionPlanned sp ON ss.id_session = sp.id
-                    WHERE ss.id_student = ? AND (
-                        (sp.start_hour BETWEEN ? AND ?) OR
-                        (sp.end_hour BETWEEN ? AND ?)
-                    )`;
-                params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
-            } else { // Si el usuario es un tutor
-                query = `
-                    SELECT sp.* 
-                    FROM sessionPlanned sp
-                    WHERE sp.id_tutor = ? AND (
-                        (sp.start_hour BETWEEN ? AND ?) OR
-                        (sp.end_hour BETWEEN ? AND ?)
-                    )`;
-                params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
-            }
+            query = `
+                SELECT sp.* 
+                FROM students_Session ss
+                JOIN sessionPlanned sp ON ss.id_session = sp.id
+                WHERE ss.id_student = ? AND (
+                    (sp.start_hour BETWEEN ? AND ?) OR
+                    (sp.end_hour BETWEEN ? AND ?)
+                )`;
+            params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
-            if (userType === '1') { // Si el usuario es un estudiante
-                query = `
-                    SELECT sp.* 
-                    FROM students_Session ss
-                    JOIN sessionPlanned sp ON ss.id_session = sp.id
-                    WHERE ss.id_student = ?`;
-                params = [userId];
-            } else { // Si el usuario es un tutor
-                query = `
-                    SELECT sp.* 
-                    FROM sessionPlanned sp
-                    WHERE sp.id_tutor = ?`;
-                params = [userId];
-            }
+            query = `
+                SELECT sp.* 
+                FROM students_Session ss
+                JOIN sessionPlanned sp ON ss.id_session = sp.id
+                WHERE ss.id_student = ?`;
+            params = [userId];
         }
-
         const [results] = await pool.query(query, params);
         console.log(results);
         if (results.length > 0) {
