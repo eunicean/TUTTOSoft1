@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import SpecificSession from '../components/SpecificSession.js';
+
+import Sidebar from '../components/Sidebar.js';
 
 function TestingView() {
     const { sessionId } = useParams();
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true); // Estado para controlar el indicador de carga
     const [error, setError] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSession = async () => {
@@ -49,8 +54,14 @@ function TestingView() {
         return <p>Error: {error}</p>; // Display errors
     }
 
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const closeSidebar = () => setIsSidebarOpen(false);
+
+
     return (
         <div>
+            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+            <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
             {session ? (
                 <SpecificSession
                     key={session.id}
@@ -64,6 +75,10 @@ function TestingView() {
             ) : (
                 <p>No session available.</p> // Message if no session is available
             )}
+
+            <button onClick={()=> navigate(`/cancel-session/${sessionId}`)}>
+                cancelar sesión
+            </button>
         </div>
     );
 }

@@ -337,7 +337,7 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
 });
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
-app.post('/cancel-session', authenticateToken, async (req, res) => {
+app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
     const { sessionId, reason } = req.body;
     const userId = req.user.id; // Obtener el ID del usuario desde el token de autenticación
 
@@ -353,9 +353,21 @@ app.post('/cancel-session', authenticateToken, async (req, res) => {
         const cancelQuery = 'INSERT INTO cancellationReasons (session_id, user_id, reason) VALUES (?, ?, ?)';
         await connection.query(cancelQuery, [sessionId, userId, reason]);
 
-        // Eliminar la sesión de sessionPlanned
-        const deleteQuery = 'DELETE FROM sessionPlanned WHERE id = ?';
-        await connection.query(deleteQuery, [sessionId]);
+        // Eliminar dependencias en students_Session antes de eliminar la sesión
+        const deleteStudentsSessionQuery = 'DELETE FROM students_Session WHERE id_session = ?';
+        await connection.query(deleteStudentsSessionQuery, [sessionId]);
+
+        // Eliminar dependencias en report antes de eliminar la sesión
+        const deleteReportQuery = 'DELETE FROM report WHERE id_session = ?';
+        await connection.query(deleteReportQuery, [sessionId]);
+
+        // Eliminar dependencias en cancellationReasons antes de eliminar la sesión
+        const deleteCancellationReasonsQuery = 'DELETE FROM cancellationReasons WHERE session_id = ?';
+        await connection.query(deleteCancellationReasonsQuery, [sessionId]);
+
+        // Finalmente, eliminar la sesión de sessionPlanned
+        const deleteSessionPlannedQuery = 'DELETE FROM sessionPlanned WHERE id = ?';
+        await connection.query(deleteSessionPlannedQuery, [sessionId]);
 
         await connection.commit(); // Confirmar la transacción
 
@@ -368,6 +380,9 @@ app.post('/cancel-session', authenticateToken, async (req, res) => {
         connection.release(); // Liberar la conexión
     }
 });
+
+
+
 
 const PORT = 5000;
 app.listen(PORT, () => {
