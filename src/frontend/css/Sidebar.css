@@ -39,6 +39,7 @@
   cursor: pointer;
 }
 
+/* Opciones de barra lateral */
 .sidebar-items {
   list-style-type: none; /* Remover estilos por defecto de lista */
   padding: 0;
@@ -46,7 +47,40 @@
 }
 
 .sidebar-items li {
-  padding: 10px 0; /* Espaciado vertical para cada ítem */
+  padding: 15px 20px; /* Espacio interior para una mejor presentación */
+  border-radius: 5px; /* Esquinas redondeadas para un diseño más suave */
+  margin-bottom: 15px; /* Aumentar separación entre ítems */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Efecto suave al pasar el ratón */
+  font-family: 'Arial Black', Arial, sans-serif; /* Fuente Arial Black */
+  font-size: 1.1rem; /* Tamaño de la fuente */
+  color: var(--color-texto); /* Color del texto */
+  background-color: var(--color-barra-lateral); /* Fondo de los ítems para mejor contraste */
+  border: 1px solid var(--color-linea); /* Línea de separación alrededor de cada ítem */
+}
+
+.sidebar-items li:hover {
+  background-color: #E7B985; /* Color de fondo al pasar el ratón */
+  color: var(--color-boton); /* Color del texto al pasar el ratón */
+}
+
+.sidebar-items li.active {
+  background-color: #FF6B6B; /* Color de fondo para el ítem activo */
+  color: white; /* Color del texto para el ítem activo */
+}
+
+.sidebar-items li ion-icon {
+  margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
+/* Opcional: eliminar la línea separadora si se usa el borde alrededor de los ítems */
+.sidebar-items li:not(:last-child) {
+  border-bottom: 1px solid var(--color-linea);
+}
+
+
+.sidebar-items li {
+  padding: 10px 0; 
   cursor: pointer;
 }
 
