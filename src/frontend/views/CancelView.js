@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import Sidebar from '../components/Sidebar.js'; // Added .js extension
+import Navbar from '../components/Navbar.js'; // Added .js extension
+import '../css/Sessions.css';
+import '../css/Sidebar.css';
+import '../css/Navbar.css';
 
 function CancelSessionView({ sessionId }) {
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
@@ -33,22 +39,38 @@ function CancelSessionView({ sessionId }) {
         }
     };
 
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const closeSidebar = () => {
+        setIsSidebarOpen(false);
+    };
+
     return (
-        <div>
-            <h1>Cancelar Sesión</h1>
-            <div>
-                <label>
-                    Motivo de la Cancelación:
-                    <input 
-                        type="text" 
-                        value={reason} 
-                        onChange={(e) => setReason(e.target.value)} 
-                    />
-                </label>
+        <>
+          <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+          <Navbar />
+          <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
+            <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
+            <h1 className="sessions-title">Cancelar Sesion</h1>
+            <div className="session-filters">
+              <label>
+                Motivo de la cancelacion:
+                <input 
+                  type="text" 
+                  value={reason} 
+                  onChange={(e) => setReason(e.target.value)} 
+                  className="periodo-selector" 
+                />
+              </label>
             </div>
-            <button onClick={handleCancelSession}>Cancelar Sesión</button>
+            <button onClick={handleCancelSession} className="create-session-button">
+              Cancelar sesion
+            </button>
             {message && <p>{message}</p>}
-        </div>
+          </div>
+        </>
     );
 }
 
