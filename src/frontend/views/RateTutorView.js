@@ -61,6 +61,11 @@ function RateTutorView({ tutorId }) {
                             </span>
                         ))}
                     </div>
+                    <div className="tutor-info">
+                        <div className="avatar-placeholder"></div>
+                        <p>Nombre de Tutor</p>
+                        <p>5to año</p>
+                    </div>
                     <button className="submit-button" onClick={handleSubmitRating}>Enviar</button>
                     {message && <p className="message">{message}</p>}
                 </div>
