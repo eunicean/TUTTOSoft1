@@ -1,23 +1,11 @@
 // src/Vista.js
 import React, {useState, useEffect} from 'react';
-import Header from './HeaderYMenu';
-import './TutorProfile.css';
-
+import '../css/TutorProfile.css'
+import Header from '../components/HeaderYmenu.js';
+import StarRating from '../components/stars.js';
 const TutorProfile = () => {
-    const [file, setFile] = useState(null);
+    // manejo de estados
     const [temas, setTemas] = useState([]);
-
-    // Subir un documento.
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]); 
-    }; 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (file) {
-            // manejar la carga de archivos. O sea por la accion, para enviarlos hacia algun lugar. 
-            console.log("archivo enviado correctamente", file.name); 
-        }
-    }
 
     useEffect(() => {
         const obtenerTemas = async () => {
@@ -27,6 +15,9 @@ const TutorProfile = () => {
         obtenerTemas(); // ejecutar la funcion
       }, []);
 
+      // donde se tiene que mandar a traer un valor en la base de datos
+      // de la calificacion en la bae de datos...
+      const valorEstrellas = 3;
   return (
     <div className="vista-container">
         <Header></Header>
@@ -39,13 +30,11 @@ const TutorProfile = () => {
           <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
           <h3>Nombre: Juan Pérez</h3>
           <p>Año: 3</p>
-          <p>Carnet: 123456</p>
-          <div className="card-buttons">
-            <button>Botón 1</button>
-            <button>Botón 2</button>
-            <button>Botón 3</button>
-          </div>
+          <p>Carnet: 123456</p> 
+          <StarRating rating={valorEstrellas} />
+          <button> CHAT </button>
         </div>
+
         <div className="info">
         <div className='TitulosInfo'>
           <h2>Materia: Matemática Aplicada</h2>
@@ -59,22 +48,11 @@ const TutorProfile = () => {
                 <h2>Temas a repasar</h2>
                 <ul>
                   {temas.map((tema, index) => (
-                    <li key={index}>{tema.nombre}</li>
+                    <li key={index}>{tema}</li>
                   ))}
                 </ul>
-                <button>Calificar la sesion</button>
+                <button>Calificar sesion</button>
                 </div>
-            </div>
-            <div className='DocsEstudiante'>
-                <h2>Documentos del estudiante</h2>
-                <div className='UploadBoxFile'> 
-                    <form onSubmit={handleSubmit}> 
-                        <input type="file" onChange={handleFileChange} /> 
-                        <button type='submit'> Subir archivo</button>
-                    </form>
-                    {file && <p>Archivo seleccionado: {file.name}</p>}
-                </div>
-                <button>Reportar ausencias</button>
             </div>
           </div>
         </div>
