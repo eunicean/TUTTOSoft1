@@ -98,9 +98,11 @@
 }
 
 .Info2 {
-  display: flex; 
-  flex-direction: row;
-  margin-top: 10vh;
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center;     /* Centra verticalmente (opcional) */
+  flex-direction: column;  /* Alinea los elementos en columna (opcional) */
+  margin-top: 1vh;
 }
 .Notas, .DocsEstudiante {
   margin-right: 20px;
@@ -137,22 +139,43 @@
 .temas-card {
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px; /* Aumenta el padding para hacer el card más grande */
+  margin-top: 2px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Aumenta la sombra para un efecto más prominente */
   background-color: #ba996f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px; /* Establece un ancho fijo (puedes ajustar este valor) */
+  height: 300px;
+  overflow: hidden;
+  min-width: 300px; /* Establece un ancho mínimo para el card */
 }
 
-.temas-card h3 {
-  margin-bottom: 10px;
+.temas-card h2 {
+  margin-bottom: 20px; /* Aumenta el margen para que el título tenga más espacio */
+  font-size: 1.5rem; /* Aumenta el tamaño de la fuente del título */
 }
-
 
 .temas-card ul {
   list-style-type: none;
   padding: 0;
+  width: 100%; /* Asegúrate de que la lista use el ancho completo del card */
 }
 
 .temas-card li {
-  padding: 5px 0;
+  padding: 10px 0; /* Aumenta el padding en los elementos de la lista */
+  font-size: 1.2rem; /* Aumenta el tamaño de la fuente en la lista */
+}
+
+.temas-card button {
+  margin-top: 20px; /* Aumenta el margen superior para separar el botón del contenido */
+  padding: 10px 20px; /* Aumenta el padding para el botón */
+  font-size: 1rem; /* Aumenta el tamaño de la fuente del botón */
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  color: #A0522D;
 }
