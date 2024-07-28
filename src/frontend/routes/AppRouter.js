@@ -17,6 +17,7 @@ const AppRouter = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>} />
         <Route path="/sessions" element={<Sessions />} />
+        <Route path="/rate-tutor/:sessionId" element={<RateTutorView />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/sessions-info/:sessionId" element={<TestingView />} />
         <Route path="/cancel-session" element={<CancelView />} />
