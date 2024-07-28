@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import SessionCard from '../components/Card.js';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
@@ -14,13 +13,12 @@ function Sessions() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
     const [newSession, setNewSession] = useState({
-      subject: '',
-      date: '',
-      startHour: '',
-      endHour: ''
+        subject: '',
+        date: '',
+        startHour: '',
+        endHour: ''
     });
     const navigate = useNavigate();
-
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);
@@ -32,7 +30,7 @@ function Sessions() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create'; // Adjust the URL as necessary
+        const url = 'http://localhost:5000/sessions/create';
 
         try {
             const response = await fetch(url, {
@@ -49,20 +47,19 @@ function Sessions() {
             }
 
             const data = await response.json();
-            
+
             if (data.success) {
-              setSessions([
-                  ...sessions, 
-                  { 
-                      ...newSession,
-                      id: data.id,
-                      date: new Date(newSession.date).toLocaleDateString('es-ES'),
-                      time: `${newSession.startHour} - ${newSession.endHour}`
-                  }
-              ]);
-              setNewSession({ subject: '', date: '', startHour: '', endHour: '' }); // Reset the form
-          }
-           else {
+                setSessions([
+                    ...sessions,
+                    {
+                        ...newSession,
+                        id: data.id,
+                        date: new Date(newSession.date).toLocaleDateString('es-ES'),
+                        time: `${newSession.startHour} - ${newSession.endHour}`
+                    }
+                ]);
+                setNewSession({ subject: '', date: '', startHour: '', endHour: '' });
+            } else {
                 throw new Error(data.message || 'Failed to create session');
             }
         } catch (error) {
@@ -76,11 +73,11 @@ function Sessions() {
         setError(null);
         const token = localStorage.getItem('token');
         const url = new URL('http://localhost:5000/sessions');
-    
+
         if (queryPeriodo) {
             url.searchParams.append('periodo', queryPeriodo);
         }
-    
+
         try {
             const response = await fetch(url.toString(), {
                 method: 'GET',
@@ -89,7 +86,7 @@ function Sessions() {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -99,7 +96,7 @@ function Sessions() {
                 date: new Date(session.dated).toLocaleDateString('es-ES'),
                 startHour: session.start_hour,
                 endHour: session.end_hour,
-                subject: `Curso: ${session.course_code}`,  // Asumiendo que 'subject' se mapea del 'course_code'
+                subject: `Curso: ${session.course_code}`,
             }));
             setSessions(transformedSessions);
         } catch (error) {
@@ -109,14 +106,13 @@ function Sessions() {
             setLoading(false);
         }
     };
-    
 
     useEffect(() => {
-        fetchSessions();  // Initial load without filters
+        fetchSessions();
     }, []);
 
     useEffect(() => {
-        fetchSessions(periodo);  // Reload on period change
+        fetchSessions(periodo);
     }, [periodo]);
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -126,7 +122,11 @@ function Sessions() {
     if (error) return <div className="error-message">Error: {error}</div>;
 
     const handleSessionClick = (sessionId) => {
-        navigate(`/sessions-info/${sessionId}`); // Navega a la página de detalles de la sesión
+        navigate(`/sessions-info/${sessionId}`);
+    };
+
+    const handleRateClick = (sessionId) => {
+        navigate(`/rate-tutor/${sessionId}`);
     };
 
     return (
@@ -152,24 +152,26 @@ function Sessions() {
                     <input type="time" name="endHour" value={newSession.endHour} onChange={handleInputChange} />
                     <button onClick={submitNewSession}>Crear Sesión</button>
                 </div>
-                <div className='yes-sessions'>
+                <div className='session-list'>
                     {sessions.length > 0 ? (
                         sessions.map(session => (
-                            <button key={session.id} onClick={() => navigate(`/sessions-info/${session.id}`, { state: session })} className="session-card-button">
-                                <SessionCard
-                                    date={session.date}
-                                    startHour={session.startHour}
-                                    endHour={session.endHour}
-                                    subject={session.subject}
-                                />
-                            </button>
+                            <div key={session.id} className="session-card">
+                                <div className="session-info" onClick={() => handleSessionClick(session.id)}>
+                                    <p><strong>Materia:</strong> {session.subject}</p>
+                                    <p><strong>Fecha:</strong> {session.date}</p>
+                                    <p><strong>Horario:</strong> {session.startHour} - {session.endHour}</p>
+                                </div>
+                                <div className="session-actions">
+                                    <button className="session-button" onClick={() => handleRateClick(session.id)}>Calificar sesión</button>
+                                    <button className="session-button">Reportar ausencia</button>
+                                </div>
+                            </div>
                         ))
-                        
                     ) : (
                         <div className="no-sessions">No hay sesiones disponibles.</div>
                     )}
                 </div>
-            </div>  
+            </div>
         </>
     );
 }
