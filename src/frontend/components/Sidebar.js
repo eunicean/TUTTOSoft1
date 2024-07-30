@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -5,6 +6,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <button onClick={closeSidebar} className="close-sidebar">X</button>
+      <button><img src="/icon.png" ></img></button>
       <ul className="sidebar-items">
         <li><Link to="/profile" onClick={closeSidebar}>Perfil</Link></li>
         <li><Link to="/search-tutors" onClick={closeSidebar}>Buscar Tutores</Link></li>

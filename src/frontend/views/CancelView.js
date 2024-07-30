@@ -53,7 +53,7 @@ function CancelSessionView({ sessionId }) {
           <Navbar />
           <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
             <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
-            <h1 className="sessions-title">Cancelar Sesion</h1>
+            <h1 className="sessions-title">Cancelar sesion</h1>
             <div className="session-filters">
               <label>
                 Motivo de la cancelacion:

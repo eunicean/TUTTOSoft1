@@ -1,33 +1,90 @@
 .profile-container {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     padding: 20px;
+    background-color: #f3d4c1;
 }
 
 .profile-card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 300px;
+    background-color: #d9b59e;
     padding: 20px;
-    text-align: center;
-    background: white;
-    border-radius: 8px;
+    border-radius: 10px;
+    margin-right: 20px;
+    flex: 1;
 }
 
-.profile-card h2 {
-    margin-top: 0;
-    color: #333;
+.comments-section {
+    background-color: #f3d4c1;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 2;
 }
 
-.profile-card p {
-    color: #666;
+h2, h3, p {
+    margin: 10px 0;
 }
 
-.profile-card button {
-    background-color: #C67A53;
+.tags {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.tags span {
+    background-color: #c18a5f;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.rating {
+    display: flex;
+    gap: 5px;
+}
+
+.star {
+    font-size: 20px;
+    color: #c18a5f;
+}
+
+.logout-button {
+    background-color: #c18a5f;
     color: white;
     border: none;
     padding: 10px 20px;
-    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment {
+    background-color: #805642;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.comment .tags span {
+    background-color: #c18a5f;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #e0b698;
+    margin-bottom: 10px;
+}
+
+.menu-toggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #c18a5f;
+    color: white;
+    border: none;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
-
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
@@ -108,14 +107,53 @@ function ProfileView() {
                         </>
                     ) : (
                         <>
-                            <h2>{user.username || 'Nombre no disponible'}</h2>
-                            <p>Email: {user.email || 'Email no disponible'}</p>
-                            <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
+                            <div className="profile-avatar"></div>
+                            <h2>{user.username || 'Nombre de Estudiante'}</h2>
+                            <p>2to año</p>
+                            <p>Carnet {user.carnet || '22000'}</p>
+                            <div className="tags">
+                                <span>Habla poco</span>
+                                <span>Organizado</span>
+                                <span>Entiende rápido</span>
+                            </div>
+                            <div className="rating">
+                                {[...Array(5)].map((star, index) => (
+                                    <span key={index} className="star">&#9733;</span>
+                                ))}
+                            </div>
                             <button onClick={() => setEditing(true)}>Editar Perfil</button>
+                            <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
+                            <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
                         </>
                     )}
-                    <button onClick={handleLogout}  >Cerrar Sesión</button>
-                    <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
+                </div>
+                <div className="comments-section">
+                    <h3>Comentarios</h3>
+                    <div className="comment">
+                        <div className="tags">
+                            <span>Platicador</span>
+                            <span>Organizado</span>
+                        </div>
+                        <p>Gracias por la ayuda</p>
+                    </div>
+                    <div className="comment">
+                        <div className="tags">
+                            <span>Entiende rápido</span>
+                        </div>
+                        <p>Gracias por la ayuda</p>
+                    </div>
+                    <div className="comment">
+                        <div className="tags">
+                            <span>Habla poco</span>
+                        </div>
+                        <p>Gracias por la ayuda</p>
+                    </div>
+                    <div className="comment">
+                        <div className="tags">
+                            <span>Entiende rápido</span>
+                        </div>
+                        <p>Gracias por la ayuda</p>
+                    </div>
                 </div>
             </div>
         </>

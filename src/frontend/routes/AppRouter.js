@@ -9,7 +9,9 @@ import CancelView from '../views/CancelView.js';
 import CreateSession from '../views/createSession.js';
 import Absence from '../views/Absence.js'; // Updated import statement
 
+
 import '../css/Register.css';
+
 
 const AppRouter = () => {
   return (
@@ -17,7 +19,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Navigate replace to="/login" />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register/>} />
         <Route path="/sessions" element={<Sessions />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/sessions-info/:sessionId" element={<TestingView />} />
