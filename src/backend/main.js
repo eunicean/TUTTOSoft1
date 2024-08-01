@@ -288,19 +288,14 @@ function getPeriodoTimes(periodo) {
 
 
 // Endpoint for fetching detailed session information
-app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
+app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     const sessionId = req.params.sessionId;
-
     try {
-        let query = `
+        const sessionQuery = `
             SELECT 
-                sp.id,
-                sp.date,
-                sp.start_hour,
-                sp.end_hour,
-                sp.course_code,
-                tutor.username as tutorName,
-                student.username as studentName
+                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, sp.mode, 
+                sp.tutorNotes, 
+                tutor.username as tutorName, student.username as studentName
             FROM 
                 sessionPlanned sp
             JOIN 
@@ -313,28 +308,32 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
                 sp.id = ?;
         `;
 
-        const [results] = await pool.query(query, [sessionId]);
+        // Ejecutar la consulta de la sesión
+        const [sessionResults] = await pool.query(sessionQuery, [sessionId]);
 
-        if (results.length > 0) {
-            const session = results.map(row => ({
-                id: row.id,
-                date: row.date, 
-                startHour: row.start_hour,
-                endHour: row.end_hour,
-                subject: row.course_code,
-                tutorName: row.tutorName,
-                studentName: row.studentName
-            }))[0];
+        if (sessionResults.length > 0) {
+            const session = {
+                id: sessionResults[0].id,
+                date: sessionResults[0].date,
+                startHour: sessionResults[0].start_hour,
+                endHour: sessionResults[0].end_hour,
+                courseCode: sessionResults[0].course_code,
+                mode: sessionResults[0].mode,
+                tutorNotes: sessionResults[0].tutorNotes, 
+                tutorName: sessionResults[0].tutorName,
+                studentName: sessionResults[0].studentName
+            };
 
             res.json({ success: true, session });
         } else {
-            res.json({ success: false, message: "Session not found" });
+            res.status(404).json({ success: false, message: "Session not found" });
         }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
 app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
