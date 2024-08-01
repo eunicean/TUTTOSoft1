@@ -1,0 +1,13 @@
+.stars {
+    display: flex;
+    justify-content: center;
+    color: #A0522D; /* Color de las estrellas */
+}
+
+.star {
+    font-size: 2rem; /* Tamaño más grande para las estrellas */
+}
+
+.star.selected {
+    color: gold; /* Color de las estrellas seleccionadas */
+}
