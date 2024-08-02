@@ -104,7 +104,7 @@ function Sessions() {
     if (error) return <div className="error-message">Error: {error}</div>;
 
     const handleSessionClick = (sessionId, session) => {
-        navigate(`/sessions-info/${sessionId}`, { state: session });
+        navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
     };
 
     return (
