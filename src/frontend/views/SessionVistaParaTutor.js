@@ -5,6 +5,7 @@ import '../css/TutorProfile.css'
 import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';
+import Navbar from '../components/Navbar.js';
 
 const SessionVistaParaTutor = () => {
     const { sessionId } = useParams();
@@ -19,7 +20,9 @@ const SessionVistaParaTutor = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `http://localhost:5000/sessions/${sessionId}`;
+            const url = `http://localhost:5000/sessions/${sessionId}`; 
+            // const url = `http://localhost:5000/session-info/${sessionId}`;   
+            // no se cual de las dos es xd
 
             try {
                 const response = await fetch(url, {
@@ -64,6 +67,7 @@ const SessionVistaParaTutor = () => {
   return (
     <div className="vista-container">
     <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+    <Navbar />
       <div className="header">
         <span className="session-text">Sesión</span>
         <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
@@ -81,7 +85,7 @@ const SessionVistaParaTutor = () => {
         <div className="info">
         <div className='TitulosInfo'>
           <h2>Materia: {session.CourseCode}</h2>
-          <h3>Hora: {new Date(session.startHour).toLocaleTimeString()} - {new Date(session.endHour).toLocaleTimeString()} </h3>
+          <h3>Hora: {new Date(session.startHour).toLocaleTimeString('es-ES')} - {new Date(session.endHour).toLocaleTimeString('es-ES')} </h3>
         </div>
           <div className='Info2'>
 
@@ -91,8 +95,8 @@ const SessionVistaParaTutor = () => {
                 <h2>Temas a repasar</h2>
                 <ul> 
                 {session.temas && session.temas.map((tema, index) => (
-                                            <li key={index}>{tema}</li>
-                                        ))}
+                    <li key={index}>{tema}</li>
+                     ))}
                 </ul>
                 <button>Calificar sesion</button>
                 </div>
