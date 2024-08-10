@@ -22,7 +22,7 @@ const AppRouter = () => {
         <Route path="/register" element={<Register/>} />
         <Route path="/sessions" element={<Sessions />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/sessions-info/:sessionId" element={<TestingView />} />
+        {/* <Route path="/sessions-info/:sessionId" element={<TestingView />} /> */}
         <Route path="/cancel-session/:sessionId" element={<CancelView />} />
         <Route path="/sessions/create" element={<CreateSession />} />
         <Route path='/TutorProfile' element={<TutorProfile />} />

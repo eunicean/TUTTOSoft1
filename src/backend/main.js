@@ -10,7 +10,7 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-const app = express();
+export const app = express();
 app.use(cors({
     origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -228,28 +228,31 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
+        const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
         console.log("Selected period is: " + periodo);
+
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
                 SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ? AND (
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                WHERE (ss.id_session IS NOT NULL OR sp.id_tutor = ?) AND (
                     (sp.start_hour BETWEEN ? AND ?) OR
                     (sp.end_hour BETWEEN ? AND ?)
                 )`;
-            params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
+            params = [userId, userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
             query = `
                 SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ?`;
-            params = [userId];
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                WHERE ss.id_session IS NOT NULL OR sp.id_tutor = ?`;
+            params = [userId, userId];
         }
+        
         const [results] = await pool.query(query, params);
         console.log(results);
         if (results.length > 0) {
@@ -262,6 +265,8 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 
 // Utility function for period times
@@ -384,7 +389,8 @@ app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
 
 
 const PORT = 5000;
-app.listen(PORT, () => {
-  
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+}
+
+export default app;

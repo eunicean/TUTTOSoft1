@@ -38,12 +38,14 @@
   },
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
-    "client":  "cross-env PORT=5173 react-scripts start",
+    "client": "PORT=5173 react-scripts start",
     "server": "nodemon src/backend/main.js",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "jest --watch",
     "eject": "react-scripts eject"
   },
+
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -63,8 +65,15 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.24.8",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "babel-jest": "^29.7.0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "nodemon": "^3.1.0"
+    "jest": "^27.5.1",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
   }
 }
