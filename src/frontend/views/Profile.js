@@ -7,7 +7,6 @@ import '../css/Navbar.css';
 import '../css/ProfileCard.css';
 
 function ProfileView() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -76,9 +75,6 @@ function ProfileView() {
         }
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     const handleLogout = () => {
         localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
         navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
@@ -88,8 +84,6 @@ function ProfileView() {
 
     return (
         <>
-            <button className="menu-toggle" onClick={toggleSidebar}>{isSidebarOpen ? 'Cerrar' : 'Menú'}</button>
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
             <div className="profile-container">
                 <div className="profile-card">
                     {editing ? (

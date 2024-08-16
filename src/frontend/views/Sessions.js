@@ -11,9 +11,10 @@ function Sessions() {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
     const [user, setUser] = useState({});
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -97,9 +98,6 @@ function Sessions() {
         fetchSessions(periodo);
     }, [periodo]);
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
 
@@ -109,10 +107,8 @@ function Sessions() {
 
     return (
         <>
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
             <Navbar />
-            <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
-                <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
+            <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}> 
                 <h1 className="sessions-title">Próximas Sesiones</h1>
                 <div className="session-filters">
                     <label htmlFor="periodo-select">Elige el periodo:</label>

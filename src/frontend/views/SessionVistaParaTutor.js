@@ -12,7 +12,6 @@ const SessionVistaParaTutor = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
     // de la calificacion en la bae de datos...
     const valorEstrellas = 3;
@@ -53,9 +52,6 @@ const SessionVistaParaTutor = () => {
     }, [sessionId]);
 
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     if (loading) {
         return <p>Loading...</p>; // Display while data is loading
     }
@@ -66,10 +62,9 @@ const SessionVistaParaTutor = () => {
 
   return (
     <div className="vista-container">
-    <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
     <Navbar />
       <div className="header">
-      <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
+      <button className="menu-toggle">Menu</button>
         <span className="session-text">Sesión</span>
         <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
       </div>
