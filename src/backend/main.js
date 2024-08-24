@@ -112,6 +112,7 @@ app.post('/login', async (req, res) => {
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
+    //commmit de prueba
     const { username, email, password, role } = req.body;
     console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
 
