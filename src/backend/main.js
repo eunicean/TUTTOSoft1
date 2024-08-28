@@ -87,7 +87,7 @@ app.post('/login', async (req, res) => {
                 const user = results[0];
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
-                if (user) {
+                if (passwordMatch) {
                     const token = jwt.sign(
                         { id: user.id, role: user.role },  // Incluye el rol en el token
                         secretKey,
@@ -109,6 +109,7 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
