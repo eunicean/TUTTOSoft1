@@ -100,14 +100,17 @@ function Sessions() {
 
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const closeSidebar = () => setIsSidebarOpen(false);
 
+    
     const handleSessionClick = (sessionId, session) => {
         navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
     };
 
     return (
-        <>
-            <Navbar />
+        <>  
+            
             <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}> 
                 <h1 className="sessions-title">Próximas Sesiones</h1>
                 <div className="session-filters">

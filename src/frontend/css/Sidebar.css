@@ -6,7 +6,7 @@
   right: -250px; /* Inicia fuera de la pantalla */
   width: 250px;
   height: 100%;
-  background: #C68B59; /* O el color que prefieras */
+  background: #9c4922; /* O el color que prefieras */
   padding: 20px;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transition: right 0.3s ease;

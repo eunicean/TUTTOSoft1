@@ -54,13 +54,13 @@ function CancelView({  }) {
 
     return (
         <>
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+            {/* <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} /> */}
             <div className={`cancel-session-container ${isSidebarOpen ? 'shifted' : ''}`}>
-                <button className="menu-toggle" onClick={toggleSidebar}>
+                {/* <button className="menu-toggle" onClick={toggleSidebar}>
                     <span className="menu-bar"></span>
                     <span className="menu-bar"></span>
                     <span className="menu-bar"></span>
-                </button>
+                </button> */}
                 <h1>Cancelar Sesión</h1>
                 <div className="cancel-session-card">
                     <div className="cancel-session-reason">

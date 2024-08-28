@@ -86,7 +86,7 @@ function CreateSession() {
 
     return (
         <div className="create-session-container">
-            <Navbar />
+            {/* <Navbar /> */}
             <h1>Crear Nueva Sesión</h1>
             <div className={`create-session-form  ${isSidebarOpen ? 'shifted' : ''}`}>
                 <input name="subject" value={newSession.subject} onChange={handleInputChange} placeholder="Curso" />

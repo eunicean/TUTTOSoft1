@@ -62,9 +62,9 @@ const SessionVistaParaTutor = () => {
 
   return (
     <div className="vista-container">
-    <Navbar />
+    {/* <Navbar /> */}
       <div className="header">
-      <button className="menu-toggle">Menu</button>
+      {/* <button className="menu-toggle">Menu</button> */}
         <span className="session-text">Sesión</span>
         <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
       </div>
