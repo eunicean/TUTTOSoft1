@@ -5,7 +5,7 @@ import Button from '../components/Button.js';
 import Footer from '../components/Footer.js';
 import { useNavigate } from 'react-router-dom'; 
 
-// Custom Input Component
+// Componente de Entrada personalizado
 const Input = ({ type, placeholder, value, onChange }) => (
   <input type={type} placeholder={placeholder} value={value} onChange={onChange} />
 );
@@ -13,11 +13,18 @@ const Input = ({ type, placeholder, value, onChange }) => (
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); 
-  const [error, setError] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar mensajes de error
+  const navigate = useNavigate(); // Hook para la navegación
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
+    // Validar campos vacíos
+    if (!email || !password) {
+      setErrorMessage('Por favor, completa todos los campos.');
+      return;
+    }
+
     try {
       const response = await fetch('/login', {
         method: 'POST',
@@ -27,18 +34,26 @@ function Login() {
   
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Server responded with:', errorData);
-        alert(`Login failed: ${errorData.message}`);
+        console.error('Respuesta del servidor:', errorData);
+
+        // Mostrar mensaje de error
+        if (errorData.message === 'Invalid user') {
+          setErrorMessage('Usuario incorrecto.');
+        } else if (errorData.message === 'Invalid password') {
+          setErrorMessage('Contraseña incorrecta.');
+        } else {
+          setErrorMessage('Error de inicio de sesión: ' + errorData.message);
+        }
         return;
       }
   
       const data = await response.json();
       localStorage.setItem('token', data.token); // Guarda el token recibido en localStorage
-      console.log('Login Successful:', data);
+      console.log('Inicio de sesión exitoso:', data);
       navigate('/sessions'); // Navega a las sesiones tras un inicio de sesión exitoso
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Login failed: Unexpected error occurred.');
+      console.error('Error de inicio de sesión:', error);
+      setErrorMessage('Error de inicio de sesión: Ocurrió un error inesperado.');
     }
   };
 
@@ -49,7 +64,7 @@ function Login() {
         <div className='form-container sign-in'>
           <form onSubmit={handleLogin}>
             <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para iniciar sesión</span>
-            {error && <div className="messages--error">{error}</div>} {/* Error message display */}
+            {errorMessage && <div className="error-message">{errorMessage}</div>} {/* Cuadro de texto para mensajes de error */}
             <Input type="email" placeholder="Correo Electrónico" value={email} onChange={e => setEmail(e.target.value)} />
             <Input type="password" placeholder="Ingresa tu contraseña" value={password} onChange={e => setPassword(e.target.value)} />
             <Button type="submit">Iniciar Sesión</Button>
