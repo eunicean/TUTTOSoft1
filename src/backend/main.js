@@ -10,7 +10,7 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-const app = express();
+export const app = express();
 app.use(cors({
     origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -87,7 +87,7 @@ app.post('/login', async (req, res) => {
                 const user = results[0];
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
-                if (user) {
+                if (passwordMatch) {
                     const token = jwt.sign(
                         { id: user.id, role: user.role },  // Incluye el rol en el token
                         secretKey,
@@ -110,8 +110,10 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
 // Registration endpoint
 app.post('/register', async (req, res) => {
+    //commmit de prueba
     const { username, email, password, role } = req.body;
     console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
 
@@ -228,28 +230,31 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
+        const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
         console.log("Selected period is: " + periodo);
+
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
                 SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ? AND (
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                WHERE (ss.id_session IS NOT NULL OR sp.id_tutor = ?) AND (
                     (sp.start_hour BETWEEN ? AND ?) OR
                     (sp.end_hour BETWEEN ? AND ?)
                 )`;
-            params = [userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
+            params = [userId, userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
             query = `
                 SELECT sp.* 
-                FROM students_Session ss
-                JOIN sessionPlanned sp ON ss.id_session = sp.id
-                WHERE ss.id_student = ?`;
-            params = [userId];
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                WHERE ss.id_session IS NOT NULL OR sp.id_tutor = ?`;
+            params = [userId, userId];
         }
+        
         const [results] = await pool.query(query, params);
         console.log(results);
         if (results.length > 0) {
@@ -262,6 +267,8 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 
 // Utility function for period times
@@ -288,19 +295,14 @@ function getPeriodoTimes(periodo) {
 
 
 // Endpoint for fetching detailed session information
-app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
+app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     const sessionId = req.params.sessionId;
-
     try {
-        let query = `
+        const sessionQuery = `
             SELECT 
-                sp.id,
-                sp.date,
-                sp.start_hour,
-                sp.end_hour,
-                sp.course_code,
-                tutor.username as tutorName,
-                student.username as studentName
+                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, sp.mode, 
+                sp.tutorNotes, 
+                tutor.username as tutorName, student.username as studentName
             FROM 
                 sessionPlanned sp
             JOIN 
@@ -313,22 +315,25 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
                 sp.id = ?;
         `;
 
-        const [results] = await pool.query(query, [sessionId]);
+        // Ejecutar la consulta de la sesión
+        const [sessionResults] = await pool.query(sessionQuery, [sessionId]);
 
-        if (results.length > 0) {
-            const session = results.map(row => ({
-                id: row.id,
-                date: row.date, 
-                startHour: row.start_hour,
-                endHour: row.end_hour,
-                subject: row.course_code,
-                tutorName: row.tutorName,
-                studentName: row.studentName
-            }))[0];
+        if (sessionResults.length > 0) {
+            const session = {
+                id: sessionResults[0].id,
+                date: sessionResults[0].date,
+                startHour: sessionResults[0].start_hour,
+                endHour: sessionResults[0].end_hour,
+                courseCode: sessionResults[0].course_code,
+                mode: sessionResults[0].mode,
+                tutorNotes: sessionResults[0].tutorNotes, 
+                tutorName: sessionResults[0].tutorName,
+                studentName: sessionResults[0].studentName
+            };
 
             res.json({ success: true, session });
         } else {
-            res.json({ success: false, message: "Session not found" });
+            res.status(404).json({ success: false, message: "Session not found" });
         }
     } catch (error) {
         console.error('Database error:', error);
@@ -336,8 +341,9 @@ app.get('/session-info/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
+
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
-app.post('/cancel-session', authenticateToken, async (req, res) => {
+app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
     const { sessionId, reason } = req.body;
     const userId = req.user.id; // Obtener el ID del usuario desde el token de autenticación
 
@@ -353,9 +359,21 @@ app.post('/cancel-session', authenticateToken, async (req, res) => {
         const cancelQuery = 'INSERT INTO cancellationReasons (session_id, user_id, reason) VALUES (?, ?, ?)';
         await connection.query(cancelQuery, [sessionId, userId, reason]);
 
-        // Eliminar la sesión de sessionPlanned
-        const deleteQuery = 'DELETE FROM sessionPlanned WHERE id = ?';
-        await connection.query(deleteQuery, [sessionId]);
+        // Eliminar dependencias en students_Session antes de eliminar la sesión
+        const deleteStudentsSessionQuery = 'DELETE FROM students_Session WHERE id_session = ?';
+        await connection.query(deleteStudentsSessionQuery, [sessionId]);
+
+        // Eliminar dependencias en report antes de eliminar la sesión
+        const deleteReportQuery = 'DELETE FROM report WHERE id_session = ?';
+        await connection.query(deleteReportQuery, [sessionId]);
+
+        // Eliminar dependencias en cancellationReasons antes de eliminar la sesión
+        const deleteCancellationReasonsQuery = 'DELETE FROM cancellationReasons WHERE session_id = ?';
+        await connection.query(deleteCancellationReasonsQuery, [sessionId]);
+
+        // Finalmente, eliminar la sesión de sessionPlanned
+        const deleteSessionPlannedQuery = 'DELETE FROM sessionPlanned WHERE id = ?';
+        await connection.query(deleteSessionPlannedQuery, [sessionId]);
 
         await connection.commit(); // Confirmar la transacción
 
@@ -369,8 +387,31 @@ app.post('/cancel-session', authenticateToken, async (req, res) => {
     }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  
-    console.log(`Server running on http://localhost:${PORT}`);
+
+app.get('/average-rating', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let query = `
+            SELECT AVG(rating) as averageRating 
+            FROM userRatings 
+            WHERE user_id = ?`; 
+        let params = [userId];
+
+        const [results] = await pool.query(query, params);
+
+        if (results.length > 0 && results[0].averageRating !== null) {
+            res.json({ success: true, averageRating: results[0].averageRating });
+        } else {
+            res.status(404).json({ success: false, message: "No ratings found for user" });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
 });
+
+
+const PORT = 5000;
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+export default app;

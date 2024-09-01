@@ -108,7 +108,7 @@ function Sessions() {
     return (
         <>
             <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
-            <Navbar />
+            {/* <Navbar /> */}
             <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
                 <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
                 <h1 className="sessions-title">Próximas Sesiones</h1>

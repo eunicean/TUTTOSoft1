@@ -48,8 +48,6 @@ function CreateSession() {
         }
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
@@ -88,10 +86,7 @@ function CreateSession() {
 
     return (
         <div className="create-session-container">
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
-            <Navbar />
-            <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
-            
+            {/* <Navbar /> */}
             <h1>Crear Nueva Sesión</h1>
             <div className={`create-session-form  ${isSidebarOpen ? 'shifted' : ''}`}>
                 <input name="subject" value={newSession.subject} onChange={handleInputChange} placeholder="Curso" />

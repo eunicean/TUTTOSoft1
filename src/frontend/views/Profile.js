@@ -91,70 +91,18 @@ function ProfileView() {
             <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
             <div className="profile-container">
                 <div className="profile-card">
-                    {editing ? (
-                        <>
-                            <input
-                                name="username"
-                                defaultValue={user.username}
-                                onChange={handleInputChange}
-                            />
-                            {/* <input
-                                name="email"
-                                defaultValue={user.email}
-                                onChange={handleInputChange}
-                            /> */}
-                            <button onClick={handleSave}>Guardar</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className="profile-avatar"></div>
-                            <h2>{user.username || 'Nombre de Estudiante'}</h2>
-                            <p>2to año</p>
-                            <p>Carnet {user.carnet || '22000'}</p>
-                            <div className="tags">
-                                <span>Habla poco</span>
-                                <span>Organizado</span>
-                                <span>Entiende rápido</span>
-                            </div>
-                            <div className="rating">
-                                {[...Array(5)].map((star, index) => (
-                                    <span key={index} className="star">&#9733;</span>
-                                ))}
-                            </div>
-                            <button onClick={() => setEditing(true)}>Editar Perfil</button>
-                            <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
-                            <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
-                        </>
-                    )}
-                </div>
-                <div className="comments-section">
-                    <h3>Comentarios</h3>
-                    <div className="comment">
-                        <div className="tags">
-                            <span>Platicador</span>
-                            <span>Organizado</span>
-                        </div>
-                        <p>Gracias por la ayuda</p>
-                    </div>
-                    <div className="comment">
-                        <div className="tags">
-                            <span>Entiende rápido</span>
-                        </div>
-                        <p>Gracias por la ayuda</p>
-                    </div>
-                    <div className="comment">
-                        <div className="tags">
-                            <span>Habla poco</span>
-                        </div>
-                        <p>Gracias por la ayuda</p>
-                    </div>
-                    <div className="comment">
-                        <div className="tags">
-                            <span>Entiende rápido</span>
-                        </div>
-                        <p>Gracias por la ayuda</p>
+                    <div className="profile-avatar"></div>
+                    <h2>{user.username || 'tutotest'}</h2>
+                    <p>{user.year || '2to año'}</p>
+                    <p>{user.carnet || 'Carnet 22000'}</p>
+
+                    <div className="button-group">
+                        <button className="edit-button" onClick={() => setEditing(true)}>Editar Perfil</button>
+                        <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
+                        <button className="help-button" onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
                     </div>
                 </div>
+                
             </div>
         </>
     );

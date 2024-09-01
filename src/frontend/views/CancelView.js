@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar.js'; // Added .js extension
-import Navbar from '../components/Navbar.js'; // Added .js extension
-import '../css/Sessions.css';
-import '../css/Sidebar.css';
-import '../css/Navbar.css';
+import Sidebar from '../components/Sidebar.js';
+import '../css/CancelSessionView.css';
+import { useParams, useNavigate } from 'react-router-dom';
 
-function CancelSessionView({ sessionId }) {
+function CancelView({  }) {
+    const { sessionId } = useParams();
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false); // Añadir estado de carga
+    const navigate = useNavigate();
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
+        const url = `http://localhost:5000/cancel-session/${sessionId}`;
+        setLoading(true);
+
         if (!reason) {
             setMessage('El motivo de la cancelación es obligatorio');
             return;
         }
 
         try {
-            const response = await fetch('http://localhost:5000/cancel-session', {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -30,6 +35,8 @@ function CancelSessionView({ sessionId }) {
             const data = await response.json();
             if (response.ok) {
                 setMessage('Sesión cancelada y motivo guardado exitosamente');
+                setShowModal(false);
+                navigate('/sessions');
             } else {
                 setMessage(`Error: ${data.message}`);
             }
@@ -39,39 +46,55 @@ function CancelSessionView({ sessionId }) {
         }
     };
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const closeSidebar = () => setIsSidebarOpen(false);
 
-    const closeSidebar = () => {
-        setIsSidebarOpen(false);
-    };
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
 
     return (
         <>
-          <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
-          <Navbar />
-          <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
-            <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
-            <h1 className="sessions-title">Cancelar sesion</h1>
-            <div className="session-filters">
-              <label>
-                Motivo de la cancelacion:
-                <input 
-                  type="text" 
-                  value={reason} 
-                  onChange={(e) => setReason(e.target.value)} 
-                  className="periodo-selector" 
-                />
-              </label>
+            {/* <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} /> */}
+            <div className={`cancel-session-container ${isSidebarOpen ? 'shifted' : ''}`}>
+                {/* <button className="menu-toggle" onClick={toggleSidebar}>
+                    <span className="menu-bar"></span>
+                    <span className="menu-bar"></span>
+                    <span className="menu-bar"></span>
+                </button> */}
+                <h1>Cancelar Sesión</h1>
+                <div className="cancel-session-card">
+                    <div className="cancel-session-reason">
+                        <label>
+                            Motivo de la Cancelación:
+                            <textarea 
+                                value={reason} 
+                                onChange={(e) => setReason(e.target.value)} 
+                            />
+                        </label>
+                    </div>
+                    <div className="cancel-session-tutor">
+                        <div className="tutor-avatar"></div>
+                        <div className="tutor-info">
+                            <p>Nombre de Tutor</p>
+                            <p>5to año</p>
+                        </div>
+                    </div>
+                </div>
+                <button className="submit-button" onClick={openModal}>Cancelar Sesión</button>
+                {message && <p className="message">{message}</p>}
+
+                {showModal && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <p>¿Está seguro de que desea cancelar la sesión?</p>
+                            <button onClick={handleCancelSession}>Sí, cancelar sesión</button>
+                            <button onClick={closeModal}>No, volver</button>
+                        </div>
+                    </div>
+                )}
             </div>
-            <button onClick={handleCancelSession} className="create-session-button">
-              Cancelar sesion
-            </button>
-            {message && <p>{message}</p>}
-          </div>
         </>
     );
 }
 
-export default CancelSessionView;
+export default CancelView;
