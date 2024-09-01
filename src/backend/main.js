@@ -10,7 +10,7 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-export const app = express();
+export const app = express()    ;
 app.use(cors({
     origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -81,7 +81,8 @@ app.post('/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            const [results] = await connection.query('SELECT id, password FROM user WHERE email = ?', [email]);
+            // Ensure to select the 'typeuser' field
+            const [results] = await connection.query('SELECT id, password, typeuser FROM user WHERE email = ?', [email]);
 
             if (results.length > 0) {
                 const user = results[0];
@@ -89,12 +90,14 @@ app.post('/login', async (req, res) => {
 
                 if (passwordMatch) {
                     const token = jwt.sign(
-                        { id: user.id, role: user.role },  // Incluye el rol en el token
+                        { id: user.id, typeuser: user.typeuser },  
                         secretKey,
                         { expiresIn: '1h' }
                     );
                     
                     res.json({ success: true, message: "Login successful", token });
+                    console.log(results);
+
                 } else {
                     res.status(401).json({ success: false, message: "Invalid credentials" });
                 }
@@ -111,18 +114,19 @@ app.post('/login', async (req, res) => {
 });
 
 
+
 // Registration endpoint
 app.post('/register', async (req, res) => {
     //commmit de prueba
-    const { username, email, password, role } = req.body;
-    console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    const { username, email, password, typeuser } = req.body;
+    console.log(`Attempting to register a new user with username: ${username}, email: ${email}, typeuser: ${type}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = role === 'student' ? 1 : 2;
+    const type = typeuser === 'student' ? '1' : '2';
 
     try {
         const connection = await pool.getConnection();
@@ -139,7 +143,7 @@ app.post('/register', async (req, res) => {
 
             const [result] = await connection.query(
                 'INSERT INTO user (id, username, email, password, typeuser) VALUES (?, ?, ?, ?, ?)',
-                [nextId, username, email, hashedPassword, typeuser]
+                [nextId, username, email, hashedPassword, type]
             );
 
             console.log('User registered successfully:', result.insertId);
@@ -230,9 +234,10 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 app.get('/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
+        const userType = req.user.typeuser;
         const periodo = req.query.periodo;
         let query, params;
+        console.log("User type is: ", userType);
         console.log("Selected period is: " + periodo);
 
         if (periodo) {
@@ -267,8 +272,6 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
-
 
 
 // Utility function for period times
@@ -387,6 +390,52 @@ app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
     }
 });
 
+//Endpoint para listar todas las sesiones pasadas de un usuario
+app.get('/session-history', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const userType = req.user.typeuser;
+        let query, params;
+        
+        console.log(userType, "fkjañlksfj")
+
+        if (userType === '1') { // Assuming 1 = Student
+            query = `
+                SELECT sp.*, u.username as tutorName
+                FROM sessionPlanned sp
+                JOIN students_Session ss ON sp.id = ss.id_session
+                JOIN user u ON sp.id_tutor = u.id
+                WHERE ss.id_student = ?
+                ORDER BY sp.date DESC, sp.start_hour DESC`;
+            params = [userId];
+        } else if (userType === '2') { // Assuming 2 = Tutor
+            query = `
+                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session
+                LEFT JOIN user u ON ss.id_student = u.id
+                WHERE sp.id_tutor = ?
+                GROUP BY sp.id
+                ORDER BY sp.date DESC, sp.start_hour DESC`;
+            params = [userId];
+        } else {
+            return res.status(400).json({ success: false, message: "Invalid user type" });
+        }
+
+        const [results] = await pool.query(query, params);
+
+        if (results.length > 0) {
+            res.json({ success: true, sessions: results });
+        } else {
+            res.json({ success: true, message: "No session history found", sessions: [] });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
 
 app.get('/average-rating', authenticateToken, async (req, res) => {
     try {
@@ -412,8 +461,5 @@ app.get('/average-rating', authenticateToken, async (req, res) => {
 
 
 const PORT = 5000;
-if (import.meta.url === `file://${process.argv[1]}`) {
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-}
-
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 export default app;

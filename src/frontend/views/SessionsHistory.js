@@ -44,7 +44,7 @@ function SessionsHistory(){
     const handleSessionClick = (sessionId, session) => {
         navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
     };  
-
+    
     return(
         <> 
             <div className='history-container'>

@@ -110,7 +110,7 @@ function Sessions() {
 
     return (
         <>  
-            
+
             <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}> 
                 <h1 className="sessions-title">Próximas Sesiones</h1>
                 <div className="session-filters">

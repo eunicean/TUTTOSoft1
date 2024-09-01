@@ -13,7 +13,8 @@ const Input = ({ type, placeholder, value, onChange }) => (
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Hook para la navegación
+  const navigate = useNavigate(); 
+  const [error, setError] = useState(''); 
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -48,6 +49,7 @@ function Login() {
         <div className='form-container sign-in'>
           <form onSubmit={handleLogin}>
             <span id='Loginsuggestions'>Usa tu correo electrónico y contraseña para iniciar sesión</span>
+            {error && <div className="messages--error">{error}</div>} {/* Error message display */}
             <Input type="email" placeholder="Correo Electrónico" value={email} onChange={e => setEmail(e.target.value)} />
             <Input type="password" placeholder="Ingresa tu contraseña" value={password} onChange={e => setPassword(e.target.value)} />
             <Button type="submit">Iniciar Sesión</Button>
