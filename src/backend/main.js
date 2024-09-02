@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import pool from './conn.js'; 
 import dotenv from 'dotenv';
 
+import { calificarSesion } from db.js
+
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
@@ -265,6 +267,18 @@ app.get('/session-info', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/grade-session', authenticateToken, async (req, res) => {
+    const { calificacion, comentario, id_receiver, id_session } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        await calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session);
+        res.json({ success: true, message: "Sesión calificada exitosamente" });
+    } catch (error) {
+        console.error('Error al calificar la sesión:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
