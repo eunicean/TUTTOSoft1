@@ -412,8 +412,6 @@ app.get('/average-rating', authenticateToken, async (req, res) => {
 
 
 const PORT = 5000;
-if (import.meta.url === `file://${process.argv[1]}`) {
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-}
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 export default app;
