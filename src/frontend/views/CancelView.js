@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar.js';
 import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function CancelView({  }) {
+function CancelView() {
     const { sessionId } = useParams();
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
@@ -19,6 +19,7 @@ function CancelView({  }) {
 
         if (!reason) {
             setMessage('El motivo de la cancelación es obligatorio');
+            setLoading(false);
             return;
         }
 
@@ -44,12 +45,20 @@ function CancelView({  }) {
             console.error('Error al cancelar la sesión:', error);
             setMessage('Error al cancelar la sesión');
         }
+        setLoading(false);
     };
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
 
-    const openModal = () => setShowModal(true);
+    const openModal = () => {
+        if (!reason.trim()) { // Verifica si el campo de motivo está vacío
+            setMessage('Error: campo vacío');
+            return;
+        }
+        setShowModal(true);
+    };
+
     const closeModal = () => setShowModal(false);
 
     return (
