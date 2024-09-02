@@ -96,10 +96,10 @@ app.post('/login', async (req, res) => {
                     
                     res.json({ success: true, message: "Login successful", token });
                 } else {
-                    res.status(401).json({ success: false, message: "Invalid credentials" });
+                    res.status(401).json({ success: false, message: "credenciales inválidas" });
                 }
             } else {
-                res.status(401).json({ success: false, message: "Invalid credentials" });
+                res.status(401).json({ success: false, message: "credenciales inválidas" });
             }
         } finally {
             connection.release();

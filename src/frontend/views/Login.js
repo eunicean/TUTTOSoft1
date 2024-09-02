@@ -36,9 +36,9 @@ function Login() {
         const errorData = await response.json();
         console.error('Respuesta del servidor:', errorData);
 
-        // Mostrar mensaje de error
+        // Mostrar mensaje de error actualizado
         if (errorData.message === 'Invalid user') {
-          setErrorMessage('Usuario incorrecto.');
+          setErrorMessage('Usuario inexistente.');
         } else if (errorData.message === 'Invalid password') {
           setErrorMessage('Contraseña incorrecta.');
         } else {
