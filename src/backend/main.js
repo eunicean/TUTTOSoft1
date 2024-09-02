@@ -272,13 +272,21 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
     const id_sender = req.user.id;
 
     try {
-        await calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session);
+        const conexion = await pool.getConnection();
+        const [comentarios] = await pool.query(
+            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
+            VALUES(?,?,?,?,?)`,
+            [calificacion, comentario, id_sender, id_receiver, id_session]
+        );
+        console.log('Comentario insertado:', comentarios);
         res.json({ success: true, message: "Sesión calificada exitosamente" });
+        
     } catch (error) {
         console.error('Error al calificar la sesión:', error);
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 });
+
 
 const PORT = 5000;
 app.listen(PORT, () => {
