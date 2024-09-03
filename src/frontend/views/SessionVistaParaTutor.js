@@ -81,8 +81,8 @@ const SessionVistaParaTutor = () => {
         <div className="info">
         <div className='TitulosInfo'>
           <h2>Materia: {session.CourseCode}</h2>
-          <h2> Inicio: {session.startHour}</h2> <h2> Finalización: {session.endHour}</h2>
-
+          <h2> Inicio: {session.startHour}</h2> 
+          <h2> Finalización: {session.endHour}</h2>
         </div>
           <div className='Info2'>
 
