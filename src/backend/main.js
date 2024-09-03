@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 import pool from './conn.js'; 
 import dotenv from 'dotenv';
 
-import { calificarSesion } from db.js
 
 dotenv.config();
 
@@ -287,6 +286,29 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
     }
 });
 
+
+app.post('/report-absence', authenticateToken, async (req, res) => {
+    const {id_absentParticipant, message } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        const conexion = await pool.getConnection();
+        try {
+            const [result] = await conexion.query(
+                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message)
+                VALUES (?, ?, ?)`,
+                [id_sender, id_absentParticipant, message]
+            );
+            console.log('Reporte de ausencia insertado:', result);
+            res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
+        } finally {
+            conexion.release();
+        }
+    } catch (error) {
+        console.error('Error al registrar el reporte de ausencia:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
