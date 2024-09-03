@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
-    "client": "PORT=5173 react-scripts start",
+    "client": "cross-env PORT=5173 react-scripts start",
     "server": "nodemon src/backend/main.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.0"
   }
 }
