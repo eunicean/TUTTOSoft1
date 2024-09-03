@@ -459,6 +459,24 @@ app.get('/average-rating', authenticateToken, async (req, res) => {
     }
 });
 
+// Endpoint to get all courses
+app.get('/courses', async (req, res) => {
+    try {
+        const query = 'SELECT course_code, namecourse FROM course';
+        const [results] = await pool.query(query);
+        console.log(results);
+        if (results.length > 0) {
+            res.json(results);
+        } else {
+            res.status(404).json({ message: 'No courses found' });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
