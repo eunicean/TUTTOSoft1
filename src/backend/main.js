@@ -81,7 +81,8 @@ app.post('/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            const [results] = await connection.query('SELECT id, password FROM user WHERE email = ?', [email]);
+            // Ensure to select the 'typeuser' field
+            const [results] = await connection.query('SELECT id, password, typeuser FROM user WHERE email = ?', [email]);
 
             if (results.length > 0) {
                 const user = results[0];
@@ -89,17 +90,19 @@ app.post('/login', async (req, res) => {
 
                 if (passwordMatch) {
                     const token = jwt.sign(
-                        { id: user.id, role: user.role },  // Incluye el rol en el token
+                        { id: user.id, typeuser: user.typeuser },  
                         secretKey,
                         { expiresIn: '1h' }
                     );
                     
                     res.json({ success: true, message: "Login successful", token });
+                    console.log(results);
+
                 } else {
-                    res.status(401).json({ success: false, message: "credenciales inválidas" });
+                    res.status(401).json({ success: false, message: "Invalid credentials" });
                 }
             } else {
-                res.status(401).json({ success: false, message: "credenciales inválidas" });
+                res.status(401).json({ success: false, message: "Invalid credentials" });
             }
         } finally {
             connection.release();
@@ -403,6 +406,52 @@ app.get('/average-rating', authenticateToken, async (req, res) => {
             res.json({ success: true, averageRating: results[0].averageRating });
         } else {
             res.status(404).json({ success: false, message: "No ratings found for user" });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+//Endpoint para listar todas las sesiones pasadas de un usuario
+app.get('/session-history', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const userType = req.user.typeuser;
+        let query, params;
+        
+        console.log(userType, "fkjañlksfj")
+
+        if (userType === '1') { // Assuming 1 = Student
+            query = `
+                SELECT sp.*, u.username as tutorName
+                FROM sessionPlanned sp
+                JOIN students_Session ss ON sp.id = ss.id_session
+                JOIN user u ON sp.id_tutor = u.id
+                WHERE ss.id_student = ?
+                ORDER BY sp.date DESC, sp.start_hour DESC`;
+            params = [userId];
+        } else if (userType === '2') { // Assuming 2 = Tutor
+            query = `
+                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames
+                FROM sessionPlanned sp
+                LEFT JOIN students_Session ss ON sp.id = ss.id_session
+                LEFT JOIN user u ON ss.id_student = u.id
+                WHERE sp.id_tutor = ?
+                GROUP BY sp.id
+                ORDER BY sp.date DESC, sp.start_hour DESC`;
+            params = [userId];
+        } else {
+            return res.status(400).json({ success: false, message: "Invalid user type" });
+        }
+
+        const [results] = await pool.query(query, params);
+
+        if (results.length > 0) {
+            res.json({ success: true, sessions: results });
+        } else {
+            res.json({ success: true, message: "No session history found", sessions: [] });
         }
     } catch (error) {
         console.error('Database error:', error);
