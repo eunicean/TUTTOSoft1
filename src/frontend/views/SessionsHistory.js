@@ -46,28 +46,31 @@ function SessionsHistory(){
     };  
     
     return(
-        <> 
-            <div className='history-container'>
-                <div className='yes-sessions'>
-                        {sessions.length > 0 ? (
-                            sessions.map(session => (
-                                <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="session-card-button">
-                                    <SessionCard
-                                        date={session.date}
-                                        startHour={session.startHour}
-                                        endHour={session.endHour}
-                                        subject={session.subject}
-                                        mode={session.mode}
-                                    />
-                                </button>
-                            ))
-                        ) : (
-                            <div className="no-sessions">No hay sesiones disponibles.</div>
-                        )}
-                </div>
-            </div>
-            
-        </>
+        <>
+    <div className='history-container'>
+        <div className='Header'>
+            <h1 className="page-title">Historial de Sesiones</h1>
+        </div>
+        <div className='yes-sessions'>
+            {sessions.length > 0 ? (
+                sessions.map(session => (
+                    <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="session-card-button">
+                        <SessionCard
+                            date={<><strong>Fecha:</strong> {session.date}</>}
+                            startHour={<><strong>Hora de inicio:</strong> {session.startHour}</>}
+                            endHour={<><strong>Hora de fin:</strong> {session.endHour}</>}
+                            subject={<><strong>Materia:</strong> {session.subject}</>}
+                            mode={<><strong>Modo:</strong> {session.mode}</>}
+                        />
+                    </button>
+                ))
+            ) : (
+                <div className="no-sessions">No hay sesiones disponibles.</div>
+            )}
+        </div>
+    </div>
+</>
+
     )
 }
 

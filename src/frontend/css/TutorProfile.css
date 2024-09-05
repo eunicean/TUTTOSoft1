@@ -48,7 +48,7 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  background-color: #ba996f;
+  background-color: #ECDCD0;
 }
 
 .profile-pic {
@@ -81,6 +81,7 @@
 .TitulosInfo h2 {
   font-size: 10px; /* Ajusta el tamaño del texto en pantallas pequeñas */
   margin-bottom: 1vh;
+  color: #A27354;
 }
 
 .Info2 {
@@ -101,7 +102,7 @@
   padding: 30px;
   margin-top: 2px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  background-color: #ba996f;
+  background-color: #C19574;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -139,6 +140,12 @@
   color: #A0522D;
 }
 
+.temas-card button {
+  margin-top: auto; /* Empuja el botón hacia el final del contenedor */
+  align-self: center; /* Centra el botón horizontalmente */
+  padding: 10px 20px;
+  font-size: 1rem;
+}
 
 /* Media Queries para hacer el diseño responsive */
 
@@ -149,15 +156,16 @@
   font-family: Arial, sans-serif;
   padding: 20px;
   margin-top: 7vh;
+  width: auto;
 }
   .content {
     flex-direction: row;
   }
 
   .card {
-    width: 25%; /* Ajusta el ancho para pantallas medianas y grandes */
+    width: 33%; /* Ajusta el ancho para pantallas medianas y grandes */
     height: auto;
-    margin-left: 10vh;
+    margin-right: 10vh;
   }
 
   .info {
@@ -169,6 +177,7 @@
   }
   .TitulosInfo {
     margin-bottom: 3vh;
+    width: auto;
   }
 
   .TitulosInfo h2 {
@@ -181,6 +190,8 @@
     width: 200px;
     height: 300px;
     margin-left: 0vh;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -198,7 +209,21 @@
   }
 
   .temas-card {
-    width: 100%;
+    width: auto;
     padding: 20px;
+  }
+  .TitulosInfo {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: #C19574;
+    width: 34vh;
+    padding: 20px;
+    margin-left: 4vh;
+    text-align: center;
+  }
+  .TitulosInfo h2 {
+    color: white;
+    font-size: large;
   }
 }

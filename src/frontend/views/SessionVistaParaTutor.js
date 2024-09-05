@@ -1,4 +1,4 @@
-// src/Vista.js
+// src/Vista para verlo desde el punto de vista de tutor...
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/TutorProfile.css'
