@@ -1,0 +1,124 @@
+/* Estilo base */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #FFEFEF; /* Un tono suave de rosa */
+}
+
+.page-title {
+    font-size: 3rem;
+    color: #333333;
+    text-align: center;
+    margin: 0;
+    padding: 1rem; /* Puedes ajustar este valor para el espacio alrededor del título */
+    position: fixed; /* Fija el título en la parte superior */
+    top: 10vh; /* Asegura que esté en la parte superior de la pantalla */
+    left: 0; /* Asegura que se alinee con el borde izquierdo */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    z-index: 1000; /* Asegura que el título esté por encima del resto del contenido */
+    animation: slideDown 0.5s ease-out;
+}
+
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Título de las sesiones */
+.sessions-title {
+    font-size: 1.5rem;
+    color: #333333;
+    margin-bottom: 2rem;
+}
+
+/* Mensaje cuando no hay sesiones */
+.no-sessions {
+    font-size: 1.2rem;
+    color: #333333;
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: #FAE1DD; /* Fondo suave para el mensaje */
+    border-radius: 10px; /* Bordes redondeados para el mensaje */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+}
+
+.yes-sessions{
+    font-size: 1.2rem;
+    color: #333333;
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: #FAE1DD; /* Fondo suave para el mensaje */
+    border-radius: 10px; /* Bordes redondeados para el mensaje */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+}
+
+/* Botón para añadir nuevas sesiones, si aplica */
+.add-new-session {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
+    color: #333;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-new-session:hover {
+    background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
+}
+
+/* Estilos para los elementos de la tarjeta de sesión */
+.session-card-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.session-card-button:hover {
+    background-color: #FAE1DD;
+}
+
+/* Ajusta el contenido para que no se solape con el título */
+.history-container {
+    margin-top: 5rem; /* Ajusta el margen superior para compensar el título fijo */
+}
+
+/* Media queries para diseños responsivos */
+@media (max-width: 768px) {
+    .sessions-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .sessions-title, .no-sessions, .add-new-session {
+        font-size: 1rem;
+    }
+
+    .menu-toggle {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-top: 0.5vh;
+    }
+}

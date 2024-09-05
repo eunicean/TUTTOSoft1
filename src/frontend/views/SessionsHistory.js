@@ -3,7 +3,7 @@ import SessionCard from '../components/Card.js';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
 import { useNavigate } from 'react-router-dom'; 
-import '../css/Sessions.css';
+import '../css/SessionHistory.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 
@@ -47,10 +47,8 @@ function SessionsHistory(){
     
     return(
         <>
+        <h1 className="page-title">Historial de Sesiones</h1>
     <div className='history-container'>
-        <div className='Header'>
-            <h1 className="page-title">Historial de Sesiones</h1>
-        </div>
         <div className='yes-sessions'>
             {sessions.length > 0 ? (
                 sessions.map(session => (
