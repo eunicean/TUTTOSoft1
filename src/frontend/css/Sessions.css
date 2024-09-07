@@ -1,142 +1,143 @@
 /* Estilo base */
 body, html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #FFEFEF; /* Un tono suave de rosa */
-}
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #FFEFEF; /* Un tono suave de rosa */
+  }
+  
+  /* Menú de hamburguesa, si aplica */
+  .menu-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #FFFFFF; /* Color suave para el botón */
+    color: #333;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .menu-toggle:hover {
+    background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
+  }
+  
+  /* Contenedor principal para la vista de sesiones */
+  .sessions-container {
+    width: 100%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #FFFFFF; /* Fondo blanco para el contenido */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave para el contenedor */
+    border-radius: 15px; /* Bordes redondeados para el contenedor */
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Título de las sesiones */
+  .sessions-title {
+    font-size: 1.5rem;
+    color: #333333;
+    margin-bottom: 2rem;
+  }
+  
+  /* Mensaje cuando no hay sesiones */
+  .no-sessions {
+    font-size: 1.2rem;
+    color: #333333;
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: #FAE1DD; /* Fondo suave para el mensaje */
+    border-radius: 10px; /* Bordes redondeados para el mensaje */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+  }
 
-/* Menú de hamburguesa, si aplica */
-.menu-toggle {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1000;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #FFFFFF; /* Color suave para el botón */
-  color: #333;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.menu-toggle:hover {
-  background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
-}
-
-/* Contenedor principal para la vista de sesiones */
-.sessions-container {
-  width: 100%;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #FFFFFF; /* Fondo blanco para el contenido */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave para el contenedor */
-  border-radius: 15px; /* Bordes redondeados para el contenedor */
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-/* Título de las sesiones */
-.sessions-title {
-  font-size: 1.5rem;
-  color: #333333;
-  margin-bottom: 2rem;
-}
-
-/* Mensaje cuando no hay sesiones */
-.no-sessions {
-  font-size: 1.2rem;
-  color: #333333;
-  margin: 2rem 0;
-  padding: 2rem;
-  background-color: #FAE1DD; /* Fondo suave para el mensaje */
-  border-radius: 10px; /* Bordes redondeados para el mensaje */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
-}
-
-.yes-sessions{
-  font-size: 1.2rem;
-  color: #333333;
-  margin: 2rem 0;
-  padding: 2rem;
-  background-color: #FAE1DD; /* Fondo suave para el mensaje */
-  border-radius: 10px; /* Bordes redondeados para el mensaje */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
-}
-
-/* Botón para añadir nuevas sesiones, si aplica */
-.add-new-session {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.5rem 1rem;
-  background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
-  color: #333;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.add-new-session:hover {
-  background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
-}
+  .yes-sessions{
+    font-size: 1.2rem;
+    color: #333333;
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: #FAE1DD; /* Fondo suave para el mensaje */
+    border-radius: 10px; /* Bordes redondeados para el mensaje */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+  }
+  
+  /* Botón para añadir nuevas sesiones, si aplica */
+  .add-new-session {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
+    color: #333;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .add-new-session:hover {
+    background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
+  }
 
 
+  select {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin: 10px 0;
+  }
+  
 select {
-  position: relative;
-  display: inline-block;
   width: 100%;
-  margin: 10px 0;
-}
-
-select {
-width: 100%;
-padding: 10px 15px;
-background-color: #f7f7f7; /* Fondo gris claro */
-color: #333; /* Texto oscuro */
-border-radius: 4px;
-border: 1px solid #cccccc; /* Borde gris */
-appearance: none; /* Remueve la flecha predeterminada */
--webkit-appearance: none;
--moz-appearance: none;
-cursor: pointer;
-font-size: 16px;
-box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
+  padding: 10px 15px;
+  background-color: #f7f7f7; /* Fondo gris claro */
+  color: #333; /* Texto oscuro */
+  border-radius: 4px;
+  border: 1px solid #cccccc; /* Borde gris */
+  appearance: none; /* Remueve la flecha predeterminada */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
 }
 
 select:after {
-content: '▼';
-position: absolute;
-top: 50%;
-right: 15px;
-transform: translateY(0%);
-color: #333; /* Flecha de color oscuro */
-pointer-events: none; /* El icono no debe afectar la funcionalidad del select */
-font-size: 20px; /* Tamaño de la flecha */
+  content: '▼';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(0%);
+  color: #333; /* Flecha de color oscuro */
+  pointer-events: none; /* El icono no debe afectar la funcionalidad del select */
+  font-size: 20px; /* Tamaño de la flecha */
 }
 
 /* Puedes agregar estilos adicionales para cuando se pasa el mouse por encima */
 select:hover {
-background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por encima */
+  background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por encima */
 }
 
-
+  
 /* Media queries para diseños responsivos */
 @media (max-width: 768px) {
-  .sessions-container {
-  margin: 1rem;
-  padding: 1rem;
-  }
+    .sessions-container {
+    margin: 1rem;
+    padding: 1rem;
+    }
 
-  .sessions-title, .no-sessions, .add-new-session {
-  font-size: 1rem;
-  }
-  
-  .menu-toggle {
-  font-size: 0.9rem;
-  padding: 0.3rem 0.6rem;
-  }
+    .sessions-title, .no-sessions, .add-new-session {
+    font-size: 1rem;
+    }
+    
+    .menu-toggle {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    }
 }
+

@@ -101,7 +101,8 @@ function ProfileView() {
                             <button onClick={handleSave}>Guardar</button>
                         </>
                     ) : (
-                        <>
+                        <>  
+                            <div className="profile-avatar"></div>
                             <h2>{user.username || 'Nombre no disponible'}</h2>
                             <p>Email: {user.email || 'Email no disponible'}</p>
                             <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>

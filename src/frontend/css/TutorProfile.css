@@ -1,8 +1,7 @@
-/* src/Vista.css */
+/* src/SessionVistaParaTutor.css */
 .vista-container {
   font-family: Arial, sans-serif;
   padding: 20px;
-  margin-top: 0vh;
 }
 
 .header {
@@ -12,7 +11,7 @@
   margin-bottom: 20px;
 }
 
-.session-text {
+.session-text {   
   margin-top: 40px;
   font-size: 40px;
   font-weight: bold;
@@ -36,30 +35,30 @@
 
 .content {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se acomoden automáticamente */
 }
 
-.card1 {
-  width: 100%; /* Ajusta el ancho para pantallas pequeñas */
-  height: 45vh;
-  margin: 10px 0;
+.card {
+  width: 25%; 
+  height: 75vh;
+  margin-left: 1vh;
   padding: 20px;
   border: 1px solid #C04000;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  background-color: #ECDCD0;
+  background-color: #ba996f;
 }
 
 .profile-pic {
-  width: 100%;
-  max-width: 200px; /* Tamaño máximo para pantallas pequeñas */
-  height: auto;
+  width: 80%;  /* Cambia el tamaño a un valor porcentual */
+  height: auto;  /* Ajusta la altura automáticamente */
   border-radius: 50%;
   margin-bottom: 15px;
+  object-fit: cover; /* Asegura que la imagen se ajuste bien dentro del contenedor */
 }
 
-.card1-buttons button {
+
+.card-buttons button {
   padding: 10px;
   margin: 5px;
   font-size: 16px;
@@ -68,162 +67,128 @@
   cursor: pointer;
 }
 
-.card1-buttons button:hover {
+.card-buttons button:hover {
   background-color: #ddd;
 }
 
 .info {
-  width: 100%; /* Ajusta el ancho para pantallas pequeñas */
+  width: 50%;
   padding: 2px;
-  margin-top: 20px;
+  margin-left: 15vh;
+}
+
+.session-time {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0;
+}
+
+
+
+.TitulosInfo {
+  text-align: left;
+  color: brown; /* Cambia el color a café */
+  padding: 0; /* Elimina cualquier relleno adicional */
+  margin: 0; /* Elimina cualquier margen adicional */
 }
 
 .TitulosInfo h2 {
-  font-size: 10px; /* Ajusta el tamaño del texto en pantallas pequeñas */
-  margin-bottom: 1vh;
-  color: #A27354;
+  font-size: 45px; /* Ajusta el tamaño del texto h2 aquí */
+  margin-bottom: 100px;
+}
+
+.TitulosInfo h3 {
+  font-size: 45px; /* Ajusta el tamaño del texto h3 aquí */
+  margin-top: 100px;
+  margin-bottom: 200px;
+}
+
+.info h2, .info h3 {
+  margin: 10px 0;
 }
 
 .Info2 {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center;     /* Centra verticalmente (opcional) */
+  flex-direction: column;  /* Alinea los elementos en columna (opcional) */
   margin-top: 1vh;
 }
-
 .Notas, .DocsEstudiante {
   margin-right: 20px;
 }
-
-.temas-card1 {
+.UploadBoxFile {
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 30px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #ba996f;
+  text-align: center;
+  max-width: 300px;
+
+}
+.UploadBoxFile input[type="file"] {
+  margin-bottom: 10px;
+}
+.UploadBoxFile button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.UploadBoxFile button:hover {
+  background-color: #45a049;
+}
+.UploadBoxFile p {
+  margin-top: 10px;
+}
+.temas-card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 30px; /* Aumenta el padding para hacer el card más grande */
   margin-top: 2px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  background-color: #C19574;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Aumenta la sombra para un efecto más prominente */
+  background-color: #ba996f;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  min-width: 300px;
+  width: 500px; /* Establece un ancho fijo (puedes ajustar este valor) */
+  height: 300px;
+  overflow: hidden;
+  min-width: 300px; /* Establece un ancho mínimo para el card */
 }
 
-.temas-card1 h2 {
-  margin-bottom: 20px;
-  font-size: 1.5rem;
+.temas-card h2 {
+  margin-bottom: 20px; /* Aumenta el margen para que el título tenga más espacio */
+  font-size: 1.5rem; /* Aumenta el tamaño de la fuente del título */
 }
 
-.temas-card1 ul {
+.temas-card ul {
   list-style-type: none;
   padding: 0;
-  width: 100%;
+  width: 100%; /* Asegúrate de que la lista use el ancho completo del card */
 }
 
-.temas-card1 li {
-  padding: 10px 0;
-  font-size: 1.2rem;
+.temas-card li {
+  padding: 10px 0; /* Aumenta el padding en los elementos de la lista */
+  font-size: 1.2rem; /* Aumenta el tamaño de la fuente en la lista */
 }
 
-.temas-card1 button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1rem;
+.temas-card button {
+  margin-top: 20px; /* Aumenta el margen superior para separar el botón del contenido */
+  padding: 10px 20px; /* Aumenta el padding para el botón */
+  font-size: 1rem; /* Aumenta el tamaño de la fuente del botón */
 }
 
 .stars {
   display: flex;
   justify-content: center;
   color: #A0522D;
-}
-
-.temas-card1 button {
-  margin-top: auto; /* Empuja el botón hacia el final del contenedor */
-  align-self: center; /* Centra el botón horizontalmente */
-  padding: 10px 20px;
-  font-size: 1rem;
-}
-
-/* Media Queries para hacer el diseño responsive */
-
-
-@media (min-width: 768px) {
-  /* src/Vista.css */
-.vista-container {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  margin-top: 7vh;
-  width: auto;
-}
-  .content {
-    flex-direction: row;
-  }
-
-  .card1 {
-    width: 33%; /* Ajusta el ancho para pantallas medianas y grandes */
-    height: auto;
-    margin-right: 10vh;
-  }
-
-  .info {
-    width: 50%; /* Ajusta el ancho para pantallas medianas y grandes */
-  }
-  .Info2 {
-    margin-left: 0vh;
-    height: auto;
-  }
-  .TitulosInfo {
-    margin-bottom: 3vh;
-    width: auto;
-  }
-
-  .TitulosInfo h2 {
-    font-size: 30px;
-    margin-bottom: 2vh;
-    margin-left: 3vh;
-  }
-
-  .temas-card1 {
-    width: 200px;
-    height: 300px;
-    margin-left: 0vh;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 767px) {
-  .session-text {
-    font-size: 30px;
-  }
-
-  .cancel-button {
-    font-size: 16px;
-  }
-
-  .profile-pic {
-    max-width: 150px;
-  }
-
-  .temas-card1 {
-    width: auto;
-    padding: 20px;
-  }
-  .TitulosInfo {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    background-color: #C19574;
-    width: 34vh;
-    padding: 20px;
-    margin-left: 4vh;
-    text-align: center;
-  }
-  .TitulosInfo h2 {
-    color: white;
-    font-size: large;
-  }
 }
