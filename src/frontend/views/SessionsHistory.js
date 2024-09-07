@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import SessionCard from '../components/Card.js';
+import HistoryCard from '../components/HistoryCard.js';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
 import { useNavigate } from 'react-router-dom'; 
-import '../css/SessionHistory.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import '../css/Historial.css'
+
+
 
 function SessionsHistory(){
     const [sessions, setSessions] = useState([]);
@@ -49,11 +51,11 @@ function SessionsHistory(){
         <>
         <h1 className="page-title">Historial de Sesiones</h1>
     <div className='history-container'>
-        <div className='yes-sessions'>
+        <div className='si-sessions'>
             {sessions.length > 0 ? (
                 sessions.map(session => (
-                    <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="session-card-button">
-                        <SessionCard
+                    <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="Card-button">
+                        <HistoryCard
                             date={<><strong>Fecha:</strong> {session.date}</>}
                             startHour={<><strong>Hora de inicio:</strong> {session.startHour}</>}
                             endHour={<><strong>Hora de fin:</strong> {session.endHour}</>}
@@ -63,7 +65,7 @@ function SessionsHistory(){
                     </button>
                 ))
             ) : (
-                <div className="no-sessions">No hay sesiones disponibles.</div>
+                <div className="no-session">No hay sesiones disponibles.</div>
             )}
         </div>
     </div>

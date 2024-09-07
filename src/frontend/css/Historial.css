@@ -1,11 +1,3 @@
-/* Estilo base */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #FFEFEF; /* Un tono suave de rosa */
-}
-
 .page-title {
     font-size: 3rem;
     color: #333333;
@@ -32,15 +24,9 @@ body, html {
     }
 }
 
-/* Título de las sesiones */
-.sessions-title {
-    font-size: 1.5rem;
-    color: #333333;
-    margin-bottom: 2rem;
-}
 
 /* Mensaje cuando no hay sesiones */
-.no-sessions {
+.no-session {
     font-size: 1.2rem;
     color: #333333;
     margin: 2rem 0;
@@ -50,7 +36,7 @@ body, html {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
 }
 
-.yes-sessions{
+.si-sessions{
     font-size: 1.2rem;
     color: #333333;
     margin: 2rem 0;
@@ -60,26 +46,9 @@ body, html {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
 }
 
-/* Botón para añadir nuevas sesiones, si aplica */
-.add-new-session {
-    display: block;
-    margin: 1rem auto;
-    padding: 0.5rem 1rem;
-    background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
-    color: #333;
-    font-size: 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.add-new-session:hover {
-    background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
-}
 
 /* Estilos para los elementos de la tarjeta de sesión */
-.session-card-button {
+.Card-button {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,7 +77,7 @@ body, html {
         padding: 1rem;
     }
 
-    .sessions-title, .no-sessions, .add-new-session {
+    .sessions-title, .no-session {
         font-size: 1rem;
     }
 
