@@ -18,35 +18,61 @@ function SessionsHistory(){
     const [isSidebarOpen,  setIsSidebarOpen] = useState(false);
     const navigate = useNavigate
 
-    const fetchSessionsHistory = async =>{
+    const fetchSessionsHistory = async () => {
         setLoading(true);
         setError(null);
-        const token = localStorage.getItem('token')
-        const url = new URL('http://localhost:5000/sessions-history');
-
-        try{
-
-        }catch(error){
-            console.error("Could not fetch any sessions: ", error)
+        const token = localStorage.getItem('token');
+        const url = new URL('http://localhost:5000/session-history'); // Cambiado a la URL correcta
+    
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            // Verificar si la respuesta es JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                const data = await response.json();
+                if (data.success) {
+                    setUser(data.user);
+    
+                    const transformedSessions = data.sessions.map((session) => ({
+                        id: session.id,
+                        date: new Date(session.date).toLocaleDateString('es-ES'),
+                        startHour: session.start_hour,
+                        endHour: session.end_hour,
+                        subject: `Curso: ${session.course_code}`,
+                        mode: session.mode
+                    }));
+    
+                    setSessions(transformedSessions);
+                } else {
+                    throw new Error(data.message || 'Failed to fetch profile');
+                }
+            } else {
+                throw new Error('Unexpected content type');
+            }
+        } catch (error) {
+            console.error("Could not fetch any sessions: ", error);
             setError(`Failed to fetch sessions: ${error.message || 'Unknown error'}`);
-
-        }finally{
+        } finally {
             setLoading(false);
         }
     };
-    useEffect(() => {
+
+       // Fetch session history when the component mounts
+       useEffect(() => {
         fetchSessionsHistory();
-    } );
-
-    if (loading) return <div className="loading-message">Cargando...</div>;
-        if (error) return <div className="error-message">Error: {error}</div>;
-
-
+    }, []);
     
     const handleSessionClick = (sessionId, session) => {
         navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
-    };  
-    
+    };
+
     return(
         <>
         <h1 className="page-title">Historial de Sesiones</h1>
@@ -56,11 +82,11 @@ function SessionsHistory(){
                 sessions.map(session => (
                     <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="Card-button">
                         <HistoryCard
-                            date={<><strong>Fecha:</strong> {session.date}</>}
-                            startHour={<><strong>Hora de inicio:</strong> {session.startHour}</>}
-                            endHour={<><strong>Hora de fin:</strong> {session.endHour}</>}
-                            subject={<><strong>Materia:</strong> {session.subject}</>}
-                            mode={<><strong>Modo:</strong> {session.mode}</>}
+                            date={session.date}
+                            startHour={session.startHour}
+                            endHour={session.endHour}
+                            subject={session.subject}
+                            mode={session.mode}
                         />
                     </button>
                 ))

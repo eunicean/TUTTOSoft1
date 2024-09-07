@@ -39,7 +39,7 @@
   flex-wrap: wrap; /* Permite que los elementos se acomoden automáticamente */
 }
 
-.card {
+.card1 {
   width: 100%; /* Ajusta el ancho para pantallas pequeñas */
   height: 45vh;
   margin: 10px 0;
@@ -59,7 +59,7 @@
   margin-bottom: 15px;
 }
 
-.card-buttons button {
+.card1-buttons button {
   padding: 10px;
   margin: 5px;
   font-size: 16px;
@@ -68,7 +68,7 @@
   cursor: pointer;
 }
 
-.card-buttons button:hover {
+.card1-buttons button:hover {
   background-color: #ddd;
 }
 
@@ -96,7 +96,7 @@
   margin-right: 20px;
 }
 
-.temas-card {
+.temas-card1 {
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 30px;
@@ -112,23 +112,23 @@
   min-width: 300px;
 }
 
-.temas-card h2 {
+.temas-card1 h2 {
   margin-bottom: 20px;
   font-size: 1.5rem;
 }
 
-.temas-card ul {
+.temas-card1 ul {
   list-style-type: none;
   padding: 0;
   width: 100%;
 }
 
-.temas-card li {
+.temas-card1 li {
   padding: 10px 0;
   font-size: 1.2rem;
 }
 
-.temas-card button {
+.temas-card1 button {
   margin-top: 20px;
   padding: 10px 20px;
   font-size: 1rem;
@@ -140,7 +140,7 @@
   color: #A0522D;
 }
 
-.temas-card button {
+.temas-card1 button {
   margin-top: auto; /* Empuja el botón hacia el final del contenedor */
   align-self: center; /* Centra el botón horizontalmente */
   padding: 10px 20px;
@@ -162,7 +162,7 @@
     flex-direction: row;
   }
 
-  .card {
+  .card1 {
     width: 33%; /* Ajusta el ancho para pantallas medianas y grandes */
     height: auto;
     margin-right: 10vh;
@@ -186,7 +186,7 @@
     margin-left: 3vh;
   }
 
-  .temas-card {
+  .temas-card1 {
     width: 200px;
     height: 300px;
     margin-left: 0vh;
@@ -208,7 +208,7 @@
     max-width: 150px;
   }
 
-  .temas-card {
+  .temas-card1 {
     width: auto;
     padding: 20px;
   }

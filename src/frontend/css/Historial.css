@@ -3,16 +3,14 @@
     color: #333333;
     text-align: center;
     margin: 0;
-    padding: 1rem; /* Puedes ajustar este valor para el espacio alrededor del título */
-    position: fixed; /* Fija el título en la parte superior */
-    top: 10vh; /* Asegura que esté en la parte superior de la pantalla */
-    left: 0; /* Asegura que se alinee con el borde izquierdo */
-    width: 100%; /* Ocupa todo el ancho de la pantalla */
-    z-index: 1000; /* Asegura que el título esté por encima del resto del contenido */
+    padding: 1rem;
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
     animation: slideDown 0.5s ease-out;
 }
-
-
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -24,30 +22,62 @@
     }
 }
 
+/* Contenedor para las cards con scroll */
+.history-container {
+    margin-top: 20vh; /* Ajusta el margen superior para compensar el título fijo */
+    padding: 1rem; /* Espaciado interno */
+    max-height: 60vh; /* Altura máxima del contenedor */
+    overflow-y: auto; /* Scroll vertical */
+    background-color: #f5f5f5; /* Fondo del contenedor */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
+}
 
+/* Oculta la scrollbar en navegadores webkit (Chrome, Safari) */
+.history-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Para Firefox */
+.history-container {
+    scrollbar-width: none; /* Oculta la scrollbar en Firefox */
+}
+
+/* Para Internet Explorer y Edge */
+.history-container {
+    -ms-overflow-style: none; /* Oculta la scrollbar en IE y Edge */
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    align-content: center;
+    color: #333333;
+    background-color: #FAE1DD;
+}
 /* Mensaje cuando no hay sesiones */
 .no-session {
     font-size: 1.2rem;
     color: #333333;
     margin: 2rem 0;
     padding: 2rem;
-    background-color: #FAE1DD; /* Fondo suave para el mensaje */
-    border-radius: 10px; /* Bordes redondeados para el mensaje */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+    background-color: #FAE1DD;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.si-sessions{
+/* Estilos para las cards */
+.si-sessions {
     font-size: 1.2rem;
     color: #333333;
     margin: 2rem 0;
-    padding: 2rem;
-    background-color: #FAE1DD; /* Fondo suave para el mensaje */
-    border-radius: 10px; /* Bordes redondeados para el mensaje */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+    padding: 1rem;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-
-/* Estilos para los elementos de la tarjeta de sesión */
 .Card-button {
     display: flex;
     justify-content: space-between;
@@ -55,39 +85,29 @@
     width: 100%;
     padding: 1rem;
     margin-bottom: 1rem;
-    background-color: #FFFFFF;
+    background-color: #FAE1DD;
     border: 1px solid #ccc;
     border-radius: 10px;
     transition: background-color 0.3s ease;
 }
 
-.session-card-button:hover {
+.Card-button:hover {
     background-color: #FAE1DD;
-}
-
-/* Ajusta el contenido para que no se solape con el título */
-.history-container {
-    margin-top: 5rem; /* Ajusta el margen superior para compensar el título fijo */
 }
 
 /* Media queries para diseños responsivos */
 @media (max-width: 768px) {
-    .sessions-container {
-        margin: 1rem;
-        padding: 1rem;
-    }
-
-    .sessions-title, .no-session {
-        font-size: 1rem;
-    }
-
-    .menu-toggle {
-        font-size: 0.9rem;
-        padding: 0.3rem 0.6rem;
+    .history-container {
+        margin-top: 15vh; /* Ajustar margen superior para pantallas más pequeñas */
+        max-height: 50vh; /* Ajustar la altura máxima del contenedor */
     }
 
     .page-title {
         font-size: 2rem;
-        margin-top: 0.5vh;
+        top: 8vh; /* Ajustar la posición superior del título en pantallas más pequeñas */
+    }
+
+    .no-session, .Card-button {
+        font-size: 1rem; /* Ajustar el tamaño de fuente para pantallas más pequeñas */
     }
 }

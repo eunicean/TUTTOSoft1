@@ -69,7 +69,7 @@ const SessionVistaParaTutor = () => {
         <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
       </div>
       <div className="content">
-        <div className="card">
+        <div className="card1">
           <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
           <h3>Nombre:  {session.studentName}</h3>
           <p>Año: 3</p>
@@ -88,7 +88,7 @@ const SessionVistaParaTutor = () => {
 
             <div className='temas'>
                 <h2> Notas para la sesion </h2>
-                <div className='temas-card'>
+                <div className='temas-card1'>
                 <h2>Temas a repasar</h2>
                 <ul> 
                 {session.temas && session.temas.map((tema, index) => (
