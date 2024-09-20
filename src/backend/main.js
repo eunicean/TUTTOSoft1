@@ -419,29 +419,31 @@ app.get('/session-history', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
+        const currentDate = new Date().toISOString().slice(0, 10);  // Fecha actual en formato YYYY-MM-DD
+
         let query, params;
-        
-        console.log(userType, "fkjañlksfj")
 
         if (userType === '1') { // Assuming 1 = Student
             query = `
-                SELECT sp.*, u.username as tutorName
+                SELECT sp.*, u.username as tutorName, cr.created_at as cancellationDate
                 FROM sessionPlanned sp
                 JOIN students_Session ss ON sp.id = ss.id_session
                 JOIN user u ON sp.id_tutor = u.id
-                WHERE ss.id_student = ?
+                LEFT JOIN cancellationReasons cr ON sp.id = cr.session_id
+                WHERE ss.id_student = ? AND (sp.date < ? OR cr.created_at IS NOT NULL)
                 ORDER BY sp.date DESC, sp.start_hour DESC`;
-            params = [userId];
+            params = [userId, currentDate];
         } else if (userType === '2') { // Assuming 2 = Tutor
             query = `
-                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames
+                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames, cr.created_at as cancellationDate
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session
                 LEFT JOIN user u ON ss.id_student = u.id
-                WHERE sp.id_tutor = ?
+                LEFT JOIN cancellationReasons cr ON sp.id = cr.session_id
+                WHERE sp.id_tutor = ? AND (sp.date < ? OR cr.created_at IS NOT NULL)
                 GROUP BY sp.id
                 ORDER BY sp.date DESC, sp.start_hour DESC`;
-            params = [userId];
+            params = [userId, currentDate];
         } else {
             return res.status(400).json({ success: false, message: "Invalid user type" });
         }
@@ -458,6 +460,8 @@ app.get('/session-history', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 // Endpoint to get all courses
 app.get('/courses', async (req, res) => {

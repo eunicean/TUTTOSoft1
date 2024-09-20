@@ -16,7 +16,7 @@ function SessionsHistory(){
     const [periodo, setPeriodo] = useState('');
     const [user, setUser] = useState({});
     const [isSidebarOpen,  setIsSidebarOpen] = useState(false);
-    const navigate = useNavigate
+    const navigate = useNavigate();
 
     const fetchSessionsHistory = async () => {
         setLoading(true);
