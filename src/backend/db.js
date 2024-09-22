@@ -231,3 +231,20 @@ export async function obtenerTipoUsuarioPorId(userId){
 }
 
 obtenerTipoUsuarioPorId(21231);
+// Función para calificar sesion
+export async function calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session) {
+    const conexion = await conn;
+    try {
+        const [comentarios] = await conexion.execute(
+            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
+            VALUES(?,?,?,?,?)`,
+            [calificacion, comentario, id_sender, id_receiver, id_session]
+        );
+        console.log(comentarios)
+    } catch (error) {
+        console.error('Error al intentar califica session:', error);
+    }
+}
+
+//calificarSesion(3,'chale',3,4,1);
+verSesionesEnCurso();

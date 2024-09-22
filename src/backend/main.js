@@ -12,6 +12,7 @@ import bcrypt from 'bcrypt';
 import pool from './conn.js'; 
 import dotenv from 'dotenv';
 
+
 dotenv.config();
 
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
@@ -383,6 +384,49 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/grade-session', authenticateToken, async (req, res) => {
+    const { calificacion, comentario, id_receiver, id_session } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        const conexion = await pool.getConnection();
+        const [comentarios] = await pool.query(
+            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
+            VALUES(?,?,?,?,?)`,
+            [calificacion, comentario, id_sender, id_receiver, id_session]
+        );
+        console.log('Comentario insertado:', comentarios);
+        res.json({ success: true, message: "Sesión calificada exitosamente" });
+        
+    } catch (error) {
+        console.error('Error al calificar la sesión:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
+
+app.post('/report-absence', authenticateToken, async (req, res) => {
+    const {id_absentParticipant, message } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        const conexion = await pool.getConnection();
+        try {
+            const [result] = await conexion.query(
+                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message)
+                VALUES (?, ?, ?)`,
+                [id_sender, id_absentParticipant, message]
+            );
+            console.log('Reporte de ausencia insertado:', result);
+            res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
+        } finally {
+            conexion.release();
+        }
+    } catch (error) {
+        console.error('Error al registrar el reporte de ausencia:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
 app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
