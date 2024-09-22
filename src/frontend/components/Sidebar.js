@@ -34,7 +34,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
         <li><Link to="/chat" onClick={closeSidebar}>Chat</Link></li>
         <li><Link to="/cancel-session/:sessionId" onClick={closeSidebar}>Cancelar Sesión</Link></li>
         <li><Link to="/absence" onClick={closeSidebar}>Reportar Ausencia</Link></li>
-        <li><Link to="/tutorprofile" onClick={closeSidebar}>Seseion tutor</Link></li>
+        <li><Link to="/tutorprofile" onClick={closeSidebar}>Sesión tutor</Link></li>
         <li><Link onClick={handleLogout}>Cerrar Sesión</Link></li>
       </ul>
     </div>

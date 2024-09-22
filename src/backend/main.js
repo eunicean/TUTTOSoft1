@@ -1,4 +1,3 @@
-import cors from 'cors'
 import {
   verificarUsuario,
   crearUsuario,
@@ -153,9 +152,6 @@ app.get('/users/sessions', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server listening at http://127.0.0.1:${port}`)
-})
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
