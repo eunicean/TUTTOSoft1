@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfiles/app/Dockerfile
+    ports:
+      - "5173:5173" # React app
+      - "5000:5000" # Node.js server
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5173
+    command: ["npm", "start"]

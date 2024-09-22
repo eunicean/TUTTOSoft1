@@ -1,0 +1,134 @@
+:root {
+  --color-texto: #fff; /* Color blanco para el texto */
+  --color-barra-lateral: #91411c;
+  --color-boton: #FF6B6B;
+  --color-linea: #b4b8b9;
+}
+
+/* Barra lateral derecha */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -250px; /* Inicia fuera de la pantalla */
+  width: 250px;
+  height: 100%;
+  background: var(--color-barra-lateral); /* Color de la barra lateral */
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+}
+
+.sidebar.open {
+  right: 0; /* Mueve la sidebar hacia adentro */
+}
+
+.header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  color: white;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.header .logo {
+  width: 100px;
+  margin: 0; /* Eliminar margen */
+  border-radius: 50%;
+  border: 3px solid var(--color-linea);
+}
+
+.sidebar-items {
+  list-style-type: none; /* Remover estilos por defecto de lista */
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-items li {
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  margin-bottom: 30px; /* Aumentar separación entre ítems */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Efecto suave al pasar el ratón */
+  font-family: 'Arial Black', Arial, sans-serif; /* Fuente Arial Black */
+  font-size: 1.1rem; /* Tamaño de la fuente */
+  color: #ffffff; /* Color blanco permanente del texto */
+  background-color: #e4a67d; /* Fondo de los ítems para mejor contraste */
+  border: 1px solid var(--color-linea); /* Línea de separación alrededor de cada ítem */
+}
+
+/* Aquí colocas el nuevo bloque para los enlaces dentro de los items */
+.sidebar-items li a {
+  text-decoration: none; /* Quitar el subrayado */
+  color: #ffffff; /* Color personalizado para los enlaces */
+  transition: color 0.3s ease; /* Efecto suave al cambiar de color */
+}
+
+.sidebar-items li a:hover {
+  color: #f1ab5b; /* Color cuando el ratón pasa por encima del enlace */
+}
+
+.sidebar-items li a:active {
+  color: #eec99f; /* Color cuando el enlace es presionado */
+}
+
+.sidebar-items li a:visited {
+  color: #ffffff; /* Color para los enlaces ya visitados */
+}
+
+.sidebar-items li:hover {
+  background-color: #f1ab5b; /* Color de fondo al pasar el ratón */
+  color: #ffffff; /* Mantener el texto blanco al pasar el ratón */
+}
+
+.sidebar-items li.active {
+  background-color: var(--color-boton); /* Color de fondo para el ítem activo */
+  color: #ffffff; /* Mantener el texto blanco para el ítem activo */
+}
+
+.sidebar-items li ion-icon {
+  margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
+.sidebar-items li:not(:last-child) {
+  border-bottom: 1px solid var(--color-linea);
+}
+
+
+.close-btn {
+  position: absolute;
+  color: #fff;
+  font-size: 23px;
+  right: 0px;
+  margin: 15px;
+  cursor: pointer;
+}
+
+header {
+  background: #33363a;
+}
+
+img{
+  width: 100px;
+  margin: 15px;
+  border-radius: 50%;
+  margin-right: 25px;
+  border: 3px solid #b4b8b9;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 500;
+  font-size: 25px;
+  padding-bottom: 13px;
+  font-family: sans-serif;
+  letter-spacing: 2px;
+}

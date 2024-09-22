@@ -37,7 +37,6 @@ export async function crearUsuario(id, username, email, password) {
         console.error('Error al crear usuario:', error);
     }
 }
-//rearUsuario(922929, 'pedro e', 'pepe@gmail.com', '123')
 // Función para eliminar un usuario por ID
 export async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
@@ -64,18 +63,18 @@ export async function borrarChatsConUsuario(idChat) {
 export async function verSesionesEnCurso() {
     const conexion = await conn;
     try {
-        const [sesion] = await conexion.execute(`SELECT * FROM sessionPlanned WHERE dated = CURDATE() AND start_hour <= CURTIME() AND end_hour >= CURTIME()`);
+        const [sesion] = await conexion.execute(`SELECT * FROM sessionPlanned WHERE date = CURDATE() AND start_hour <= CURTIME() AND end_hour >= CURTIME()`);
         console.log(sesion);
     } catch (error) {
         console.error('Error al ver sesiones en curso:', error);
     }
-} //changes to do: add the userId to the sessionTo list, change from curdate from dated to list all the 
+} //changes to do: add the userId to the sessionTo list, change from curdate from date to list all the 
 
 // Función para borrar una sesión
 export async function borrarSesion(date) {
     const conexion = await conn;
     try {
-        const [sesion] = await conexion.execute(`DELETE FROM sessionPlanned WHERE dated = '${date}'`);
+        const [sesion] = await conexion.execute(`DELETE FROM sessionPlanned WHERE date = '${date}'`);
         console.log(sesion);
     } catch (error) {
         console.error('Error al borrar sesión:', error);
@@ -121,7 +120,7 @@ export async function obtenerSesionesPlanificadas() {
     try {
         const conexion = await pool.getConnection();
         const [sesiones] = await conexion.execute(`
-            SELECT sp.id, c.namecourse, sp.dated, sp.start_hour, sp.end_hour, sp.mode 
+            SELECT sp.id, c.namecourse, sp.date, sp.start_hour, sp.end_hour, sp.mode 
             FROM sessionPlanned sp 
             JOIN course c ON sp.course_code = c.course_code
         `);

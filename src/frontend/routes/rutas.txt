@@ -1,1 +1,0 @@
-aqui estaran el archivo de enrutamiento de vistas para el manejo de la visualizacion de vistas

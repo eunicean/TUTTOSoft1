@@ -1,0 +1,56 @@
+/* 
+esta es la segunda opcion para darle estilo al css de la pagina principa (App).
+*/
+.container {
+    background-color: #f5f5dc; /* Café claro */
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 400px;
+    max-width: 100%;
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 30px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 90%; /* Reducir el ancho para dispositivos móviles */
+    }
+}
+
+.container input, .container button {
+    margin: 10px 0; /* Espaciado entre los elementos */
+}
+
+.container button {
+    background-color: #C67A53; /* Color de fondo del botón */
+    color: #fff; /* Color del texto del botón */
+    padding: 10px 45px; /* Espaciado interno del botón */
+    border: none; /* Sin borde */
+    border-radius: 8px; /* Bordes redondeados */
+    font-size: 15px; /* Tamaño de fuente */
+    font-weight: 600; /* Peso de la fuente */
+    cursor: pointer; /* Cursor de apuntar */
+}
+
+.container a {
+    color: #333; /* Color del texto del enlace */
+    font-size: 12px; /* Tamaño de fuente del enlace */
+    text-decoration: none; /* Sin subrayado */
+    margin-bottom: 10px; /* Espacio inferior */
+}
+
+.container span {
+    font-size: 15px; /* Tamaño de fuente de los textos adicionales */
+    padding: 15px; /* Relleno */
+}
+
+.boton-registrarse {
+    margin: 10px 0;
+}
