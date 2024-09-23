@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+
 import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
 
 function ProfileView() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -75,9 +75,6 @@ function ProfileView() {
         }
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     const handleLogout = () => {
         localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
         navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
@@ -87,22 +84,34 @@ function ProfileView() {
 
     return (
         <>
-            <button className="menu-toggle" onClick={toggleSidebar}>{isSidebarOpen ? 'Cerrar' : 'Menú'}</button>
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
             <div className="profile-container">
                 <div className="profile-card">
-                    <div className="profile-avatar"></div>
-                    <h2>{user.username || 'tutotest'}</h2>
-                    <p>{user.year || '2to año'}</p>
-                    <p>{user.carnet || 'Carnet 22000'}</p>
-
-                    <div className="button-group">
-                        <button className="edit-button" onClick={() => setEditing(true)}>Editar Perfil</button>
-                        <button className="logout-button" onClick={handleLogout}>Cerrar Sesión</button>
-                        <button className="help-button" onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
-                    </div>
+                    {editing ? (
+                        <>
+                            <input
+                                name="username"
+                                defaultValue={user.username}
+                                onChange={handleInputChange}
+                            />
+                            {/* <input
+                                name="email"
+                                defaultValue={user.email}
+                                onChange={handleInputChange}
+                            /> */}
+                            <button onClick={handleSave}>Guardar</button>
+                        </>
+                    ) : (
+                        <>  
+                            <div className="profile-avatar"></div>
+                            <h2>{user.username || 'Nombre no disponible'}</h2>
+                            <p>Email: {user.email || 'Email no disponible'}</p>
+                            <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
+                            <button onClick={() => setEditing(true)}>Editar Perfil</button>
+                        </>
+                    )}
+                    <button onClick={handleLogout}  >Cerrar Sesión</button>
+                    <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
                 </div>
-                
             </div>
         </>
     );

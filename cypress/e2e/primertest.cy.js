@@ -1,4 +1,4 @@
-describe('Prueba de Funcionalidad: Inicio de Sesión y Redirección a Sesiones', () => {
+describe('Prueba de Funcionalidad: Inicio de Sesión ', () => {
   it('Debería permitir iniciar sesión, redirigir a la página de sesiones y verificar la funcionalidad completa', () => {
     // Visitar la página de login
     cy.visit('http://localhost:5173/login');

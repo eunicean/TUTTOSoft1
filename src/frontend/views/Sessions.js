@@ -110,7 +110,7 @@ function Sessions() {
 
     return (
         <>  
-            
+
             <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}> 
                 <h1 className="sessions-title">Próximas Sesiones</h1>
                 <div className="session-filters">
@@ -126,7 +126,6 @@ function Sessions() {
                     <button onClick={() => navigate('/sessions/create')} className="create-session-button">
                         Crear Nueva Sesión
                     </button>
-                    
                 )}
                 <div className='yes-sessions'>
                     {sessions.length > 0 ? (
