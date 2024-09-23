@@ -1,4 +1,4 @@
-/* src/Vista.css */
+/* src/SessionVistaParaTutor.css */
 .vista-container {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -40,7 +40,7 @@
 .card {
   width: 25%; 
   height: 75vh;
-  margin-left: 10vh;
+  margin-left: 1vh;
   padding: 20px;
   border: 1px solid #C04000;
   border-radius: 10px;
@@ -50,11 +50,13 @@
 }
 
 .profile-pic {
-  width: 35vh;
-  height: 35vh;
+  width: 80%;  /* Cambia el tamaño a un valor porcentual */
+  height: auto;  /* Ajusta la altura automáticamente */
   border-radius: 50%;
   margin-bottom: 15px;
+  object-fit: cover; /* Asegura que la imagen se ajuste bien dentro del contenedor */
 }
+
 
 .card-buttons button {
   padding: 10px;
@@ -75,6 +77,17 @@
   margin-left: 15vh;
 }
 
+.session-time {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0;
+}
+
+
+
 .TitulosInfo {
   text-align: left;
   color: brown; /* Cambia el color a café */
@@ -87,7 +100,7 @@
   margin-bottom: 100px;
 }
 
-.TitulosInfo {
+.TitulosInfo h3 {
   font-size: 45px; /* Ajusta el tamaño del texto h3 aquí */
   margin-top: 100px;
   margin-bottom: 200px;

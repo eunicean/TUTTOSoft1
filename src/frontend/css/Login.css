@@ -131,7 +131,9 @@
     position: relative;
   }
 
-
+  .password-input {
+    
+  }
 
   .toggle-password {
     position: absolute;

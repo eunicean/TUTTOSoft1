@@ -31,20 +31,14 @@ Button {
   background-color: #C67A53;
   color: #fff;
   font-size: 15px;
-  padding: 20px 35px;
+  padding: 10px 45px;
   border: 1px solid transparent;
   border-radius: 8px;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  margin-top: 5px;
-  margin-right: 10px; /* Añade un margen a la derecha */
+  margin-top: 10px;
   cursor: pointer;
-}
-
-/* Opcional: Si quieres eliminar el margen del último botón */
-Button:last-child {
-  margin-right: 0;
 }
 
 .error-message {

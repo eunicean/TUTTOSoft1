@@ -60,19 +60,38 @@
   transition: background-color 0.3s ease, color 0.3s ease; /* Efecto suave al pasar el ratón */
   font-family: 'Arial Black', Arial, sans-serif; /* Fuente Arial Black */
   font-size: 1.1rem; /* Tamaño de la fuente */
-  color:#b98f5f; /* Color del texto */
-  background-color: #eec99f; /* Fondo de los ítems para mejor contraste */
+  color: #ffffff; /* Color blanco permanente del texto */
+  background-color: #e4a67d; /* Fondo de los ítems para mejor contraste */
   border: 1px solid var(--color-linea); /* Línea de separación alrededor de cada ítem */
+}
+
+/* Aquí colocas el nuevo bloque para los enlaces dentro de los items */
+.sidebar-items li a {
+  text-decoration: none; /* Quitar el subrayado */
+  color: #ffffff; /* Color personalizado para los enlaces */
+  transition: color 0.3s ease; /* Efecto suave al cambiar de color */
+}
+
+.sidebar-items li a:hover {
+  color: #f1ab5b; /* Color cuando el ratón pasa por encima del enlace */
+}
+
+.sidebar-items li a:active {
+  color: #eec99f; /* Color cuando el enlace es presionado */
+}
+
+.sidebar-items li a:visited {
+  color: #ffffff; /* Color para los enlaces ya visitados */
 }
 
 .sidebar-items li:hover {
   background-color: #f1ab5b; /* Color de fondo al pasar el ratón */
-  color: var(--color-boton); /* Color del texto al pasar el ratón */
+  color: #ffffff; /* Mantener el texto blanco al pasar el ratón */
 }
 
 .sidebar-items li.active {
   background-color: var(--color-boton); /* Color de fondo para el ítem activo */
-  color: white; /* Color del texto para el ítem activo */
+  color: #ffffff; /* Mantener el texto blanco para el ítem activo */
 }
 
 .sidebar-items li ion-icon {
@@ -82,6 +101,7 @@
 .sidebar-items li:not(:last-child) {
   border-bottom: 1px solid var(--color-linea);
 }
+
 
 .close-btn {
   position: absolute;
