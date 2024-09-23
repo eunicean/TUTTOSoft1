@@ -200,13 +200,32 @@ app.post('/register', async (req, res) => {
 app.get('/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        let query = 'SELECT * FROM user WHERE id = ?';  // Asegúrate de seleccionar todos los campos necesarios
+        const userType = req.user.typeuser;
+
+        let query = 'SELECT * FROM user WHERE id = ?';
         let params = [userId];
 
-        const [results] = await pool.query(query, params);
-        // console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
-        if (results.length > 0) {
-            res.json({ success: true, user: results[0] });
+        const [userResults] = await pool.query(query, params);
+
+        if (userResults.length > 0) {
+            const user = userResults[0];
+
+            // Si el usuario es un tutor (typeuser == 2), obtener sus especialidades
+            if (userType == 2) {  // Usamos == en lugar de === en caso de que userType sea un string
+                const specialtyQuery = `
+                    SELECT st.course_code, c.namecourse AS course_name
+                    FROM specialtyTutor st
+                    INNER JOIN course c ON st.course_code = c.course_code
+                    WHERE st.id_tutor = ?
+                `;
+
+                const [specialtyResults] = await pool.query(specialtyQuery, [userId]);
+                
+
+                // Agregar las especialidades al objeto del usuario
+                user.specialties = specialtyResults;
+            }
+            res.json({ success: true, user });
         } else {
             res.status(404).json({ success: false, message: "Usuario no encontrado" });
         }
@@ -215,6 +234,7 @@ app.get('/profile', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 app.post('/profile/update', authenticateToken, async (req, res) => {
