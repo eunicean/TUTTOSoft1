@@ -43,6 +43,10 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/SessionVistaEstudiante/:sessionId' element={<SessionVistaParaTutor />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence' element={<Absence />} />
+<<<<<<< Updated upstream
+=======
+          
+>>>>>>> Stashed changes
         </Routes>
       </div>
     </>

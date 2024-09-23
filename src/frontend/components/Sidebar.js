@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
       <button><img src="/icon.png" alt="icon" /></button>
       <ul className="sidebar-items">
         <li><Link to="/profile" onClick={closeSidebar}>Perfil</Link></li>
-        <li><Link to="/search-tutors" onClick={closeSidebar}>Buscar Tutores</Link></li>
+        <li><Link to="/seachtutor" onClick={closeSidebar}>Buscar Tutores</Link></li>
         <li><Link to="/calendar" onClick={closeSidebar}>Calendario</Link></li>
         <li><Link to="/session-history" onClick={closeSidebar}>Historial sesiones</Link></li>
         <li><Link to="/chat" onClick={closeSidebar}>Chat</Link></li>
