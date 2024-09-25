@@ -75,7 +75,7 @@ const SessionVistaParaTutor = () => {
           <p>Año: 3</p>
           <p>Carnet: 123456</p> 
           <StarRating rating={valorEstrellas} />
-          <button> Cerrar Sesion </button>
+          <button> Chat </button>
         </div>
 
         <div className="info">
