@@ -31,7 +31,8 @@ const Filter = ({ selectedSubjects, setSelectedSubjects }) => {
 
   const subjects = [
     'Física I', 'Cálculo I', 'Cálculo II', 'Mate discreta',
-    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo'
+    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo',
+    'Historia Universal', 'Matemáticas Básicas'
   ];
 
   return (
