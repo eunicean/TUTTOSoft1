@@ -1,3 +1,4 @@
+/* Título principal de la página */
 .page-title {
     font-size: 3rem;
     color: #333333;
@@ -9,8 +10,10 @@
     left: 0;
     width: 100%;
     z-index: 1000;
+    font-weight: bold; /* Hacer el título más grueso */
     animation: slideDown 0.5s ease-out;
 }
+
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -22,40 +25,87 @@
     }
 }
 
-/* Contenedor para las cards con scroll */
+
+/* Contenedor principal con scroll */
 .history-container {
-    margin-top: 20vh; /* Ajusta el margen superior para compensar el título fijo */
-    padding: 1rem; /* Espaciado interno */
+    margin-top: 15vh; /* Ajusta el margen superior para compensar el título fijo */
+    padding: 1rem;
     max-height: 60vh; /* Altura máxima del contenedor */
     overflow-y: auto; /* Scroll vertical */
-    background-color: #f5f5f5; /* Fondo del contenedor */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100vh;
+    margin: 0 auto; /* Centrar el contenedor */
+    background-color: #f9f9f9;
+    color: #333;
 }
 
-/* Oculta la scrollbar en navegadores webkit (Chrome, Safari) */
+/* Ocultar scrollbar en navegadores webkit (Chrome, Safari) */
 .history-container::-webkit-scrollbar {
     display: none;
 }
 
-/* Para Firefox */
+/* Ocultar scrollbar en Firefox */
 .history-container {
-    scrollbar-width: none; /* Oculta la scrollbar en Firefox */
+    scrollbar-width: none;
 }
 
-/* Para Internet Explorer y Edge */
+/* Ocultar scrollbar en Internet Explorer y Edge */
 .history-container {
-    -ms-overflow-style: none; /* Oculta la scrollbar en IE y Edge */
+    -ms-overflow-style: none;
 }
 
-.card {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    align-content: center;
-    color: #333333;
+/* Tabla para mostrar las sesiones */
+.session-table {
+    width: 100%; /* Ajusta el ancho de la tabla al 100% del contenedor */
+    border-collapse: collapse;
+    margin-top: 2rem;
+    font-size: 1.5rem; /* Aumenta el tamaño de la letra de las celdas */
+}
+
+/* Estilos para las celdas de la tabla */
+.session-table th, .session-table td {
+    padding: 1.5rem; /* Aumenta el padding para hacer las celdas más grandes */
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Encabezados de la tabla */
+.session-table th {
     background-color: #ba996f;
+    color: white;
+    font-size: 1.5rem; /* Aumenta el tamaño del texto de los títulos */
 }
+
+/* Estilos para las filas de sesiones */
+.session-item {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.3rem; /* Aumenta el tamaño del texto en las sesiones */
+}
+
+
+/* Hover para resaltar una fila cuando se pasa el ratón por encima */
+.session-item:hover {
+    background-color: #f0f0f0; /* Color de fondo al hacer hover en una sesión */
+}
+
+/* Ajustar el ancho de las columnas */
+.session-table th:first-child, 
+.session-table td:first-child {
+    width: 40%; /* Ancho de la columna del curso */
+}
+
+.session-table th:nth-child(2),
+.session-table td:nth-child(2) {
+    width: 30%; /* Ancho de la columna de la fecha */
+}
+
+.session-table th:nth-child(3),
+.session-table td:nth-child(3) {
+    width: 30%; /* Ancho de la columna de la hora */
+}
+
 /* Mensaje cuando no hay sesiones */
 .no-session {
     font-size: 1.2rem;
@@ -65,40 +115,13 @@
     background-color: #FAE1DD;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Estilos para las cards */
-.si-sessions {
-    font-size: 1.2rem;
-    color: #333333;
-    margin: 2rem 0;
-    padding: 1rem;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.Card-button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background-color: #FAE1DD;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.Card-button:hover {
-    background-color: #FAE1DD;
+    text-align: center;
 }
 
 /* Media queries para diseños responsivos */
 @media (max-width: 768px) {
     .history-container {
-        margin-top: 15vh; /* Ajustar margen superior para pantallas más pequeñas */
+        margin-top: 15vh; /* Ajustar margen superior en pantallas más pequeñas */
         max-height: 50vh; /* Ajustar la altura máxima del contenedor */
     }
 
@@ -108,6 +131,15 @@
     }
 
     .no-session, .Card-button {
-        font-size: 1rem; /* Ajustar el tamaño de fuente para pantallas más pequeñas */
+        font-size: 1rem; /* Ajustar el tamaño de fuente en pantallas más pequeñas */
+    }
+
+    .Card-button {
+        padding: 0.8rem;
+    }
+
+    .session-table th, .session-table td {
+        font-size: 1rem; /* Ajustar tamaño de letra para pantallas pequeñas */
+        padding: 0.5rem; /* Reducir padding en pantallas pequeñas */
     }
 }

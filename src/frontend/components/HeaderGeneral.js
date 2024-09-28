@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = ({ isSidebarOpen, toggleSidebar }) => {
   const headerStyle = {
@@ -40,7 +41,9 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
       <button style={menuButtonStyle} onClick={toggleSidebar}>
         ☰
       </button>
+      <Link to='/sessions' className ={titleStyle} style={{textDecoration: 'none'}}>
       <h1 style={titleStyle}>SISTEMA TUTO</h1>
+      </Link>
     </header>
   );
 };
