@@ -12,6 +12,7 @@ import SessionVistaParaTutor from '../views/SessionVistaParaTutor.js';
 import TestingHeader from '../views/VistaDePruebaHeader.js';
 import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
+import Searchtutor from '../views/Searchtutor.js';
 
 import '../css/Register.css';
 import '../css/Router.css';
@@ -37,13 +38,12 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/register" element={<Register />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path='/SessionVistaEstudiante/:sessionId' element={<SessionVistaParaTutor />} />
           <Route path="/cancel-session/:sessionId" element={<CancelView />} />
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
-
+          <Route path='/seachtutor' element={<Searchtutor />} />
         </Routes>
       </div>
     </>
