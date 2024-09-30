@@ -22,7 +22,7 @@ import Header from '../components/HeaderGeneral.js';
 
 const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  const excludedHeaderRoutes = ['/login', '/']; // Rutas donde no quieres mostrar el Header
+  const excludedHeaderRoutes = ['/login', '/', '/register']; // Rutas donde no quieres mostrar el Header
   return (
     <>
       {!excludedHeaderRoutes.includes(location.pathname) && (
