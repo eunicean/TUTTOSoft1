@@ -1,5 +1,5 @@
 // este es el componente del input...
-import React from 'react';
+const React = require('react');
 
 /* 
 * type: es el tipo de entrada que va a recibir el input. 

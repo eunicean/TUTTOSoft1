@@ -36,12 +36,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
-    "client": "cross-env PORT=5173 react-scripts start",
-    "server": "nodemon src/backend/main.js",
-    "build": "react-scripts build",
-    "test": "cypress open",
-    "eject": "react-scripts eject"
+      "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
+      "client": "cross-env PORT=5173 react-scripts start",
+      "server": "nodemon src/backend/main.js",
+      "build": "react-scripts build",
+      "test": "cypress open",
+      "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

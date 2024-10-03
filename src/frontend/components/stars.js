@@ -1,5 +1,7 @@
-import React from 'react';
-import '../css/StarsRating.css';
+const React = require('react');
+// import '../css/StarsRating.css';
+require('../css/StarsRating.css');
+
 
 const StarRating = ({ rating }) => {
     return (

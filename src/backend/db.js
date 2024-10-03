@@ -1,4 +1,5 @@
-import conn from './conn.js'
+// import conn from './conn.js'
+const app = require('./conn.js')
 
 // Función para buscar un usuario por email
 export async function buscarUsuarioPorEmail(email) {

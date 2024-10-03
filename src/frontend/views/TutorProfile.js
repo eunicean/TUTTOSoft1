@@ -1,11 +1,9 @@
-// src/Vista.js
-import React, {useState, useEffect} from 'react';
-import '../css/TutorProfile.css'
-
-import StarRating from '../components/stars.js';
+const React = require('react');
+const { useState, useEffect } = React;
+require('../css/TutorProfile.css');
+const StarRating = require('../components/stars.js');
 
 const TutorProfile = () => {
-  // manejo de estados
   const [temas, setTemas] = useState([]);
 
   useEffect(() => {
@@ -13,7 +11,7 @@ const TutorProfile = () => {
          const  temasList = ['matematica', 'Lenguaje', 'Ciencias'];
         setTemas(temasList);
       };
-      obtenerTemas(); // ejecutar la funcion
+      obtenerTemas(); 
     }, []);
 
     // donde se tiene que mandar a traer un valor en la base de datos

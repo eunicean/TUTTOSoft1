@@ -1,5 +1,6 @@
-import React from 'react';
-import '../css/CancelarCita.css'; // Asegúrate de crear un archivo CSS para los estilos
+const React = require('react');
+// import '../css/CancelarCita.css'; // Asegúrate de crear un archivo CSS para los estilos
+require('../css/CancelarCita.css');
 
 const CancelarCita = () => {
   return (

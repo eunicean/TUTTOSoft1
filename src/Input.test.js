@@ -1,4 +1,4 @@
-const React = require('react');
+const React = require('react');;
 const { render, screen } = require('@testing-library/react');
 require('@testing-library/jest-dom');
 const Input = require('./frontend/components/InputPrueba');

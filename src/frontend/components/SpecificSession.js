@@ -1,4 +1,4 @@
-import React from 'react';
+const React = require('react');
 
 const SpecificSession = ({ date, startHour, endHour, subject, tutorName, studentName }) => {
   return (

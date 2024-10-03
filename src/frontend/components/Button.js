@@ -1,5 +1,5 @@
 // componente del boton.
-import React from 'react';
+const React = require('react');
 
 /* 
 onClick: es el metodo que va a mandar el boton.

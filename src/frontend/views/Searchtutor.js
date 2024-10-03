@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import '../css/Seachtutor.css';
+const React = require('react');
+const { useState, useEffect } = React;
+
+require('../css/Searchtutor.css');
 
 const TutorCard = ({ name, subjects, year, rating }) => {
   return (

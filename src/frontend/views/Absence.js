@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar.js'; // Added .js extension
-import Navbar from '../components/Navbar.js'; // Added .js extension
-import '../css/Sessions.css';
-import '../css/Sidebar.css';
-import '../css/Navbar.css';
+const React = require('react');
+const { useState } = React;
+
+const Sidebar = require('../components/Sidebar.js'); // Added .js extension
+const Navbar = require('../components/Navbar.js'); // Added .js extension
+
+require('../css/Sessions.css');
+require('../css/Sidebar.css');
+require('../css/Navbar.css');
+
 
 function CancelSessionView({ sessionId }) {
     const [reason, setReason] = useState('');

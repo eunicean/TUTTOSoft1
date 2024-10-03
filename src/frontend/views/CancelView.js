@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar.js';
-import '../css/CancelSessionView.css';
-import { useParams, useNavigate } from 'react-router-dom';
+const React = require('react');
+const { useState } = React;
+
+const Sidebar = require('../components/Sidebar.js');
+require('../css/CancelSessionView.css');
+
+const { useParams, useNavigate } = require('react-router-dom');
+
 
 function CancelView() {
     const { sessionId } = useParams();

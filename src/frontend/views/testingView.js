@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import SpecificSession from '../components/SpecificSession.js';
+const React = require('react');
+const { useState, useEffect } = React;
+const { useParams, useNavigate } = require('react-router-dom');
+const SpecificSession = require('../components/SpecificSession.js');
+const Sidebar = require('../components/Sidebar.js');
 
-import Sidebar from '../components/Sidebar.js';
 
 function TestingView() {
     const { sessionId } = useParams();

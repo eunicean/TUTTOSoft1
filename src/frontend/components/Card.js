@@ -1,4 +1,4 @@
-import React from 'react';
+const React = require('react');
 
 const SessionCard = ({ date, startHour, endHour, subject }) => {
   return (

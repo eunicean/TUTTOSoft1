@@ -1,5 +1,5 @@
-import React from 'react';
-import HeaderYmenu from './components/HeaderYmenu.js';
+const React = require('react');
+const HeaderYmenu = require('./components/HeaderYmenu.js');
 
 const PaginaPrincipal = () => {
   return (

@@ -1,5 +1,6 @@
-import React from 'react';
-import { IoIosArrowBack, IoIosChatbubbles } from "react-icons/io";
+const React = require('react');
+// import { IoIosArrowBack, IoIosChatbubbles } from "react-icons/io";
+const {IoIosArrowBack, IoIosChatbubbles} = require("react-icons/io");
 
 const Navbar = () => {
   return (

@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
+const React = require('react');
+const { useState, useEffect } = React;
+
 //import { Link } from 'react-router-dom'; 
 
 const Header = () => {
