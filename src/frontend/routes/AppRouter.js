@@ -1,30 +1,28 @@
-const React = require('react');
-const { useState } = React;
-const { BrowserRouter, Routes, Route, Navigate, useLocation } = require('react-router-dom');
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Login from '../views/Login.js';
+import Sessions from '../views/Sessions.js';
+import Register from '../views/Register.js';
+import Profile from '../views/Profile.js';
+import TestingView from '../views/testingView.js';
+import CancelView from '../views/CancelView.js';
+import CreateSession from '../views/createSession.js';
+import TutorProfile from '../views/TutorProfile.js';
+import SessionVistaParaTutor from '../views/SessionVistaParaTutor.js';
+import TestingHeader from '../views/VistaDePruebaHeader.js';
+import SessionsHistory from '../views/SessionsHistory.js';
+import Absence from '../views/Absence.js';
+import Searchtutor from '../views/Searchtutor.js';
 
-const Login = require('../views/Login.js');
-const Sessions = require('../views/Sessions.js');
-const Register = require('../views/Register.js');
-const Profile = require('../views/Profile.js');
-const TestingView = require('../views/testingView.js');
-const CancelView = require('../views/CancelView.js');
-const CreateSession = require('../views/createSession.js');
-const TutorProfile = require('../views/TutorProfile.js');
-const SessionVistaParaTutor = require('../views/SessionVistaParaTutor.js');
-const TestingHeader = require('../views/VistaDePruebaHeader.js');
-const SessionsHistory = require('../views/SessionsHistory.js');
-const Absence = require('../views/Absence.js');
-const Searchtutor = require('../views/Searchtutor.js');
+import '../css/Register.css';
+import '../css/Router.css';
 
-require('../css/Register.css');
-require('../css/Router.css');
-
-const Sidebar = require('../components/Sidebar.js');
-const Header = require('../components/HeaderGeneral.js');
+import Sidebar from '../components/Sidebar.js';
+import Header from '../components/HeaderGeneral.js';
 
 const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  const excludedHeaderRoutes = ['/api/login', '/', '/register']; // Rutas donde no quieres mostrar el Header
+  const excludedHeaderRoutes = ['/login', '/', '/register']; // Rutas donde no quieres mostrar el Header
   return (
     <>
       {!excludedHeaderRoutes.includes(location.pathname) && (
@@ -35,8 +33,8 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
       )}
       <div className={`app-content ${isSidebarOpen ? 'shifted' : ''}`} style={{ marginTop: isSidebarOpen ? '80px' : '60px' }}>
         <Routes>
-          <Route path="/" element={<Navigate replace to="/api/login" />} />
-          <Route path="/api/login" element={<Login />} />
+          <Route path="/" element={<Navigate replace to="/login" />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/profile" element={<Profile />} />

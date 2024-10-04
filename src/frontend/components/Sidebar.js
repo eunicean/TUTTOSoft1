@@ -1,6 +1,5 @@
-const React = require('react');
-// import { Link} from 'react-router-dom';
-const { Link } = require('react-router-dom');
+import React from 'react';
+import { Link} from 'react-router-dom';
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
   const handleCancelSession = () => {

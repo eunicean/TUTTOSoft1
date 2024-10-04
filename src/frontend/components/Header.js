@@ -1,5 +1,5 @@
 // Este seria el componete del header.
-const React = require('react');
+import React from 'react';
 
 function Header({ title}) {
     const headerStyle = {

@@ -1,14 +1,11 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const Sidebar = require('../components/Sidebar.js');
-const Navbar = require('../components/Navbar.js');
-const { useNavigate } = require('react-router-dom');
-const HistoryCard = require('../components/HistoryCard.js'); // Require the component
-
-require('../css/Sidebar.css');
-require('../css/Navbar.css');
-require('../css/Historial.css');
-
+import React, { useState, useEffect } from 'react';
+import Sidebar from '../components/Sidebar.js';
+import Navbar from '../components/Navbar.js';
+import { useNavigate } from 'react-router-dom'; 
+import HistoryCard from '../components/HistoryCard.js'; // Importa el componente
+import '../css/Sidebar.css';
+import '../css/Navbar.css';
+import '../css/Historial.css';
 
 function SessionsHistory(){
     const [sessions, setSessions] = useState([]);

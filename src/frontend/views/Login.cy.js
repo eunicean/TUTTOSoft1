@@ -1,8 +1,7 @@
-const React = require('react');
-const Login = require('./Login.js');
-const { mount } = require('cypress/react18');
-const { MemoryRouter } = require('react-router-dom');
-
+import React from 'react';
+import Login from './Login.js';
+import { mount } from 'cypress/react18';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('Login Component', () => {
   it('shows an error message with invalid credentials', () => {

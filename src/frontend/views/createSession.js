@@ -1,12 +1,12 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const { useNavigate } = require('react-router-dom');
-const Sidebar = require('../components/Sidebar.js');
-const Navbar = require('../components/Navbar.js');
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar.js';
+import Navbar from '../components/Navbar.js';
 
-require('../css/Sessions.css');
-require('../css/Sidebar.css');
-require('../css/Navbar.css');
+
+import '../css/Sessions.css';
+import '../css/Sidebar.css';
+import '../css/Navbar.css';
 
 function CreateSession() {
     const [newSession, setNewSession] = useState({

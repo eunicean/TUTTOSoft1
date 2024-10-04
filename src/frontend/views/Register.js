@@ -1,13 +1,10 @@
-const React = require('react');
-const { useState } = React;
-const { useNavigate } = require('react-router-dom');
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header.js';
+import Button from '../components/Button.js';
+import Footer from '../components/Footer.js';
 
-const Header = require('../components/Header.js');
-const Button = require('../components/Button.js');
-const Footer = require('../components/Footer.js');
-
-require('../css/Register.css');
-
+import '../css/Register.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');

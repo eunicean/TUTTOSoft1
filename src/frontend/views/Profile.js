@@ -1,12 +1,10 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const { useNavigate } = require('react-router-dom');
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
-const Sidebar = require('../components/Sidebar.js');
-require('../css/Sidebar.css');
-require('../css/Navbar.css');
-require('../css/ProfileCard.css');
-
+import Sidebar from '../components/Sidebar.js';
+import '../css/Sidebar.css';
+import '../css/Navbar.css';
+import '../css/ProfileCard.css';
 
 function ProfileView() {
     const [user, setUser] = useState({});

@@ -1,7 +1,4 @@
-// import React, { createContext, useState } from 'react';
-const React = require('react');
-const { useState, createContext } = React;
-
+import React, { createContext, useState } from 'react';
 
 // Crear el contexto
 export const UserContext = createContext(null);

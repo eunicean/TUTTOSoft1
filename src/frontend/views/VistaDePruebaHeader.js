@@ -1,6 +1,6 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const Sidebar = require('../components/Sidebar.js');
+import React, { useState, useEffect } from 'react';
+import Sidebar from '../components/Sidebar.js';
+
 
 function TestingHeader() {
     return (

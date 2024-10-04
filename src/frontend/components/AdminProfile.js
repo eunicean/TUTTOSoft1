@@ -1,6 +1,4 @@
-// const React = require('react');
-const React = require('react');
-
+import React from 'react';
 
 function AdminProfile() {
     return (

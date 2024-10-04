@@ -1,12 +1,11 @@
-const React = require('react');
-const { useState, useEffect } = React;
-const { useParams, useNavigate } = require('react-router-dom');
-require('../css/TutorProfile.css');
-const Header = require('../components/HeaderYmenu.js');
-const StarRating = require('../components/stars.js');
-const Sidebar = require('../components/Sidebar.js');
-const Navbar = require('../components/Navbar.js');
-
+// src/Vista para verlo desde el punto de vista de tutor...
+import React, {useState, useEffect} from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import '../css/TutorProfile.css'
+import Header from '../components/HeaderYmenu.js';
+import StarRating from '../components/stars.js';
+import Sidebar from '../components/Sidebar.js';
+import Navbar from '../components/Navbar.js';
 
 const SessionVistaParaTutor = () => {
     const { sessionId } = useParams();

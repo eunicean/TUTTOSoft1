@@ -1,10 +1,9 @@
-const React = require('react');
-const { useState } = React;
-require('../css/Login.css');
-const Header = require('../components/Header.js');
-const Button = require('../components/Button.js');
-const Footer = require('../components/Footer.js');
-const { useNavigate } = require('react-router-dom');
+import React, { useState } from 'react';
+import '../css/Login.css';
+import Header from '../components/Header.js';
+import Button from '../components/Button.js';
+import Footer from '../components/Footer.js';
+import { useNavigate } from 'react-router-dom'; 
 
 // Componente de Entrada personalizado
 const Input = ({ type, placeholder, value, onChange }) => (
@@ -27,7 +26,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
