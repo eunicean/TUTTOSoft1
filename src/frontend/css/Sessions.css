@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #FFEFEF; /* Un tono suave de rosa */
+    
   }
   
   /* Menú de hamburguesa, si aplica */
@@ -26,17 +26,7 @@ body, html {
     background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
   }
   
-  /* Contenedor principal para la vista de sesiones */
-  .sessions-container {
-    width: 100%;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #FFFFFF; /* Fondo blanco para el contenido */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave para el contenedor */
-    border-radius: 15px; /* Bordes redondeados para el contenedor */
-    position: relative;
-    transition: transform 0.3s ease;
-  }
+
   
   /* Título de las sesiones */
   .sessions-title {
@@ -51,27 +41,19 @@ body, html {
     color: #333333;
     margin: 2rem 0;
     padding: 2rem;
-    background-color: #FAE1DD; /* Fondo suave para el mensaje */
-    border-radius: 10px; /* Bordes redondeados para el mensaje */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
+    background-color: #FAE1DD; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 
-  .yes-sessions{
-    font-size: 1.2rem;
-    color: #333333;
-    margin: 2rem 0;
-    padding: 2rem;
-    background-color: #FAE1DD; /* Fondo suave para el mensaje */
-    border-radius: 10px; /* Bordes redondeados para el mensaje */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
-  }
+
   
   /* Botón para añadir nuevas sesiones, si aplica */
   .add-new-session {
     display: block;
     margin: 1rem auto;
     padding: 0.5rem 1rem;
-    background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
+    background-color: #FAD4D4;
     color: #333;
     font-size: 1rem;
     border: none;

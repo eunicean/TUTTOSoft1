@@ -155,7 +155,7 @@
   padding: 30px; /* Aumenta el padding para hacer el card más grande */
   margin-top: 2px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Aumenta la sombra para un efecto más prominente */
-  background-color: #ba996f;
+  /* background-color: #ba996f; */
   display: flex;
   flex-direction: column;
   align-items: center;

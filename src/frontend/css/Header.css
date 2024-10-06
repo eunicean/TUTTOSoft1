@@ -1,0 +1,40 @@
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #9c4922;
+    color: #fff;
+    transition: padding 0.3s ease, height 0.3s ease;
+    z-index: 1000; /* Asigna un alto z-index para asegurar que se muestre por encima de todo */
+}
+
+.header-open {
+    padding: 0 70px;
+    height: 80px;
+}
+
+.header-closed {
+    padding: 0 20px;
+    height: 60px;
+}
+
+.menu-button {
+    position: absolute;
+    left: 10px;
+    top: 1px;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.title {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+}
