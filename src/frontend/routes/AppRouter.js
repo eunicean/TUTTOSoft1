@@ -45,6 +45,7 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/absence' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
           <Route path='/seachtutor' element={<Searchtutor />} />
+          <Route path='/VistaDePruebaHeader' element ={<TestingHeader />} />
         </Routes>
       </div>
     </>
