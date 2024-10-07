@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import '../css/Seachtutor.css';
 
 const TutorCard = ({ name, subjects, year, rating }) => {
@@ -20,53 +20,61 @@ const TutorCard = ({ name, subjects, year, rating }) => {
   );
 };
 
-const Filter = ({ selectedSubjects, setSelectedSubjects }) => {
-  const handleCheckboxChange = (subject) => {
-    setSelectedSubjects(prev =>
-      prev.includes(subject)
-        ? prev.filter(item => item !== subject)
-        : [...prev, subject]
-    );
-  };
-
+const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   const subjects = [
     'Física I', 'Cálculo I', 'Cálculo II', 'Mate discreta',
-    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo'
+    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo',
+    'Historia Universal', 'Matemáticas Básicas'
   ];
 
   return (
-    <div className="filter">
-      <h4>Materia</h4>
+    <select
+      value={selectedSubject}
+      onChange={(e) => setSelectedSubject(e.target.value)}
+      className="filter-dropdown"
+    >
+      <option value="">Seleccionar materia</option>
       {subjects.map((subject, index) => (
-        <label key={index}>
-          <input
-            type="checkbox"
-            checked={selectedSubjects.includes(subject)}
-            onChange={() => handleCheckboxChange(subject)}
-          />
+        <option key={index} value={subject}>
           {subject}
-        </label>
+        </option>
       ))}
-    </div>
+    </select>
   );
 };
 
 const TutorsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [tutors, setTutors] = useState([]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const tutors = [
-    { name: 'Tutor 1', subjects: ['Física I', 'Cálculo I'], year: 5, rating: 4 },
-    { name: 'Tutor 2', subjects: ['Cálculo II', 'Pensamiento cuantitativo'], year: 5, rating: 3 },
-    { name: 'Tutor 3', subjects: ['Mate discreta', 'Teoría de probabilidades'], year: 5, rating: 5 },
-  ];
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/tutors');
+        const data = await response.json();
+
+        const formattedTutors = data.map(tutor => ({
+          name: tutor.username,
+          subjects: tutor.courses.split(', '),
+          year: 5,  // Año fijo
+          rating: Math.round(tutor.avg_rating)
+        }));
+        setTutors(formattedTutors);
+      } catch (error) {
+        console.error('Error fetching tutors:', error);
+      }
+    };
+
+    fetchTutors();
+  }, []);
 
   const filteredTutors = tutors.filter(tutor => {
-    const matchesSubject = selectedSubjects.length === 0 || tutor.subjects.some(subject => selectedSubjects.includes(subject));
+    const matchesSubject = selectedSubject === '' || tutor.subjects.includes(selectedSubject);
     const matchesSearchTerm = tutor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tutor.subjects.some(subject => subject.toLowerCase().includes(searchTerm.toLowerCase())) ||
       tutor.year.toString().includes(searchTerm);
@@ -86,7 +94,7 @@ const TutorsPage = () => {
             onChange={handleSearch}
             className="search-input"
           />
-          <button className="search-btn">🔍</button>
+          <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
         </div>
       </div>
       <div className="content">
@@ -101,7 +109,6 @@ const TutorsPage = () => {
             />
           ))}
         </div>
-        <Filter selectedSubjects={selectedSubjects} setSelectedSubjects={setSelectedSubjects} />
       </div>
     </div>
   );
