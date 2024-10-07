@@ -66,7 +66,6 @@ const SessionVistaParaTutor = () => {
       <div className="header">
       {/* <button className="menu-toggle">Menu</button> */}
         <span className="session-text">Sesión</span>
-        <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
       </div>
       <div className="content">
         <div className="card1">
@@ -75,7 +74,7 @@ const SessionVistaParaTutor = () => {
           <p>Año: 3</p>
           <p>Carnet: 123456</p> 
           <StarRating rating={valorEstrellas} />
-          <button> Cerrar Sesion </button>
+          <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
         </div>
 
         <div className="info">
