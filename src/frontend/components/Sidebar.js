@@ -55,12 +55,6 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
           </Link>
         </li>
         <li>
-          <Link to="/absence" onClick={closeSidebar} className="sidebar-link">
-          <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M13 17a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/><path d="M17 13v4h4M12 3v4a1 1 0 0 0 1 1h4"/><path d="M11.5 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v2m0 3v4"/></g></svg>
-             Reportar ausencia
-          </Link>
-        </li>
-        <li>
           <button onClick={handleLogout} className="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 4.001H5v14a2 2 0 0 0 2 2h8m1-5l3-3m0 0l-3-3m3 3H9"/></svg>
             Cerrar Sesión

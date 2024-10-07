@@ -38,7 +38,7 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/register" element={<Register />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path='/SessionVistaEstudiante/:sessionId' element={<SessionVistaParaTutor />} />
+          <Route path='/sessionVistaTutor/:sessionId' element={<SessionVistaParaTutor />} />
           <Route path="/cancel-session/:sessionId" element={<CancelView />} />
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
