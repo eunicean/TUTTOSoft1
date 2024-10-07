@@ -1,7 +1,7 @@
 // src/Vista para verlo desde el punto de vista de tutor o estudiante...
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../css/TutorProfile.css'
+import '../css/TutorProfile.css';
 import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';
@@ -14,7 +14,7 @@ const SessionVistaParaTutorOEstudiante = () => {
     const [error, setError] = useState(null);
     const [isTutor, setIsTutor] = useState(false); // Nueva variable para verificar si es tutor o estudiante
     const navigate = useNavigate();
-    const valorEstrellas = 3; // de la calificacion en la base de datos
+    const valorEstrellas = 3; // de la calificación en la base de datos
 
     useEffect(() => {
         const fetchSession = async () => {
@@ -50,7 +50,6 @@ const SessionVistaParaTutorOEstudiante = () => {
         fetchSession();
     }, [sessionId]);
 
-
     if (loading) {
         return <p>Loading...</p>; // Mostrar mientras se carga la data
     }
@@ -63,6 +62,7 @@ const SessionVistaParaTutorOEstudiante = () => {
         <div className="vista-container">
             <div className="header">
                 <span className="session-text">Sesión</span>
+                {/* Botón para cancelar la cita */}
                 <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
             </div>
             <div className="content">
@@ -90,15 +90,15 @@ const SessionVistaParaTutorOEstudiante = () => {
                 </div>
 
                 <div className="info">
-                    <div className='TitulosInfo'>
+                    <div className="TitulosInfo">
                         <h2>Materia: {session.CourseCode}</h2>
                         <h2>Inicio: {session.startHour}</h2> 
                         <h2>Finalización: {session.endHour}</h2>
                     </div>
-                    <div className='Info2'>
-                        <div className='temas'>
+                    <div className="Info2">
+                        <div className="temas">
                             <h2>Notas para la sesión</h2>
-                            <div className='temas-card1'>
+                            <div className="temas-card1">
                                 <h2>Temas a repasar</h2>
                                 <ul> 
                                     {session.temas && session.temas.map((tema, index) => (

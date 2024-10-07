@@ -115,21 +115,27 @@ function CreateSession() {
             {/* <Navbar /> */}
             <h1>Crear Nueva Sesión</h1>
             <div className={`create-session-form  ${isSidebarOpen ? 'shifted' : ''}`}>
+                <p>Cursos:</p>
                 <select name="subject" value={newSession.subject} onChange={handleInputChange}>
                     <option value="">Selecciona un curso</option>
                     {courses.map(course => (
                         <option key={course.course_code} value={course.course_code}>{course.namecourse}</option>
                     ))}
                 </select>
+                <p>Fecha de la sesión:</p>
                 <input type="date" name="date" value={newSession.date} onChange={handleInputChange} />
+                <p>Hora de inicio:</p>
                 <input type="time" name="startHour" value={newSession.startHour} onChange={handleInputChange} />
+                <p>Hora de finalización:</p>
                 <input type="time" name="endHour" value={newSession.endHour} onChange={handleInputChange} />
+                <p>Modalidad:</p>
                 <select className="select-container" name="mode" value={newSession.mode} onChange={handleInputChange}>
                     <option value="">Selecciona la modalidad</option>
                     <option value="VIRTUAL">VIRTUAL</option>
                     <option value="PRESENCIAL">PRESENCIAL</option>
                     <option value="AMBOS">AMBOS</option>
                 </select>
+                <p>Estudiante que recibirá la tutoría:</p>
                 <div className="student-email-container">
                     <input 
                         name="studentEmail" 

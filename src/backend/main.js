@@ -565,7 +565,6 @@ app.get('/session-history', authenticateToken, async (req, res) => {
 });
 
 
-
 // Endpoint to get all courses
 app.get('/courses', async (req, res) => {
     try {
@@ -584,6 +583,37 @@ app.get('/courses', async (req, res) => {
 });
 
 
+// Endpoint to get all tutors with their courses and average rating
+app.get('/tutors', async (req, res) => {
+    try {
+        const query = `
+            SELECT x.id, x.username, x.email, x.typeuser, 
+                   GROUP_CONCAT(c.namecourse ORDER BY c.namecourse SEPARATOR ', ') AS courses,
+                   COALESCE(avg_rating.avg_rating, 0) AS avg_rating
+            FROM user x
+            JOIN specialtyTutor st ON x.id = st.id_tutor
+            JOIN course c ON c.course_code = st.course_code
+            LEFT JOIN (
+                SELECT id_receiver, AVG(rating) AS avg_rating
+                FROM comment
+                GROUP BY id_receiver
+            ) avg_rating ON x.id = avg_rating.id_receiver
+            WHERE x.typeuser = 2
+            GROUP BY x.id, x.username, x.email, x.typeuser, avg_rating.avg_rating;
+        `;
+        
+        const [results] = await pool.query(query);
+        
+        if (results.length > 0) {
+            res.json(results);
+        } else {
+            res.status(404).json({ message: 'No se encontró tutores' });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

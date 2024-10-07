@@ -12,6 +12,7 @@ import SessionVistaParaTutor from '../views/SessionVistaParaTutor.js';
 import TestingHeader from '../views/VistaDePruebaHeader.js';
 import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
+import Searchtutor from '../views/Searchtutor.js';
 
 import '../css/Register.css';
 import '../css/Router.css';
@@ -21,7 +22,7 @@ import Header from '../components/HeaderGeneral.js';
 
 const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  const excludedHeaderRoutes = ['/login', '/']; // Rutas donde no quieres mostrar el Header
+  const excludedHeaderRoutes = ['/login', '/', '/register']; // Rutas donde no quieres mostrar el Header
   return (
     <>
       {!excludedHeaderRoutes.includes(location.pathname) && (
@@ -43,7 +44,7 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
-
+          <Route path='/seachtutor' element={<Searchtutor />} />
         </Routes>
       </div>
     </>
