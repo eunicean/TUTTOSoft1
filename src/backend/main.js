@@ -619,15 +619,113 @@ app.get('/tutors', async (req, res) => {
     }
 });
 
-app.get('/chat', async (req, res) => {
-    try{
-        const query = `
-        SELECT  `;
+app.get('chats/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId;
+    
+    try {
+        const chatInfoQuery = `
+            SELECT 
+                c.id as chatId,
+                c.chat_name,
+                ci.id_integrant,
+                m.id_message,
+                m.content,
+                m.time_sent,
+                m.id_user
+            FROM 
+                chat c
+            JOIN 
+                chat_integrants ci ON c.id = ci.id_chat
+            JOIN 
+                chat_messages cm ON c.id = cm.id_chat
+            JOIN 
+                messages m ON cm.id_message = m.id_message
+            WHERE 
+                c.id = ?
+            ORDER BY 
+                m.time_sent DESC;
+        `;
+        
+        const [chatDetails] = await pool.query(chatInfoQuery, [chatId]);
+        
+        if (chatDetails.length > 0) {
+
+            const chatInfo = {
+                chatId: chatDetails[0].chatId,
+                chatName: chatDetails[0].chat_name,
+                messages: [],
+                integrants: []
+            };
+
+            chatDetails.forEach(detail => {
+                chatInfo.integrants.push(detail.id_integrant);
+                chatInfo.messages.push({
+                    idMessage: detail.id_message,
+                    content: detail.content,
+                    timeSent: detail.time_sent,
+                    idUser: detail.id_user
+                });
+            });
+
+            chatInfo.integrants = [...new Set(chatInfo.integrants)];
+
+            res.json({ success: true, chat: chatInfo });
+        } else {
+            res.status(404).json({ success: false, message: "Chat not found" });
+        }
     } catch (error) {
         console.error('Database error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
+app.get('/chats', authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const chatsQuery = `
+            SELECT 
+                c.id as chatId,
+                c.chat_name,
+                u.username as otherIntegrantName,
+                u.id as otherIntegrantId
+            FROM 
+                chat_integrants ci
+            JOIN 
+                chat c ON ci.id_chat = c.id
+            JOIN 
+                chat_integrants ci2 ON c.id = ci2.id_chat AND ci2.id_integrant != ci.id_integrant
+            JOIN 
+                user u ON ci2.id_integrant = u.id
+            WHERE 
+                ci.id_integrant = ?
+            GROUP BY 
+                c.id
+            ORDER BY 
+                c.id;
+        `;
+
+        const [chats] = await pool.query(chatsQuery, [userId]);
+
+        if (chats.length > 0) {
+            const chatList = chats.map(chat => ({
+                chatId: chat.chatId,
+                chatName: chat.chat_name,
+                otherIntegrantName: chat.otherIntegrantName, 
+                otherIntegrantId: chat.otherIntegrantId 
+            }));
+
+            res.json({ success: true, chats: chatList });
+        } else {
+            res.json({ success: true, message: "No chats found", chats: [] });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
