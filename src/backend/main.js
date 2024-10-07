@@ -301,9 +301,10 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE (ss.id_session IS NOT NULL OR sp.id_tutor = ?) AND (
                     (sp.start_hour BETWEEN ? AND ?) OR
                     (sp.end_hour BETWEEN ? AND ?)
@@ -311,9 +312,10 @@ app.get('/sessions', authenticateToken, async (req, res) => {
             params = [userId, userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE ss.id_session IS NOT NULL OR sp.id_tutor = ?`;
             params = [userId, userId];
         }
@@ -330,8 +332,6 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
-
 
 
 // Utility function for period times
@@ -363,11 +363,14 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     try {
         const sessionQuery = `
             SELECT 
-                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, sp.mode, 
+                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, c.namecourse, sp.mode, 
                 sp.tutorNotes, 
                 tutor.username as tutorName, student.username as studentName
             FROM 
                 sessionPlanned sp
+            
+            LEFT JOIN course c ON sp.course_code = c.course_code
+            
             JOIN 
                 user tutor ON sp.id_tutor = tutor.id
             JOIN 
@@ -380,7 +383,6 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
 
         // Ejecutar la consulta de la sesión
         const [sessionResults] = await pool.query(sessionQuery, [sessionId]);
-
         if (sessionResults.length > 0) {
             const session = {
                 id: sessionResults[0].id,
@@ -388,12 +390,14 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
                 startHour: sessionResults[0].start_hour,
                 endHour: sessionResults[0].end_hour,
                 courseCode: sessionResults[0].course_code,
+                namecourse: sessionResults[0].namecourse,
                 mode: sessionResults[0].mode,
                 tutorNotes: sessionResults[0].tutorNotes, 
                 tutorName: sessionResults[0].tutorName,
                 studentName: sessionResults[0].studentName
             };
-
+            
+            console.log(sessionResults);
             res.json({ success: true, session });
         } else {
             res.status(404).json({ success: false, message: "Session not found" });
@@ -609,6 +613,16 @@ app.get('/tutors', async (req, res) => {
         } else {
             res.status(404).json({ message: 'No se encontró tutores' });
         }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/chat', async (req, res) => {
+    try{
+        const query = `
+        SELECT  `;
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ message: 'Internal server error' });

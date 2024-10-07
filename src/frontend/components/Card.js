@@ -9,12 +9,12 @@ import Button from '@mui/material/Button/index.js';
 const SessionCard = ({ date, startHour, endHour, subject, imageUrl }) => {
   return (
     <Card sx={{ maxWidth: 345, m: 2, boxShadow: 3 }}>
-      <CardMedia
+      {/* <CardMedia
         component="img"
         alt={subject}
         height="140"
         image={imageUrl}
-      />
+      /> */}
       <CardContent>
         <Typography color="text.secondary" gutterBottom>
           Fecha: {date}

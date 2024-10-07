@@ -22,14 +22,14 @@
     margin-top: 40px;
     padding: 10px 20px;
     font-size: 20px;
-    background-color: #ba996f;
+    /* background-color: #ba996f; */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  .cancel-button:hover {
+  button:hover {
     background-color: #ff1a1a;
   }
   

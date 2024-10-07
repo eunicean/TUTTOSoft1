@@ -78,7 +78,7 @@ function Sessions() {
                 date: new Date(session.date).toLocaleDateString('es-ES'),
                 startHour: session.start_hour,
                 endHour: session.end_hour,
-                subject: `Curso: ${session.course_code}`,
+                subject: session.namecourse,
                 mode: session.mode
             }));
             setSessions(transformedSessions);
