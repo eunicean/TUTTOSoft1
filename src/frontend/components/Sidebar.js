@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
-  
   const handleCancelSession = () => {
     // Lógica para cancelar sesión
     console.log('Sesión cancelada');
@@ -24,20 +23,13 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
 
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-      <button onClick={closeSidebar} className="close-sidebar">X</button>
-      <button><img src="/icon.png" alt="icon" /></button>
+          <button onClick={closeSidebar} className="close-sidebar">X</button>
+         <div className="sidebar-header">
+        <Link to="/sessions" onClick={closeSidebar} className="icon-button">
+          <img src="/icon.png" alt="icon" className="sidebar-top-icon" />
+        </Link>
+      </div>
       <ul className="sidebar-items">
-<<<<<<< Updated upstream
-        <li><Link to="/profile" onClick={closeSidebar}>Perfil</Link></li>
-        <li><Link to="/seachtutor" onClick={closeSidebar}>Buscar Tutores</Link></li>
-        <li><Link to="/calendar" onClick={closeSidebar}>Calendario</Link></li>
-        <li><Link to="/sessions-history" onClick={closeSidebar}>Historial sesiones</Link></li>
-        <li><Link to="/chat" onClick={closeSidebar}>Chat</Link></li>
-        <li><Link to="/cancel-session/:sessionId" onClick={closeSidebar}>Cancelar Sesión</Link></li>
-        <li><Link to="/absence" onClick={closeSidebar}>Reportar Ausencia</Link></li>
-        <li><Link to="/tutorprofile" onClick={closeSidebar}>Seseion tutor</Link></li>
-        <li><Link onClick={handleLogout}>Cerrar Sesión</Link></li>
-=======
         <li>
           <Link to="/profile" onClick={closeSidebar} className="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg>
@@ -68,7 +60,6 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
             Cerrar Sesión
           </button>
         </li>
->>>>>>> Stashed changes
       </ul>
     </div>
   );

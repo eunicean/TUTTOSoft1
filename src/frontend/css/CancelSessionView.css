@@ -40,9 +40,9 @@
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 3em;
     color: #8B4513; /* Color marrón para el título */
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .cancel-session-card {

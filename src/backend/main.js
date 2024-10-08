@@ -1,9 +1,17 @@
+import {
+  verificarUsuario,
+  crearUsuario,
+  obtenerTipoUsuarioPorId,
+  obtenerSesionesPlanificadasPorPersona
+}
+from './db.js'
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import pool from './conn.js'; 
 import dotenv from 'dotenv';
+
 
 dotenv.config();
 
@@ -113,6 +121,38 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Endpoint para obtener el tipo de usuario por ID
+app.get('/users/type', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
+    if (tipoUsuario) {
+      res.status(200).json({ tipoUsuario }); // Devuelve el tipo de usuario encontrado
+    } else {
+      res.status(404).json({ error: 'User not found' }); // Devuelve un error si el usuario no se encuentra
+    }
+  } catch (error) {
+    console.error('Error obtaining user type:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
+  }
+});
+
+// Endpoint para obtener las sesiones planificadas por persona
+app.get('/users/sessions', async (req, res) => {
+  const { userId } = req.query; // Obtén el ID del usuario de la consulta
+  try {
+    const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
+    if (sesiones) {
+      res.status(200).json({ sesiones }); // Devuelve las sesiones planificadas encontradas
+    } else {
+      res.status(404).json({ error: 'Sessions not found' }); // Devuelve un error si no se encuentran sesiones planificadas
+    }
+  } catch (error) {
+    console.error('Error obtaining planned sessions:', error);
+    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
+  }
+});
+
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
@@ -160,13 +200,32 @@ app.post('/register', async (req, res) => {
 app.get('/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        let query = 'SELECT * FROM user WHERE id = ?';  // Asegúrate de seleccionar todos los campos necesarios
+        const userType = req.user.typeuser;
+
+        let query = 'SELECT * FROM user WHERE id = ?';
         let params = [userId];
 
-        const [results] = await pool.query(query, params);
-        // console.log('Datos del usuario:', results);  // Esto te mostrará los datos recuperados de la base de datos
-        if (results.length > 0) {
-            res.json({ success: true, user: results[0] });
+        const [userResults] = await pool.query(query, params);
+
+        if (userResults.length > 0) {
+            const user = userResults[0];
+
+            // Si el usuario es un tutor (typeuser == 2), obtener sus especialidades
+            if (userType == 2) {  // Usamos == en lugar de === en caso de que userType sea un string
+                const specialtyQuery = `
+                    SELECT st.course_code, c.namecourse AS course_name
+                    FROM specialtyTutor st
+                    INNER JOIN course c ON st.course_code = c.course_code
+                    WHERE st.id_tutor = ?
+                `;
+
+                const [specialtyResults] = await pool.query(specialtyQuery, [userId]);
+                
+
+                // Agregar las especialidades al objeto del usuario
+                user.specialties = specialtyResults;
+            }
+            res.json({ success: true, user });
         } else {
             res.status(404).json({ success: false, message: "Usuario no encontrado" });
         }
@@ -175,6 +234,7 @@ app.get('/profile', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 app.post('/profile/update', authenticateToken, async (req, res) => {
@@ -344,6 +404,49 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/grade-session', authenticateToken, async (req, res) => {
+    const { calificacion, comentario, id_receiver, id_session } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        const conexion = await pool.getConnection();
+        const [comentarios] = await pool.query(
+            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
+            VALUES(?,?,?,?,?)`,
+            [calificacion, comentario, id_sender, id_receiver, id_session]
+        );
+        console.log('Comentario insertado:', comentarios);
+        res.json({ success: true, message: "Sesión calificada exitosamente" });
+        
+    } catch (error) {
+        console.error('Error al calificar la sesión:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
+
+app.post('/report-absence', authenticateToken, async (req, res) => {
+    const {id_absentParticipant, message } = req.body;
+    const id_sender = req.user.id;
+
+    try {
+        const conexion = await pool.getConnection();
+        try {
+            const [result] = await conexion.query(
+                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message)
+                VALUES (?, ?, ?)`,
+                [id_sender, id_absentParticipant, message]
+            );
+            console.log('Reporte de ausencia insertado:', result);
+            res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
+        } finally {
+            conexion.release();
+        }
+    } catch (error) {
+        console.error('Error al registrar el reporte de ausencia:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
 app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
@@ -419,29 +522,31 @@ app.get('/session-history', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
+        const currentDate = new Date().toISOString().slice(0, 10);  // Fecha actual en formato YYYY-MM-DD
+
         let query, params;
-        
-        console.log(userType, "fkjañlksfj")
 
         if (userType === '1') { // Assuming 1 = Student
             query = `
-                SELECT sp.*, u.username as tutorName
+                SELECT sp.*, u.username as tutorName, cr.created_at as cancellationDate
                 FROM sessionPlanned sp
                 JOIN students_Session ss ON sp.id = ss.id_session
                 JOIN user u ON sp.id_tutor = u.id
-                WHERE ss.id_student = ?
+                LEFT JOIN cancellationReasons cr ON sp.id = cr.session_id
+                WHERE ss.id_student = ? AND (sp.date < ? OR cr.created_at IS NOT NULL)
                 ORDER BY sp.date DESC, sp.start_hour DESC`;
-            params = [userId];
+            params = [userId, currentDate];
         } else if (userType === '2') { // Assuming 2 = Tutor
             query = `
-                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames
+                SELECT sp.*, GROUP_CONCAT(u.username SEPARATOR ', ') as studentNames, cr.created_at as cancellationDate
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session
                 LEFT JOIN user u ON ss.id_student = u.id
-                WHERE sp.id_tutor = ?
+                LEFT JOIN cancellationReasons cr ON sp.id = cr.session_id
+                WHERE sp.id_tutor = ? AND (sp.date < ? OR cr.created_at IS NOT NULL)
                 GROUP BY sp.id
                 ORDER BY sp.date DESC, sp.start_hour DESC`;
-            params = [userId];
+            params = [userId, currentDate];
         } else {
             return res.status(400).json({ success: false, message: "Invalid user type" });
         }
@@ -459,11 +564,13 @@ app.get('/session-history', authenticateToken, async (req, res) => {
     }
 });
 
+
 // Endpoint to get all courses
 app.get('/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
+        console.log(results);
         if (results.length > 0) {
             res.json(results);
         } else {

@@ -37,7 +37,6 @@ export async function crearUsuario(id, username, email, password) {
         console.error('Error al crear usuario:', error);
     }
 }
-
 // Función para eliminar un usuario por ID
 export async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
@@ -131,6 +130,24 @@ export async function obtenerSesionesPlanificadas() {
     }
 }
 
+export async function obtenerSesionesPlanificadasPorPersona(userId) {
+    const pool = await crearPoolConexion();
+    try {
+        const conexion = await pool.getConnection();
+        const [sesiones] = await conexion.execute(`
+            SELECT sp.id, c.namecourse, sp.dated, sp.start_hour, sp.end_hour, sp.mode, ss.id_student
+            FROM sessionPlanned sp 
+            JOIN course c ON sp.course_code = c.course_code
+            JOIN students_Session ss ON sp.id = ss.id_session
+            WHERE ss.id_student = ?
+        `, [userId]);
+        console.log(sesiones);
+        return [sesiones];
+    } catch (error) {
+        console.error('Error al obtener sesiones planificadas:', error);
+    }
+}
+
 // Reportes de ausencia junto con la información del remitente y del ausente
 export async function obtenerReportesDeAusencia() {
     const pool = await crearPoolConexion();
@@ -199,3 +216,35 @@ export async function eliminarHoras(hora, day, studentID) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
 }
+
+export async function obtenerTipoUsuarioPorId(userId){
+    const conexion = await conn;
+    try {
+        const [resultado] = await conexion.execute(
+            `SELECT typeuser FROM user WHERE id=?`,
+            [userId]
+        )
+        return [resultado];
+    } catch (error) {
+        console.error('Error al obtener el tipo de usuario:' , error);
+    }
+}
+
+obtenerTipoUsuarioPorId(21231);
+// Función para calificar sesion
+export async function calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session) {
+    const conexion = await conn;
+    try {
+        const [comentarios] = await conexion.execute(
+            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
+            VALUES(?,?,?,?,?)`,
+            [calificacion, comentario, id_sender, id_receiver, id_session]
+        );
+        console.log(comentarios)
+    } catch (error) {
+        console.error('Error al intentar califica session:', error);
+    }
+}
+
+//calificarSesion(3,'chale',3,4,1);
+verSesionesEnCurso();
