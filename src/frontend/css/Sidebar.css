@@ -5,21 +5,48 @@
   --color-linea: #b4b8b9;
 }
 
+<<<<<<< Updated upstream
 /* Barra lateral derecha */
 .sidebar {
   position: fixed;
   top: 0;
   right: -250px; /* Inicia fuera de la pantalla */
+=======
+/* Sidebar completo */
+/* Ajuste del sliderbar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+>>>>>>> Stashed changes
   width: 250px;
   height: 100%;
   background: var(--color-barra-lateral); /* Color de la barra lateral */
   padding: 20px;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+<<<<<<< Updated upstream
+  transition: left 0.3s ease;
+=======
   transition: right 0.3s ease;
+  z-index: 1000; /* Asegúrate de que el sidebar esté por encima del contenido */
+>>>>>>> Stashed changes
 }
 
 .sidebar.open {
+<<<<<<< Updated upstream
   right: 0; /* Mueve la sidebar hacia adentro */
+=======
+  left: 0;
+}
+
+/* Ajuste del contenido principal */
+.app-content {
+  transition: margin-right 0.3s ease; /* Añade una transición suave */
+}
+
+.app-content.shifted {
+  margin-right: 250px; /* Empuja el contenido cuando el sidebar está abierto */
+>>>>>>> Stashed changes
 }
 
 .header {

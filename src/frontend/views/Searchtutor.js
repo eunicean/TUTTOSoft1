@@ -94,7 +94,7 @@ const TutorsPage = () => {
   return (
     <div className="tutors-page">
       <div className="header">
-        <h1>Tutores</h1>
+        <h1>Buscar Tutor</h1>
         <div className="search-container">
           <input
             type="text"
@@ -103,7 +103,11 @@ const TutorsPage = () => {
             onChange={handleSearch}
             className="search-input"
           />
+<<<<<<< Updated upstream
           <button className="search-btn">🔍</button>
+=======
+          <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
+>>>>>>> Stashed changes
         </div>
       </div>
       <div className="content">
