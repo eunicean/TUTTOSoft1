@@ -1,7 +1,7 @@
 // src/Vista para verlo desde el punto de vista de tutor...
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../css/TutorProfile.css'
+import '../css/SessionVistaParaTutor.css'
 import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';
@@ -63,7 +63,7 @@ const SessionVistaParaTutor = () => {
   return (
     <div className="vista-container">
     {/* <Navbar /> */}
-      <div className="header">
+      <div className="header1">
       {/* <button className="menu-toggle">Menu</button> */}
         <span className="session-text">Sesión</span>
         <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>

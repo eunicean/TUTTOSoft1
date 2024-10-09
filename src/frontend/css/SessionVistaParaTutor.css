@@ -1,192 +1,206 @@
-/* src/SessionVistaParaTutor.css */
+/* src/Vista.css */
+
+/* Estilos generales */
 .vista-container {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+  font-family: 'Roboto', sans-serif; /* Cambia la fuente a una más moderna */
+  padding: 30px; /* Aumentar el padding */
+  margin-top: 5vh;
+}
+
+/* Header */
+.header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px; /* Más espacio */
+}
+
+.session-text {
+  margin-top: 30px;
+  font-size: 42px; /* Fuente más grande */
+  font-weight: bold;
+  color: #a57e5f; /* Un tono más suave */
+}
+
+/* Botón de cancelar */
+.cancel-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 22px;
+  background-color: #a57e5f; /* Color más suave */
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d9534f;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre las tarjetas */
+}
+
+/* Tarjeta card1 más grande */
+.card1 {
+  width: 40%; /* Tarjeta más grande */
+  height: 60vh; /* Mayor altura */
+  margin-left: 5vh;
+  padding: 25px; /* Aumentar padding */
+  border: 1px solid #8d6c46;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+  text-align: center;
+  background-color: #a57e5f; /* Un color más suave y cálido */
+}
+
+/* Imagen de perfil */
+.profile-pic {
+  width: 100%;
+  max-width: 220px; /* Imagen un poco más grande */
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+/* Botones dentro de la tarjeta */
+.card-buttons button {
+  padding: 12px;
+  margin: 8px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.card-buttons button:hover {
+  background-color: #ccc;
+}
+
+.info {
+  width: 55%;
+  padding: 10px;
+  margin-top: 25px;
+}
+
+/* Tarjeta de temas más grande */
+.temas-card1 {
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 40px;
+  margin-top: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  background-color: #a57e5f;
+  width: 100%;
+  max-width: 650px; /* Tamaño máximo ajustado */
+  min-width: 350px; /* Aumentar el tamaño mínimo */
+}
+
+.temas-card1 h2 {
+  margin-bottom: 25px;
+  font-size: 1.6rem;
+}
+
+/* Listas y botones */
+.temas-card1 ul {
+  padding: 0;
+  width: 100%;
+}
+
+.temas-card1 li {
+  padding: 12px 0;
+  font-size: 1.3rem;
+}
+
+.temas-card1 button {
+  margin-top: 25px;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+}
+
+/* Estrellas más llamativas */
+.stars {
+  display: flex;
+  justify-content: center;
+  color: #ffcc00; /* Amarillo más brillante */
+}
+
+
+/* Media Queries para pantallas medianas y grandes (Responsive) */
+
+@media (min-width: 768px) {
+  .vista-container {
+    font-family: 'Roboto', sans-serif;
+    padding: 30px;
+    margin-top: 7vh;
   }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+
+  .session-text {
+    font-size: 42px; /* Mantener tamaño de texto en pantallas más grandes */
   }
-  
-  .session-text {   
-    margin-top: 40px;
-    font-size: 40px;
-    font-weight: bold;
-    color: #ba996f;
-  }
-  
+
   .cancel-button {
-    margin-top: 40px;
-    padding: 10px 20px;
-    font-size: 20px;
-    background-color: #ba996f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 14px 28px;
+    font-size: 24px;
   }
-  
-  .cancel-button:hover {
-    background-color: #ff1a1a;
-  }
-  
+
   .content {
-    display: flex;
+    flex-direction: row;
   }
-  
-  .card {
-    width: 25%; 
-    height: 75vh;
-    margin-left: 10vh;
+
+  .card1 {
+    width: 35%; /* Hacer más ancho */
+    margin-left: 5vh; /* Ajustar la posición más hacia la izquierda */
+    height: auto;
+  }
+
+  .info {
+    width: 55%; /* Ajusta el ancho para pantallas medianas y grandes */
+  }
+
+  .temas-card1 {
+    width: 100%; /* Hacer la tarjeta de notas más grande */
+    max-width: 700px; /* Aumentar el tamaño máximo */
+    padding: 40px;
+  }
+}
+
+/* Media Queries para pantallas pequeñas (Mobile) */
+
+@media (max-width: 767px) {
+  .vista-container {
+    font-family: 'Roboto', sans-serif;
     padding: 20px;
-    border: 1px solid #C04000;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    background-color: #ba996f;
+    margin-top: 5vh;
+  }
+
+  .session-text {
+    font-size: 32px; /* Reducir el tamaño en pantallas pequeñas */
+  }
+
+  .cancel-button {
+    padding: 10px 20px;
+    font-size: 18px;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .card1 {
+    width: 100%; /* Ajustar el tamaño para pantallas pequeñas */
+    height: auto;
+    margin-left: 0;
+  }
+
+  .temas-card1 {
+    width: 100%;
+    padding: 20px; /* Reducir el padding */
   }
   
   .profile-pic {
-    width: 35vh;
-    height: 35vh;
-    border-radius: 50%;
-    margin-bottom: 15px;
+    max-width: 150px; /* Tamaño más pequeño para móviles */
   }
-  
-  .card-buttons button {
-    padding: 10px;
-    margin: 5px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .card-buttons button:hover {
-    background-color: #ddd;
-  }
-  
-  .info {
-    width: 50%;
-    padding: 2px;
-    margin-left: 15vh;
-  }
-  
-  .session-time {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    color: #333;
-    margin: 0;
-  }
-
-
-
-  .TitulosInfo {
-    text-align: left;
-    color: brown; /* Cambia el color a café */
-    padding: 0; /* Elimina cualquier relleno adicional */
-    margin: 0; /* Elimina cualquier margen adicional */
-  }
-  
-  .TitulosInfo h2 {
-    font-size: 45px; /* Ajusta el tamaño del texto h2 aquí */
-    margin-bottom: 100px;
-  }
-  
-  .TitulosInfo h3 {
-    font-size: 45px; /* Ajusta el tamaño del texto h3 aquí */
-    margin-top: 100px;
-    margin-bottom: 200px;
-  }
-  
-  .info h2, .info h3 {
-    margin: 10px 0;
-  }
-  
-  .Info2 {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center;     /* Centra verticalmente (opcional) */
-    flex-direction: column;  /* Alinea los elementos en columna (opcional) */
-    margin-top: 1vh;
-  }
-  .Notas, .DocsEstudiante {
-    margin-right: 20px;
-  }
-  .UploadBoxFile {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #ba996f;
-    text-align: center;
-    max-width: 300px;
-  
-  }
-  .UploadBoxFile input[type="file"] {
-    margin-bottom: 10px;
-  }
-  .UploadBoxFile button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  .UploadBoxFile button:hover {
-    background-color: #45a049;
-  }
-  .UploadBoxFile p {
-    margin-top: 10px;
-  }
-  .temas-card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 30px; /* Aumenta el padding para hacer el card más grande */
-    margin-top: 2px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Aumenta la sombra para un efecto más prominente */
-    background-color: #ba996f;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 500px; /* Establece un ancho fijo (puedes ajustar este valor) */
-    height: 300px;
-    overflow: hidden;
-    min-width: 300px; /* Establece un ancho mínimo para el card */
-  }
-  
-  .temas-card h2 {
-    margin-bottom: 20px; /* Aumenta el margen para que el título tenga más espacio */
-    font-size: 1.5rem; /* Aumenta el tamaño de la fuente del título */
-  }
-  
-  .temas-card ul {
-    list-style-type: none;
-    padding: 0;
-    width: 100%; /* Asegúrate de que la lista use el ancho completo del card */
-  }
-  
-  .temas-card li {
-    padding: 10px 0; /* Aumenta el padding en los elementos de la lista */
-    font-size: 1.2rem; /* Aumenta el tamaño de la fuente en la lista */
-  }
-  
-  .temas-card button {
-    margin-top: 20px; /* Aumenta el margen superior para separar el botón del contenido */
-    padding: 10px 20px; /* Aumenta el padding para el botón */
-    font-size: 1rem; /* Aumenta el tamaño de la fuente del botón */
-  }
-  
-  .stars {
-    display: flex;
-    justify-content: center;
-    color: #A0522D;
-  }
+}
