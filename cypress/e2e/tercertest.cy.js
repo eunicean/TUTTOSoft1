@@ -23,5 +23,4 @@ describe('Prueba de Regresión: Actualización de Perfil', () => {
   it('Debería mostrar la página de perfil correctamente', () => {
     cy.url().should('include', '/profile');
   });
-
 });
