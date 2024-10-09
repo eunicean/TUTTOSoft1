@@ -38,3 +38,20 @@ jobs:
     - run: npm run build --if-present
     - run: npm run start &
     - run: npm test
+    
+    - name: Compress build directory and additional files
+      run: tar -czvf deploy.tar.gz build main.js db.js
+
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ env.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ env.SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      run: scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
+
+    - name: Clean up SSH key
+      if: always()
+      run: rm -f ~/.ssh/id_rsa
