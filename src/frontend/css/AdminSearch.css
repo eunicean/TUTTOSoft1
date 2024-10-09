@@ -1,0 +1,146 @@
+body {
+  font-family: 'Calibri', sans-serif;
+}
+
+
+.admin-page {
+  padding: 20px;
+  display: flex; /* Asegura que el contenedor sea un flexbox */
+  flex-direction: column; /* Organiza los elementos en columnas */
+  align-items: center; /* Centra los elementos horizontalmente */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #D9B799;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 1300px; /* Establecer un ancho máximo para el header */
+  width: 100%; /* Asegurarse de que ocupe el 100% hasta el máximo */
+  justify-content: center;
+}
+
+h1 {
+  color: #8B5E3C;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 15px;
+  border-radius: 18px;
+  border: 5px solid #ccc;
+  margin-right: 10px;
+}
+
+.filter-dropdown {
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  background-color: #f0d6c1;
+  margin-right: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 0 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #8B5E3C;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #e3c5a3;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: calc(50% - 16px); /* Ajusta el ancho para que las tarjetas estén una al lado de la otra */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 16px);
+  max-width: 500px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #fde0d6;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente fila */
+  gap: 16px; /* Espacio entre tarjetas */
+  justify-content: center; /* Centrar las tarjetas en el contenedor */
+}
+
+/* Estilos responsivos para pantallas pequeñas */
+@media (max-width: 768px) {
+  .user-card {
+      width: 100%; /* Las tarjetas ocupan el 100% del ancho en pantallas pequeñas */
+  }
+
+  .header {
+      max-width: 100%; /* Permitir que el header ocupe el 100% en pantallas pequeñas */
+  }
+}

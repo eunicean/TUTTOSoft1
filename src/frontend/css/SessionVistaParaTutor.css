@@ -37,7 +37,7 @@
     display: flex;
   }
   
-  .card {
+  .card1 {
     width: 25%; 
     height: 75vh;
     margin-left: 10vh;
@@ -147,7 +147,7 @@
   .UploadBoxFile p {
     margin-top: 10px;
   }
-  .temas-card {
+  .temas-card1 {
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 30px; /* Aumenta el padding para hacer el card más grande */
@@ -163,23 +163,23 @@
     min-width: 300px; /* Establece un ancho mínimo para el card */
   }
   
-  .temas-card h2 {
+  .temas-card1 h2 {
     margin-bottom: 20px; /* Aumenta el margen para que el título tenga más espacio */
     font-size: 1.5rem; /* Aumenta el tamaño de la fuente del título */
   }
   
-  .temas-card ul {
+  .temas-card1 ul {
     list-style-type: none;
     padding: 0;
     width: 100%; /* Asegúrate de que la lista use el ancho completo del card */
   }
   
-  .temas-card li {
+  .temas-card1 li {
     padding: 10px 0; /* Aumenta el padding en los elementos de la lista */
     font-size: 1.2rem; /* Aumenta el tamaño de la fuente en la lista */
   }
   
-  .temas-card button {
+  .temas-card1 button {
     margin-top: 20px; /* Aumenta el margen superior para separar el botón del contenido */
     padding: 10px 20px; /* Aumenta el padding para el botón */
     font-size: 1rem; /* Aumenta el tamaño de la fuente del botón */

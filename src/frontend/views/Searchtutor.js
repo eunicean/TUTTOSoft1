@@ -85,7 +85,7 @@ const TutorsPage = () => {
   return (
     <div className="tutors-page">
       <div className="header">
-        <h1>Tutores</h1>
+        <h1>Buscar Tutor</h1>
         <div className="search-container">
           <input
             type="text"
@@ -95,7 +95,6 @@ const TutorsPage = () => {
             className="search-input"
           />
           <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
-          <button className="search-btn">🔍</button>
         </div>
       </div>
       <div className="content">
