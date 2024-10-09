@@ -40,7 +40,7 @@ jobs:
     - run: npm test
     
     - name: Compress build directory and additional files
-      run: tar -czvf deploy.tar.gz build main.js db.js
+      run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
 
     - name: Set up SSH key
       run: |
