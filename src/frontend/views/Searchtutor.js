@@ -95,7 +95,6 @@ const TutorsPage = () => {
             className="search-input"
           />
           <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
-          <button className="search-btn">🔍</button>
         </div>
       </div>
       <div className="content">
