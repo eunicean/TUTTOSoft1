@@ -110,7 +110,7 @@ function Sessions() {
 
     return (
         <>  
-
+        <div className='outer-container'> 
             <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}> 
                 <h1 className="sessions-title">Próximas Sesiones</h1>
                 <div className="session-filters">
@@ -130,23 +130,24 @@ function Sessions() {
                 <div className='yes-sessions'>
                     {sessions.length > 0 ? (
                         sessions.map(session => (
-                            <button key={session.id} onClick={() => handleSessionClick(session.id, session)} className="session-card-button">
-                                <SessionCard
+                                <SessionCard 
                                     date={session.date}
                                     startHour={session.startHour}
                                     endHour={session.endHour}
                                     subject={session.subject}
                                     mode={session.mode}
+                                    onClick={() => handleSessionClick(session.id, session)} // manejo del click 
                                 />
-                            </button>
                         ))
                     ) : (
                         <div className="no-sessions">No hay sesiones disponibles.</div>
                     )}
                 </div>
             </div>  
+            </div>
         </>
     );
 }
 
 export default Sessions;
+

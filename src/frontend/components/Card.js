@@ -12,7 +12,7 @@ import historyImage from '../resources/history.jpg';
 import graphicDesignImage from '../resources/design.jpg';
 import defaultImage from '../resources/default.jpg';
 
-const SessionCard = ({ date, startHour, endHour, subject, courseCode }) => {
+const SessionCard = ({ date, startHour, endHour, subject, courseCode, onClick }) => {
   const courseImages = {
     "Matemáticas Básicas": basicMathImage,
     "Física I": physicsImage,
@@ -25,7 +25,9 @@ const SessionCard = ({ date, startHour, endHour, subject, courseCode }) => {
   const imageUrl = courseImages[subject] || "../resources/default.jpg"; // 
   
   return (
-      <Card sx={{ maxWidth: 345, m: 2, boxShadow: 3 }}>
+      <Card sx={{ maxWidth: 345, m: 2, boxShadow: 3, cursor: 'pointer' }}
+      onClick={onClick}
+       >
           <CardMedia
               component="img"
               alt={subject}
