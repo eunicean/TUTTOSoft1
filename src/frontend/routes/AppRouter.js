@@ -13,7 +13,7 @@ import TestingHeader from '../views/VistaDePruebaHeader.js';
 import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
 import Searchtutor from '../views/Searchtutor.js';
-
+import Adminsearch from '../views/AdminSearch.js';
 import '../css/Register.css';
 import '../css/Router.css';
 
@@ -45,6 +45,7 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/absence' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
           <Route path='/seachtutor' element={<Searchtutor />} />
+          <Route path='/adminsearch' element={<Adminsearch />} />
         </Routes>
       </div>
     </>
