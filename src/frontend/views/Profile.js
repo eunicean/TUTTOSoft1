@@ -102,11 +102,30 @@ function ProfileView() {
                         </>
                     ) : (
                         <>  
-                            <div className="profile-avatar"></div>
-                            <h2>{user.username || 'Nombre no disponible'}</h2>
-                            <p>Email: {user.email || 'Email no disponible'}</p>
-                            <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
-                            <button onClick={() => setEditing(true)}>Editar Perfil</button>
+                        <div className="profile-avatar"></div>
+                        <h2>{user.username || 'Nombre no disponible'}</h2>
+                        <p>Email: {user.email || 'Email no disponible'}</p>
+                        <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
+
+                        {user.typeuser === '2' && (
+                        <div>
+                            <p>Cursos Impartidos:</p>
+                            <ul>
+                            {user.specialties && user.specialties.length > 0 ? (
+                                user.specialties.map((specialty) => (
+                                <li key={specialty.course_code}>
+                                    {specialty.course_name}
+                                </li>
+                                ))
+                            ) : (
+                                <li>No tiene cursos asignados.</li>
+                            )}
+                            </ul>
+                        </div>
+                        )}
+
+                        <button onClick={() => setEditing(true)}>Editar Perfil</button>
+
                         </>
                     )}
                     <button onClick={handleLogout}  >Cerrar Sesión</button>
