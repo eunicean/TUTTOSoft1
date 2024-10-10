@@ -1,6 +1,5 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
 on:
@@ -11,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     env:
@@ -23,9 +21,8 @@ jobs:
       DATABASESSLBASE64: ${{ secrets.DATABASESSLBASE64 }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SERVER_PATH: ${{ secrets.SERVER_PATH }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      
+      SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
 
     strategy:
       matrix:
@@ -33,11 +30,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - run: npm ci
     - run: npm run build --if-present
     - run: npm run start &
@@ -49,9 +48,20 @@ jobs:
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
 
-    - name: Deploy to server using sshpass
+    - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+        echo "${{ env.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ env.SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Add public key to authorized_keys on server
+      run: |
+        echo "${{ secrets.SSH_PUBLIC_KEY }}" | ssh -i ~/.ssh/id_rsa root@${{ secrets.SERVER_IP }} "cat >> ~/.ssh/authorized_keys"
+
+    - name: Deploy to server using sshpass
+      run: |
         scp deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
-        
+
+    - name: Clean up SSH key
+      run: rm -f ~/.ssh/id_rsa
