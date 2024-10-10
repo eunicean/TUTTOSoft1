@@ -45,7 +45,7 @@ jobs:
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
 
     - name: Deploy to Server
-      run: sshpass -p ${{ env.SERVER_PASSWORD }} scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
+      run: sshpass -p Tutosoft2024 scp deploy.tar.gz root@$209.126.125.63:/home/sf
         
     - name: Cleanup SSH Keys
       run: |
