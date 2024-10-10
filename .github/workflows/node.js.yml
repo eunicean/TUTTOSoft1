@@ -62,4 +62,4 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
     - name: Deploy to server using sshpass
-      run: sshpass -p ${{ env.SSH_PASSWORD }} scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
+      run: sshpass -p ${{ env.SSH_PASSWORD }} scp ~/deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
