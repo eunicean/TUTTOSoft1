@@ -56,12 +56,62 @@ body, html {
   flex-direction: column;
   gap: 1rem; /* Espacio entre los elementos */
 }
-
-
-.create-session-button {
-width: 30vh;
-font-size: small;
+.sessions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
 }
+
+.buttons-group {
+  display: flex;
+  gap: 1rem; /* Espacio entre los botones */
+}
+
+/* ESTILOS DE BOTONES */
+.create-session-button {
+  display: flex; /* Para que el icono y el texto estén alineados horizontalmente */
+  align-items: center; /* Centra verticalmente el contenido */
+  background-color: #f7f7f7; /* Fondo claro para el botón */
+  color: #333; /* Color de texto oscuro */
+  padding: 0.75rem 1.5rem; /* Espaciado interno */
+  border: none; /* Sin bordes */
+  border-radius: 1rem; /* Bordes muy redondeados */
+  font-size: 1rem; /* Tamaño del texto */
+  font-weight: bold; /* Texto en negrita */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave para hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  overflow: hidden; /* Asegura que los bordes redondeados corten cualquier desbordamiento */
+}
+
+.create-session-button .icon-container {
+  background-color: #4CAF50; /* Color de fondo del ícono (verde) */
+  padding: 0.5rem; /* Espaciado interno del ícono */
+  border-radius: 50%; /* Hacer que el fondo del ícono sea circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem; /* Espacio entre el ícono y el texto */
+}
+
+.create-session-button .icon-container img {
+  width: 1.25rem; /* Ajusta el tamaño del ícono */
+  height: 1.25rem; /* Ajusta el tamaño del ícono */
+}
+
+.create-session-button:hover {
+  background-color: #ececec; /* Color de fondo más claro en hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Aumenta la sombra al hacer hover */
+}
+
+.create-session-button:active {
+  background-color: #ddd; /* Fondo más oscuro al hacer clic */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
+  transform: translateY(2px); /* Efecto de presionar el botón */
+}
+/* FINALIZA ESTILO DE BOTONES */ 
 
 /* Título de las sesiones */
 .sessions-title {
@@ -191,5 +241,14 @@ background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por e
   .menu-toggle {
   font-size: 0.9rem;
   padding: 0.3rem 0.6rem;
+  }
+  .sessions-header {
+    flex-direction: column; /* Coloca el título y los botones uno debajo del otro en pantallas pequeñas */
+    align-items: flex-start;
+  }
+
+  .buttons-group {
+    justify-content: center;
+    width: 100%;
   }
 }
