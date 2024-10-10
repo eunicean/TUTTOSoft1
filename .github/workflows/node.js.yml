@@ -53,3 +53,4 @@ jobs:
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
         scp deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        
