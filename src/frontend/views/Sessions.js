@@ -105,7 +105,7 @@ function Sessions() {
 
     
     const handleSessionClick = (sessionId, session) => {
-        navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
+        navigate(`/DetallesTutor/${sessionId}`, { state: session });
     };
 
     return (

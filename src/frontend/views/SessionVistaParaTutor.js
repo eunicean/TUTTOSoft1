@@ -1,7 +1,9 @@
-// src/Vista para verlo desde el punto de vista de tutor...
+// src/Vista para verlo desde el punto de vista de tutor, donde sale informacion del
+// estudiante a quien le este dando clases...
+
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../css/TutorProfile.css'
+import '../css/SessionVistaParaTutor.css'
 import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';
@@ -63,9 +65,10 @@ const SessionVistaParaTutor = () => {
   return (
     <div className="vista-container">
     {/* <Navbar /> */}
-      <div className="header">
+      <div className="header1">
       {/* <button className="menu-toggle">Menu</button> */}
         <span className="session-text">Sesión</span>
+        <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
       </div>
       <div className="content">
         <div className="card1">
@@ -74,12 +77,12 @@ const SessionVistaParaTutor = () => {
           <p>Año: 3</p>
           <p>Carnet: 123456</p> 
           <StarRating rating={valorEstrellas} />
-          <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
+          <button> Cerrar Sesion </button>
         </div>
 
         <div className="info">
         <div className='TitulosInfo'>
-          <h2>Materia: {session.namecourse}</h2>
+          <h2>Materia: {session.CourseCode}</h2>
           <h2> Inicio: {session.startHour}</h2> 
           <h2> Finalización: {session.endHour}</h2>
         </div>
