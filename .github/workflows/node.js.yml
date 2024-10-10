@@ -48,18 +48,8 @@ jobs:
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
 
-    - name: Check sshpass and scp availability
-      run: |
-        which sshpass
-        which scp
-        sshpass -V
-
-    - name: Debug command parameters
-      run: echo "Deploying to ${SERVER_IP} at path ${SERVER_PATH}"
-      env:
-        SERVER_IP: ${{ secrets.SERVER_IP }}
-        SERVER_PATH: ${{ secrets.SERVER_PATH }}
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-
     - name: Deploy to server using sshpass
-      run: scp ~/deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+        scp deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
