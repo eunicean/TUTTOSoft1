@@ -21,6 +21,9 @@ jobs:
       DATABASENAME: ${{ secrets.DATABASENAME }}
       DATABASEPORT: ${{ secrets.DATABASEPORT }}
       DATABASESSLBASE64: ${{ secrets.DATABASESSLBASE64 }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_PATH: ${{ secrets.SERVER_PATH }}
+      
 
     strategy:
       matrix:
@@ -42,16 +45,8 @@ jobs:
     - name: Compress build directory and additional files
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
 
-    - name: Set up SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ env.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ env.SERVER_IP }} >> ~/.ssh/known_hosts
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
 
-    - name: Deploy to server
-      run: scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
-
-    - name: Clean up SSH key
-      if: always()
-      run: rm -f ~/.ssh/id_rsa
+    - name: Deploy to server using sshpass
+      run: sshpass -p ${{ env.SSH_PASSWORD }} scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
