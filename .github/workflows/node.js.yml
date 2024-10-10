@@ -23,6 +23,7 @@ jobs:
       DATABASESSLBASE64: ${{ secrets.DATABASESSLBASE64 }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SERVER_PATH: ${{ secrets.SERVER_PATH }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       
 
     strategy:
@@ -46,6 +47,12 @@ jobs:
 
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
+
+    - name: Check sshpass and scp availability
+      run: |
+        which sshpass
+        which scp
+        sshpass -V
 
     - name: Debug command parameters
       run: echo "Deploying to ${SERVER_IP} at path ${SERVER_PATH}"
