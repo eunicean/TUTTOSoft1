@@ -47,5 +47,12 @@ jobs:
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
 
+    - name: Debug command parameters
+      run: echo "Deploying to ${SERVER_IP} at path ${SERVER_PATH}"
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+
     - name: Deploy to server using sshpass
       run: sshpass -p ${{ env.SSH_PASSWORD }} scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
