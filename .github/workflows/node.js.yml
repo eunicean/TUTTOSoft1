@@ -48,24 +48,10 @@ jobs:
     - name: Compress build directory and additional files
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
 
-    - name: Generate SSH key
-      id: gen_ssh
-      run: |
-        ssh-keygen -t rsa -b 4096 -m PEM -f ${{ github.workspace }}/deploy_key -q -N ""
-        cat ${{ github.workspace }}/deploy_key.pub
-
-    - name: Deploy Public Key to Server
-      run: |
-        echo "${{ secrets.SSH_PUBLIC_KEY }}" | sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
-      env:
-        SSH_PUBLIC_KEY: ${{ github.workspace }}/deploy_key.pub
-
     - name: Deploy to Server
       run: |
-        scp -i ${{ github.workspace }}/deploy_key deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
-      env:
-        DEPLOY_KEY: ${{ github.workspace }}/deploy_key
-
+        run: sshpass -p ${{ env.SERVER_PASSWORD }} scp deploy.tar.gz root@${{ env.SERVER_IP }}:${{ env.SERVER_PATH }}
+        
     - name: Cleanup SSH Keys
       run: |
         rm -f ${{ github.workspace }}/deploy_key
