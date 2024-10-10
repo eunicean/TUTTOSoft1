@@ -8,7 +8,7 @@ describe('Prueba de Creación y Eliminación de Usuario', () => {
 
   it('Debería crear y luego eliminar un usuario', () => {
     // Crear Usuario
-    cy.request('POST', 'http://localhost:3000/api/crear-usuario', {
+    cy.request('POST', 'http://localhost:5000/api/crear-usuario', {
       id,
       username,
       email,
