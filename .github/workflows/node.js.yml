@@ -1,6 +1,6 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-name: Node.js CI
+name: Node.js CI and Deployment
 
 on:
   push:
@@ -21,8 +21,7 @@ jobs:
       DATABASESSLBASE64: ${{ secrets.DATABASESSLBASE64 }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SERVER_PATH: ${{ secrets.SERVER_PATH }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
     strategy:
       matrix:
@@ -37,31 +36,35 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm run start &
-    - run: npm test
-    
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build --if-present
+
+    - name: Run tests
+      run: npm test
+
     - name: Compress build directory and additional files
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
 
     - name: Generate SSH key
+      id: gen_ssh
       run: |
         ssh-keygen -t rsa -b 4096 -m PEM -f ${{ github.workspace }}/deploy_key -q -N ""
-        # Print the public key and capture it for later use in setting up the server
         cat ${{ github.workspace }}/deploy_key.pub
 
     - name: Deploy Public Key to Server
       run: |
-        echo "${{ secrets.SSH_PASSWORD }}" | sshpass ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+        echo "${{ secrets.SSH_PUBLIC_KEY }}" | sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
       env:
-        SSH_PUBLIC_KEY: ${{ steps.gen_ssh.outputs.public_key }}
+        SSH_PUBLIC_KEY: ${{ github.workspace }}/deploy_key.pub
 
-    - name: Use the SSH Key for Deployment
+    - name: Deploy to Server
       run: |
         scp -i ${{ github.workspace }}/deploy_key deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
       env:
-        DEPLOY_KEY: ${{ steps.gen_ssh.outputs.private_key }}
+        DEPLOY_KEY: ${{ github.workspace }}/deploy_key
 
     - name: Cleanup SSH Keys
       run: |
