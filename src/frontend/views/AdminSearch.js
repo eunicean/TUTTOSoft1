@@ -108,7 +108,7 @@ const AdminPage = () => {
 
   return (
     <div className="admin-page">
-      <div className="header">
+      <div className={`header ${viewTutors ? 'tutors-header' : 'students-header'}`}>
         <h1>{viewTutors ? 'Buscar Tutor' : 'Buscar Estudiante'}</h1>
         <div className="search-container">
           <input

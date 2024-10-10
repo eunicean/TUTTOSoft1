@@ -138,6 +138,7 @@ function Sessions() {
                                     endHour={session.endHour}
                                     subject={session.subject}
                                     mode={session.mode}
+                                    className="session-card" 
                                 />
                             </button>
                         ))

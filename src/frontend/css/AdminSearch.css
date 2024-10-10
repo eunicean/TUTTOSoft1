@@ -1,32 +1,36 @@
+/* Mantén el estilo general del body y de admin-page */
 body {
   font-family: 'Calibri', sans-serif;
 }
 
-
 .admin-page {
   padding: 20px;
-  display: flex; /* Asegura que el contenedor sea un flexbox */
-  flex-direction: column; /* Organiza los elementos en columnas */
-  align-items: center; /* Centra los elementos horizontalmente */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
 }
 
+/* Aplica position: sticky al header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   background-color: #D9B799;
   padding: 10px;
   border-radius: 10px;
-  max-width: 1300px; /* Establecer un ancho máximo para el header */
-  width: 100%; /* Asegurarse de que ocupe el 100% hasta el máximo */
-  justify-content: center;
+  max-width: 1300px;
+  width: 100%;
+  top: 0; /* Posición fija en la parte superior */
+  position: sticky;
+  z-index: 1; /* Asegura que el header esté sobre las cards */
 }
 
 h1 {
   color: #8B5E3C;
 }
 
+/* Resto de estilos */
 .search-container {
   display: flex;
   align-items: center;
@@ -106,9 +110,8 @@ input:checked + .slider:before {
   background-color: #e3c5a3;
   border-radius: 10px;
   margin-bottom: 20px;
-  width: calc(50% - 16px); /* Ajusta el ancho para que las tarjetas estén una al lado de la otra */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: calc(50% - 16px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 500px;
 }
 
@@ -129,18 +132,25 @@ input:checked + .slider:before {
 .users-list {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente fila */
-  gap: 16px; /* Espacio entre tarjetas */
-  justify-content: center; /* Centrar las tarjetas en el contenedor */
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
 }
 
 /* Estilos responsivos para pantallas pequeñas */
 @media (max-width: 768px) {
+  .tutors-header {
+    margin-top: 650px; /* Margen superior para buscar tutores en móvil */
+  }
+  
+  .students-header {
+    margin-top: 300px; /* Margen superior para buscar estudiantes en móvil */
+  }
   .user-card {
-      width: 100%; /* Las tarjetas ocupan el 100% del ancho en pantallas pequeñas */
+      width: 100%;
   }
 
   .header {
-      max-width: 100%; /* Permitir que el header ocupe el 100% en pantallas pequeñas */
+      max-width: 100%;
   }
 }
