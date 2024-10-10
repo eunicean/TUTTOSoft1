@@ -24,6 +24,7 @@ jobs:
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SERVER_PATH: ${{ secrets.SERVER_PATH }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       
 
     strategy:
