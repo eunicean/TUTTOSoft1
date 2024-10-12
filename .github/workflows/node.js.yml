@@ -43,10 +43,10 @@ jobs:
     
     - name: Compress build directory and additional files
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
-
+      
     - name: Deploy to Server
-      run: sshpass -p Tutosoft2024 scp deploy.tar.gz root@209.126.125.63:/home/sf
-        
+      run: sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+      
     - name: Cleanup SSH Keys
       run: |
         rm -f ${{ github.workspace }}/deploy_key
