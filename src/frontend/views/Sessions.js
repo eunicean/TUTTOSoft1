@@ -72,6 +72,7 @@ function Sessions() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
+            
             const data = await response.json();
             const transformedSessions = data.sessions.map((session) => ({
                 id: session.id,
@@ -137,6 +138,7 @@ function Sessions() {
                                     endHour={session.endHour}
                                     subject={session.subject}
                                     mode={session.mode}
+                                    className="session-card" 
                                 />
                             </button>
                         ))

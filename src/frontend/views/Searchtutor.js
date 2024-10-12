@@ -21,11 +21,21 @@ const TutorCard = ({ name, subjects, year, rating }) => {
 };
 
 const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
-  const subjects = [
-    'Física I', 'Cálculo I', 'Cálculo II', 'Mate discreta',
-    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo',
-    'Historia Universal', 'Matemáticas Básicas'
-  ];
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/courses');
+        const data = await response.json();
+        setCourses(data);  // Guardar los cursos obtenidos
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();  // Llamar a la API cuando se cargue el componente
+  }, []);
 
   return (
     <select
@@ -34,9 +44,9 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
       className="filter-dropdown"
     >
       <option value="">Seleccionar materia</option>
-      {subjects.map((subject, index) => (
-        <option key={index} value={subject}>
-          {subject}
+      {courses.map((course) => (
+        <option key={course.course_code} value={course.namecourse}>
+          {course.namecourse}
         </option>
       ))}
     </select>
@@ -85,7 +95,7 @@ const TutorsPage = () => {
   return (
     <div className="tutors-page">
       <div className="header">
-        <h1>Tutores</h1>
+        <h1>Buscar Tutor</h1>
         <div className="search-container">
           <input
             type="text"
@@ -95,7 +105,6 @@ const TutorsPage = () => {
             className="search-input"
           />
           <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
-          <button className="search-btn">🔍</button>
         </div>
       </div>
       <div className="content">

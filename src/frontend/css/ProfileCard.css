@@ -28,14 +28,18 @@ body, html {
 
 /* Contenedor principal */
 .sessions-container, .profile-container {
-    width: 90%;
+    width: 95%;
     margin: 2rem auto;
     padding: 2rem;
     background-color: #FFFFFF;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border-radius: 15px;
-    position: relative;
+    position: static;
     transition: transform 0.3s ease;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
 }
 
 /* Tarjeta de perfil */
@@ -48,6 +52,7 @@ body, html {
     align-items: center;
     width: 300px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 }
 
 .profile-avatar {

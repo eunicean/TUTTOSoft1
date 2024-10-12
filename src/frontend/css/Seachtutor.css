@@ -1,128 +1,163 @@
 /* TutorsPage.css */
 body {
-    font-family: 'Calibri', sans-serif;
-  }
-  
-  .tutors-page {
-    padding: 20px;
-  }
-  
+  font-family: 'Calibri', sans-serif;
+}
+
+.tutors-page {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #D9B799;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+h1 {
+  color: #8B5E3C;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 15px;
+  border-radius: 18px;
+  border: 5px solid #ccc;
+  margin-right: 10px;
+}
+
+.filter-dropdown {
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  background-color: #f0d6c1;
+  margin-right: 10px;
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.content {
+  display: flex;
+}
+
+.tutors-list {
+  flex: 2;
+  margin-right: 20px;
+}
+
+.tutor-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: #D9B799;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.tutor-info {
+  display: flex;
+  align-items: center;
+  max-width: 80%;
+}
+
+.avatar-placeholder {
+  width: 50px; /* Tamaño fijo para asegurar consistencia */
+  height: 50px; /* Mantener altura fija */
+  background-color: #fde0d6;
+  border-radius: 50%;
+  margin-right: 20px; /* Añadir espacio a la derecha */
+  flex-shrink: 0; /* Evita que el tamaño se reduzca en pantallas pequeñas */
+}
+
+.tutor-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #e3c5a3;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+.stars {
+  color: #8B5E3C;
+}
+
+.chat-btn {
+  background-color: #8B5E3C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chat-btn:hover {
+  background-color: #6a452d;
+}
+
+.filter {
+  flex: 1;
+  background-color: #f0d6c1;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.filter h4 {
+  color: #8B5E3C;
+}
+
+.filter label {
+  display: block;
+  margin-bottom: 10px;
+  color: #8B5E3C;
+}
+
+.filter input {
+  margin-right: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: #D9B799;
-    padding: 10px;
-    border-radius: 10px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .back-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  h1 {
-    color: #8B5E3C;
-  }
-  
+
   .search-container {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
+    width: 100%;
   }
-  
-  .search-input {
-    padding: 15px;
-    border-radius: 18px;
-    border: 5px solid #ccc;
-    margin-right: 10px;
+
+  .search-input, .filter-dropdown {
+    margin: 0 0 10px 0;
+    width: 100%;
   }
-  
-  .filter-dropdown {
-    padding: 10px;
-    border-radius: 18px;
-    border: 2px solid #ccc;
-    background-color: #f0d6c1;
-    margin-right: 10px;
-  }
-  
-  .search-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
 
   .content {
-    display: flex;
+    flex-direction: column;
   }
-  
+
   .tutors-list {
-    flex: 2;
-    margin-right: 20px;
+    margin-right: 0;
   }
-  
-  .tutor-card {
-    display: flex;
-    justify-content: space-between;
-    background-color: #D9B799;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    align-items: center;
-  }
-  
-  .tutor-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .avatar-placeholder {
-    width: 50px;
-    height: 50px;
-    background-color: #f0e0d6;
-    border-radius: 50%;
-    margin-right: 20px;
-  }
-  
-  .stars {
-    color: #8B5E3C;
-  }
-  
-  .chat-btn {
-    background-color: #8B5E3C;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .chat-btn:hover {
-    background-color: #6a452d;
-  }
-  
-  .filter {
-    flex: 1;
-    background-color: #f0d6c1;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  .filter h4 {
-    color: #8B5E3C;
-  }
-  
-  .filter label {
-    display: block;
-    margin-bottom: 10px;
-    color: #8B5E3C;
-  }
-  
-  .filter input {
-    margin-right: 10px;
-  }
-  
+}

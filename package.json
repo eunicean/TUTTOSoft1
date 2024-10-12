@@ -42,8 +42,8 @@
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "cross-env PORT=5173 react-scripts start",
     "server": "nodemon src/backend/main.js",
-    "build": "react-scripts build",
-    "test": "cypress open",
+    "build": "CI=false react-scripts build",
+    "test": "cypress run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -68,6 +68,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "cypress": "^13.14.1",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.x"
   }
 }
