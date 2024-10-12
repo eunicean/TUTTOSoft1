@@ -13,6 +13,7 @@ import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
 import Searchtutor from '../views/Searchtutor.js';
 import SessionVistaParaEstudiante from '../views/SessionVistaParaEstudiante.js';
+import Chat from '../views/Chat.js'; // Importa el componente de Chat
 
 import '../css/Register.css';
 import '../css/Router.css';
@@ -45,12 +46,12 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/absence' element={<Absence />} />
           <Route path='/seachtutor' element={<Searchtutor />} />
           <Route path='/DetalleEstudiante/:sessionId' element ={<SessionVistaParaEstudiante />} />
+          <Route path='/chat' element={<Chat />} /> {/* Nueva ruta para el Chat */}
         </Routes>
       </div>
     </>
   );
 };
-
 
 const AppRouter = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
