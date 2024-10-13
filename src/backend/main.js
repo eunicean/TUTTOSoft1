@@ -619,57 +619,37 @@ app.get('/tutors', async (req, res) => {
     }
 });
 
-app.get('chats/:chatId', authenticateToken, async (req, res) => {
+app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
-    
+
     try {
         const chatInfoQuery = `
             SELECT 
-                c.id as chatId,
-                c.chat_name,
-                ci.id_integrant,
-                m.id_message,
-                m.content,
-                m.time_sent,
-                m.id_user
+                cn.id AS chatId,
+                cn.id_sender,
+                cn.id_recipient,
+                cn.message,
+                cn.time_stamp
             FROM 
-                chat c
-            JOIN 
-                chat_integrants ci ON c.id = ci.id_chat
-            JOIN 
-                chat_messages cm ON c.id = cm.id_chat
-            JOIN 
-                messages m ON cm.id_message = m.id_message
+                chats_nueva cn
             WHERE 
-                c.id = ?
+                cn.id = ?
             ORDER BY 
-                m.time_sent DESC;
+                cn.time_stamp DESC;
         `;
-        
+
         const [chatDetails] = await pool.query(chatInfoQuery, [chatId]);
-        
+
         if (chatDetails.length > 0) {
+            const messages = chatDetails.map(detail => ({
+                idMessage: detail.chatId,
+                senderId: detail.id_sender,
+                recipientId: detail.id_recipient,
+                content: detail.message,
+                timeSent: detail.time_stamp
+            }));
 
-            const chatInfo = {
-                chatId: chatDetails[0].chatId,
-                chatName: chatDetails[0].chat_name,
-                messages: [],
-                integrants: []
-            };
-
-            chatDetails.forEach(detail => {
-                chatInfo.integrants.push(detail.id_integrant);
-                chatInfo.messages.push({
-                    idMessage: detail.id_message,
-                    content: detail.content,
-                    timeSent: detail.time_sent,
-                    idUser: detail.id_user
-                });
-            });
-
-            chatInfo.integrants = [...new Set(chatInfo.integrants)];
-
-            res.json({ success: true, chat: chatInfo });
+            res.json({ success: true, chatId: chatId, messages: messages });
         } else {
             res.status(404).json({ success: false, message: "Chat not found" });
         }
@@ -679,42 +659,34 @@ app.get('chats/:chatId', authenticateToken, async (req, res) => {
     }
 });
 
-
 app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
 
     try {
         const chatsQuery = `
             SELECT 
-                c.id as chatId,
-                c.chat_name,
-                u.username as otherIntegrantName,
-                u.id as otherIntegrantId
+                cn.id AS chatId,
+                u.username AS otherUsername,
+                u.id AS otherUserId
             FROM 
-                chat_integrants ci
+                chats_nueva cn
             JOIN 
-                chat c ON ci.id_chat = c.id
-            JOIN 
-                chat_integrants ci2 ON c.id = ci2.id_chat AND ci2.id_integrant != ci.id_integrant
-            JOIN 
-                user u ON ci2.id_integrant = u.id
+                users u ON u.id = cn.id_recipient OR u.id = cn.id_sender
             WHERE 
-                ci.id_integrant = ?
+                cn.id_sender = ? OR cn.id_recipient = ?
             GROUP BY 
-                c.id, c.chat_name, u.username, u.id
+                cn.id
             ORDER BY 
-                c.id;
+                cn.time_stamp DESC;
         `;
 
-        // Pasar el ID del usuario autenticado como parámetro de la consulta
-        const [chats] = await pool.query(chatsQuery, [userId]);
+        const [chats] = await pool.query(chatsQuery, [userId, userId]);
 
         if (chats.length > 0) {
             const chatList = chats.map(chat => ({
                 chatId: chat.chatId,
-                chatName: chat.chat_name,
-                otherIntegrantName: chat.otherIntegrantName,
-                otherIntegrantId: chat.otherIntegrantId
+                otherUsername: chat.otherUsername,
+                otherUserId: chat.otherUserId
             }));
 
             res.json({ success: true, chats: chatList });
@@ -724,6 +696,44 @@ app.get('/chats', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+app.post('/send-message', authenticateToken, async (req, res) => {
+    const { id_recipient, message } = req.body;
+    const id_sender = req.user.id; // Tomamos el ID del usuario autenticado para evitar suplantación
+
+    try {
+        // Obtener los roles de ambos usuarios
+        const userRolesQuery = `
+            SELECT id, typeuser FROM users WHERE id IN (?, ?);
+        `;
+        const [roles] = await pool.query(userRolesQuery, [id_sender, id_recipient]);
+
+        if (roles.length < 2) {
+            return res.status(404).json({ success: false, message: "Uno o ambos usuarios no encontrados" });
+        }
+
+        const sender = roles.find(user => user.id === id_sender);
+        const recipient = roles.find(user => user.id === id_recipient);
+
+        // Validar que un tutor envía a un estudiante o viceversa
+        if (!((sender.typeuser === 1 && recipient.typeuser === 2) || (sender.typeuser === 2 && recipient.typeuser === 1))) {
+            return res.status(403).json({ success: false, message: "No está permitido enviar mensajes entre estos roles" });
+        }
+
+        // Inserción del mensaje
+        const insertMessageQuery = `
+            INSERT INTO chats_nueva (id_sender, id_recipient, message)
+            VALUES (?, ?, ?);
+        `;
+        await pool.query(insertMessageQuery, [id_sender, id_recipient, message]);
+
+        res.json({ success: true, message: "Mensaje enviado con éxito" });
+    } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
 
