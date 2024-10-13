@@ -619,27 +619,52 @@ app.get('/tutors', async (req, res) => {
     }
 });
 
+// Endpoint para obtener la lista de estudiantes
+app.get('/students', async (req, res) => {
+    try {
+        const query = `
+            SELECT u.id, u.username, u.email, 
+                   COALESCE(avg_rating.avg_rating, 0) AS avg_rating
+            FROM user u
+            LEFT JOIN (
+                SELECT id_receiver, AVG(rating) AS avg_rating
+                FROM comment
+                GROUP BY id_receiver
+            ) avg_rating ON u.id = avg_rating.id_receiver
+            WHERE u.typeuser = 1  -- Estudiantes tienen el tipo de usuario 1
+            GROUP BY u.id, u.username, u.email, avg_rating.avg_rating;
+        `;
+
+        const [results] = await pool.query(query);
+
+        if (results.length > 0) {
+            res.json(results); // Devuelve los estudiantes encontrados
+        } else {
+            res.status(404).json({ message: 'No se encontraron estudiantes' });
+        }
+    } catch (error) {
+        console.error('Error en la base de datos:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
 
 app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
-        const messagesQuery = `
+        const chatInfoQuery = `
             SELECT 
-                m.id AS messageId,
-                m.id_chat AS chatId,
-                m.id_sender,
-                u.username AS senderUsername,
-                m.message,
-                m.time_stamp
+                cn.id AS chatId,
+                cn.id_sender,
+                cn.id_recipient,
+                cn.message,
+                cn.time_stamp
             FROM 
-                messages_nueva m
-            JOIN 
-                users u ON m.id_sender = u.id
+                chats_nueva cn
             WHERE 
-                m.id_chat = ?
+                cn.id = ?
             ORDER BY 
-                m.time_stamp;
+                cn.time_stamp DESC;
         `;
 
         const [messages] = await pool.query(messagesQuery, [chatId]);
@@ -668,47 +693,48 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 
 app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
-
+  
     try {
-        const chatsQuery = `
-            SELECT 
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient,
-                m.message AS lastMessage,
-                m.time_stamp AS lastMessageTime
-            FROM 
-                chats_nueva cn
-            JOIN 
-                messages_nueva m ON cn.id = m.id_chat
-            WHERE 
-                cn.id_sender = ? OR cn.id_recipient = ?
-            GROUP BY 
-                cn.id
-            ORDER BY 
-                m.time_stamp DESC;
-        `;
-
-        const [chats] = await pool.query(chatsQuery, [userId, userId]);
-
-        if (chats.length > 0) {
-            const chatList = chats.map(chat => ({
-                chatId: chat.chatId,
-                otherParticipant: chat.id_sender === userId ? chat.id_recipient : chat.id_sender,
-                lastMessage: chat.lastMessage,
-                lastMessageTime: chat.lastMessageTime
-            }));
-
-            res.json({ success: true, chats: chatList });
-        } else {
-            res.json({ success: true, message: "No chats found", chats: [] });
-        }
+      const chatsQuery = `
+        SELECT 
+            cn.id AS chatId,
+            u.username AS otherUsername,
+            u.id AS otherUserId,
+            cn.message AS lastMessage,
+            cn.time_stamp AS lastMessageTime
+        FROM 
+            chats_nueva cn
+        JOIN 
+            users u ON u.id = cn.id_recipient OR u.id = cn.id_sender
+        WHERE 
+            cn.id_sender = ? OR cn.id_recipient = ?
+        GROUP BY 
+            cn.id
+        ORDER BY 
+            cn.time_stamp DESC;
+      `;
+  
+      const [chats] = await pool.query(chatsQuery, [userId, userId]);
+  
+      if (chats.length > 0) {
+        const chatList = chats.map(chat => ({
+          chatId: chat.chatId,
+          otherUsername: chat.otherUsername,
+          otherUserId: chat.otherUserId,
+          lastMessage: chat.lastMessage,
+          lastMessageTime: chat.lastMessageTime
+        }));
+  
+        res.json({ success: true, chats: chatList });
+      } else {
+        res.json({ success: true, message: "No chats found", chats: [] });
+      }
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+      console.error('Database error:', error);
+      res.status(500).json({ success: false, message: "Internal server error" });
     }
-});
-
+  });
+  
 
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
