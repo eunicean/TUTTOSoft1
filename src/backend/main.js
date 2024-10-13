@@ -79,7 +79,7 @@ app.get('/get-username-by-email', async (req, res) => {
 // Login endpoint
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    console.log(`Attempting login with email: ${email} and password: ${password}`);
+    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -158,7 +158,7 @@ app.get('/users/sessions', async (req, res) => {
 app.post('/register', async (req, res) => {
     //commmit de prueba
     const { username, email, password, role } = req.body;
-    console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -185,7 +185,7 @@ app.post('/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            console.log('User registered successfully:', result.insertId);
+            // console.log('User registered successfully:', result.insertId);
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -296,7 +296,7 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
-        console.log("Selected period is: " + periodo);
+        // console.log("Selected period is: " + periodo);
 
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
@@ -321,7 +321,7 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         }
         
         const [results] = await pool.query(query, params);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json({ success: true, sessions: results });
         } else {
@@ -397,7 +397,7 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
                 studentName: sessionResults[0].studentName
             };
             
-            console.log(sessionResults);
+            // console.log(sessionResults);
             res.json({ success: true, session });
         } else {
             res.status(404).json({ success: false, message: "Session not found" });
@@ -419,7 +419,7 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
             VALUES(?,?,?,?,?)`,
             [calificacion, comentario, id_sender, id_receiver, id_session]
         );
-        console.log('Comentario insertado:', comentarios);
+        // console.log('Comentario insertado:', comentarios);
         res.json({ success: true, message: "Sesión calificada exitosamente" });
         
     } catch (error) {
@@ -441,7 +441,7 @@ app.post('/report-absence', authenticateToken, async (req, res) => {
                 VALUES (?, ?, ?)`,
                 [id_sender, id_absentParticipant, message]
             );
-            console.log('Reporte de ausencia insertado:', result);
+            // console.log('Reporte de ausencia insertado:', result);
             res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
         } finally {
             conexion.release();
@@ -574,7 +574,7 @@ app.get('/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json(results);
         } else {
@@ -681,7 +681,7 @@ app.get('chats/:chatId', authenticateToken, async (req, res) => {
 
 
 app.get('/chats', authenticateToken, async (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.user.id; // Extraer el ID del usuario autenticado
 
     try {
         const chatsQuery = `
@@ -701,19 +701,20 @@ app.get('/chats', authenticateToken, async (req, res) => {
             WHERE 
                 ci.id_integrant = ?
             GROUP BY 
-                c.id
+                c.id, c.chat_name, u.username, u.id
             ORDER BY 
                 c.id;
         `;
 
+        // Pasar el ID del usuario autenticado como parámetro de la consulta
         const [chats] = await pool.query(chatsQuery, [userId]);
 
         if (chats.length > 0) {
             const chatList = chats.map(chat => ({
                 chatId: chat.chatId,
                 chatName: chat.chat_name,
-                otherIntegrantName: chat.otherIntegrantName, 
-                otherIntegrantId: chat.otherIntegrantId 
+                otherIntegrantName: chat.otherIntegrantName,
+                otherIntegrantId: chat.otherIntegrantId
             }));
 
             res.json({ success: true, chats: chatList });
@@ -725,6 +726,8 @@ app.get('/chats', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 
 const PORT = 5000;
