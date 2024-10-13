@@ -45,11 +45,11 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/cancel-session/:sessionId" element={<CancelView />} />
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
-          <Route path='/absence' element={<Absence />} />
+          <Route path='/absence/:sessionId' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
           <Route path='/seachtutor' element={<Searchtutor />} />
           <Route path='/adminsearch' element={<Adminsearch />} />
-          <Route path="/rate-tutor" element={<RateTutorView />}  />
+          <Route path="/rate-tutor/:sessionId" element={<RateTutorView />}  />
         </Routes>
       </div>
     </>

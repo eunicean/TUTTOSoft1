@@ -405,8 +405,9 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
 });
 
 app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
-    const { calificacion, comentario, id_receiver, sessionID } = req.body;
+    const { calificacion, comentario, id_receiver } = req.body;
     const id_sender = req.user.id;
+    const sessionID = req.params.sessionID
 
     try {
         const conexion = await pool.getConnection();
