@@ -690,7 +690,6 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 });
 
 
-
 app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
   
@@ -698,14 +697,12 @@ app.get('/chats', authenticateToken, async (req, res) => {
       const chatsQuery = `
         SELECT 
             cn.id AS chatId,
-            u.username AS otherUsername,
-            u.id AS otherUserId,
+            cn.id_sender,
+            cn.id_recipient,
             cn.message AS lastMessage,
             cn.time_stamp AS lastMessageTime
         FROM 
             chats_nueva cn
-        JOIN 
-            users u ON u.id = cn.id_recipient OR u.id = cn.id_sender
         WHERE 
             cn.id_sender = ? OR cn.id_recipient = ?
         GROUP BY 
@@ -719,8 +716,8 @@ app.get('/chats', authenticateToken, async (req, res) => {
       if (chats.length > 0) {
         const chatList = chats.map(chat => ({
           chatId: chat.chatId,
-          otherUsername: chat.otherUsername,
-          otherUserId: chat.otherUserId,
+          senderId: chat.id_sender,
+          recipientId: chat.id_recipient,
           lastMessage: chat.lastMessage,
           lastMessageTime: chat.lastMessageTime
         }));
@@ -733,9 +730,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
       console.error('Database error:', error);
       res.status(500).json({ success: false, message: "Internal server error" });
     }
-  });
-  
+});
 
+  
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
     const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
@@ -754,19 +751,20 @@ app.post('/send-message', authenticateToken, async (req, res) => {
         } else {
             // Crear un nuevo chat si no existe
             const insertChatQuery = `
-                INSERT INTO chats_nueva (id_sender, id_recipient)
-                VALUES (?, ?);
+                INSERT INTO chats_nueva (id_sender, id_recipient, time_stamp)
+                VALUES (?, ?, NOW());
             `;
             const [newChat] = await pool.query(insertChatQuery, [id_sender, id_recipient]);
             chatId = newChat.insertId;
         }
 
         // Insertar el mensaje en messages_nueva
+        const actualMessage = message.trim() !== '' ? message : 'Nuevo chat iniciado';
         const insertMessageQuery = `
-            INSERT INTO messages_nueva (id_chat, id_sender, message)
-            VALUES (?, ?, ?);
+            INSERT INTO messages_nueva (id_chat, id_sender, message, time_stamp)
+            VALUES (?, ?, ?, NOW());
         `;
-        await pool.query(insertMessageQuery, [chatId, id_sender, message]);
+        await pool.query(insertMessageQuery, [chatId, id_sender, actualMessage]);
 
         res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
     } catch (error) {
@@ -774,6 +772,7 @@ app.post('/send-message', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
+
 
 
 const PORT = 5000;

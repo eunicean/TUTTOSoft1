@@ -29,24 +29,29 @@ const Chat = () => {
   };
 
   // Función para obtener la lista de chats desde el backend
-  const fetchChats = async () => {
-    try {
-      const response = await axios.get('/chats', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      if (response.data.success) {
-        console.log('Chats obtenidos:', response.data.chats);
-        setChats(response.data.chats); // Actualiza la lista de chats
-      } else {
-        console.log('No se encontraron chats');
-        setChats([]); // Si no hay chats, asegura que el estado esté vacío
-      }
-    } catch (error) {
+const fetchChats = async () => {
+  try {
+    const response = await axios.get('/chats', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    if (response.data.success) {
+      console.log('Chats obtenidos:', response.data.chats);
+      setChats(response.data.chats); // Actualiza la lista de chats
+    } else {
+      console.log('No se encontraron chats');
+      setChats([]); // Si no hay chats, asegura que el estado esté vacío
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 500 && error.response.data.message.includes("doesn't exist")) {
+      console.error('La tabla de usuarios no existe. Contacte al administrador.');
+    } else {
       console.error('Error al obtener los chats:', error);
     }
-  };
+  }
+};
+
 
   // Función para obtener los mensajes de un chat específico
   const fetchMessages = async (chatId) => {
