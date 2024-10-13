@@ -51,6 +51,9 @@ jobs:
       run: |
         rm -f ${{ github.workspace }}/deploy_key
         rm -f ${{ github.workspace }}/deploy_key.pub
-
+        
+    - name: Install PM2
+      run: npm install pm2 -g
+      
     - name: server reload
       run: pm2 reload backend
