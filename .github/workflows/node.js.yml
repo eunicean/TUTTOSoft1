@@ -40,6 +40,9 @@ jobs:
     - run: npm run build --if-present
     - run: npm run start &
     - run: npm test
+
+    - name: Remove local tar file
+      run: rm -f deploy.tar.gz
     
     - name: Compress build directory and additional files
       run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
