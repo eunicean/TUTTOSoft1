@@ -16,6 +16,16 @@ const SessionVistaParaTutorOEstudiante = () => {
     const navigate = useNavigate();
     const valorEstrellas = 3; // de la calificación en la base de datos
 
+    // Funciones de navegación
+    const goRating = (id) => {
+        navigate(`/rate-tutor/${id}`);
+    };
+
+    const goReportAbsence = (id) => {
+        navigate(`/absence/${id}`);
+    };
+
+
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
@@ -105,7 +115,12 @@ const SessionVistaParaTutorOEstudiante = () => {
                                         <li key={index}>{tema}</li>
                                     ))}
                                 </ul>
-                                <button>Calificar sesión</button>
+                                <button onClick={() => goRating(sessionId)}>
+                                    Calificar sesión
+                                </button>
+                                <button onClick={() => goReportAbsence(sessionId)}>
+                                    Reportar ausencia sesión
+                                </button>
                             </div>
                         </div>
                     </div>
