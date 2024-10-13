@@ -62,6 +62,15 @@ const SessionVistaParaTutorOEstudiante = () => {
         fetchSession();
     }, [sessionId]);
 
+    const formatHour = (hourString) => {
+      const [hour, minute] = hourString.split(':');
+      const hourInt = parseInt(hour, 10);
+      const suffix = hourInt >= 12 ? 'pm' : 'am';
+      const formattedHour = hourInt % 12 || 12;  // Para manejar el caso de 12:00 pm o 12:00 am
+      return `${formattedHour}:${minute} ${suffix}`;
+  }
+
+
     if (loading) {
         return <p>Loading...</p>; // Mostrar mientras se carga la data
     }
@@ -70,62 +79,46 @@ const SessionVistaParaTutorOEstudiante = () => {
         return <p>Error: {error}</p>; // Mostrar errores
     }
 
-    return (
-        <div className="vista-container">
-            <div className="header">
-                <span className="session-text">Sesión</span>
-                {/* Botón para cancelar la cita */}
-                <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
-            </div>
-            <div className="content">
-                <div className="card1">
-                    <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
-                    
-                    {/* Verificar si el rol es de tutor o estudiante y mostrar los detalles correspondientes */}
-                    {isTutor ? (
-                        // Si es tutor, mostramos los detalles del estudiante
-                        <>
-                            <h3>Nombre del Estudiante: {session.studentName}</h3>
-                            <p>Año: {session.studentYear}</p>
-                            <p>Carnet: {session.studentCarnet}</p> 
-                            <button>Chat con Estudiante</button>
-                        </>
-                    ) : (
-                        // Si es estudiante, mostramos los detalles del tutor
-                        <>
-                            <h3>Nombre del Tutor: {session.tutorName}</h3>
-                            <p>Especialidad: {session.tutorSpecialty}</p>
-                            <StarRating rating={valorEstrellas} />
-                            <button>Chat con Tutor</button>
-                        </>
-                    )}
-                </div>
+  return (
+    <div className="vista-container">
+    {/* <Navbar /> */}
+      <div className="header1">
+      {/* <button className="menu-toggle">Menu</button> */}
+        <span className="session-text">Sesión</span>
+        <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
+      </div>
+      <div className="content">
+        <div className="card1">
+          <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
+          <h3>Nombre:  {session.studentName}</h3>
+          <p>Año: 3</p>
+          <p>Carnet: 123456</p> 
+          <StarRating rating={valorEstrellas} />
+          <button> Chat </button>
+        </div>
 
-                <div className="info">
-                    <div className="TitulosInfo">
-                        <h2>Materia: {session.CourseCode}</h2>
-                        <h2>Inicio: {session.startHour}</h2> 
-                        <h2>Finalización: {session.endHour}</h2>
-                    </div>
-                    <div className="Info2">
-                        <div className="temas">
-                            <h2>Notas para la sesión</h2>
-                            <div className="temas-card1">
-                                <h2>Temas a repasar</h2>
-                                <ul> 
-                                    {session.temas && session.temas.map((tema, index) => (
-                                        <li key={index}>{tema}</li>
-                                    ))}
-                                </ul>
-                                <button onClick={() => goRating(sessionId)}>
-                                    Calificar sesión
-                                </button>
-                                <button onClick={() => goReportAbsence(sessionId)}>
-                                    Reportar ausencia sesión
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <div className="info">
+        <div className='TitulosInfo'>
+          <h2>Materia: {session.namecourse}</h2>
+          <h2>Hora: {formatHour(session.startHour)} a {formatHour(session.endHour)}</h2>
+        </div>
+
+        <hr className="divider" /> {/* Linea divisoria  */}
+        
+          <div className='Info2'>
+            <div className='temas'>
+                <h2> Notas para la sesion </h2>
+                <div className='temas-card1'>
+                <h2>  Temas a repasar: </h2>
+                <ul> 
+                {session.tutorNotes && session.tutorNotes.map((notes, index) => (
+                    <li key={index}>{notes}</li>
+                     ))}
+                </ul>
+                </div>
+                <div className='Btn-acciones-vista'>
+                <button> Calificar Sesion </button>
+                <button> Reportar Ausencia</button>
                 </div>
             </div>
         </div>

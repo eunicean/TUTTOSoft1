@@ -1,254 +1,136 @@
-/* Estilo base */
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #FFEFEF; /* Un tono suave de rosa */
-}
-
-/* Menú de hamburguesa, si aplica */
-.menu-toggle {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1000;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #FFFFFF; /* Color suave para el botón */
-  color: #333;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.menu-toggle:hover {
-  background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
-}
-
-/* El nuevo contenedor que envolverá el sessions-container */
 .outer-container {
-  height: calc(100vh - 12vh); /* Resta el tamaño del header */
-  padding-top: 0; /* Da espacio al header */
-  overflow-y: auto; /* Scroll solo dentro de este contenedor */
-  background-color: linear-gradient(to right, #FFE7DB, #FFD1BA); /* Color de fondo del contenedor */
+  height: calc(100vh - 12vh); /* Mantén el cálculo del tamaño del header */
+  padding-top: 0;
+  overflow-y: auto;
   margin: 0;
-}
-/* Ocultar el scrollbar en todos los navegadores */
-.outer-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari y Opera */
+  width: 95vw; /* Ajusta el ancho para que sea más amplio */
+  max-width: 1200px; /* Opcional: limita el ancho máximo en pantallas grandes */
 }
 
-.outer-container {
-  -ms-overflow-style: none;  /* Internet Explorer y Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-/* Contenedor interno para las sesiones */
 .sessions-container {
-  width: 100%; /* Ajustar a todo el ancho del outer-container */
-  margin: 0; /* Eliminar márgenes externos */
-  padding: 0 1rem; /* Reducir el padding lateral si es necesario */
-  background-color: #FFFFFF; /* Fondo blanco para el contenido */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
-  border-radius: 10px; /* Bordes redondeados */
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Espacio entre los elementos */
+  gap: 1rem;
 }
+
 .sessions-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-content: center;
+  gap: 10px;
+  padding: 0 20px;
 }
 
 .buttons-group {
   display: flex;
-  gap: 1rem; /* Espacio entre los botones */
+  gap: 10px; 
 }
 
-/* ESTILOS DE BOTONES */
 .create-session-button {
-  display: flex; /* Para que el icono y el texto estén alineados horizontalmente */
-  align-items: center; /* Centra verticalmente el contenido */
-  background-color: #f7f7f7; /* Fondo claro para el botón */
-  color: #333; /* Color de texto oscuro */
-  padding: 0.75rem 1.5rem; /* Espaciado interno */
-  border: none; /* Sin bordes */
-  border-radius: 1rem; /* Bordes muy redondeados */
-  font-size: 1rem; /* Tamaño del texto */
-  font-weight: bold; /* Texto en negrita */
-  cursor: pointer; /* Cambia el cursor al pasar el ratón */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave para hover */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-  overflow: hidden; /* Asegura que los bordes redondeados corten cualquier desbordamiento */
-}
-
-.create-session-button .icon-container {
-  background-color: #4CAF50; /* Color de fondo del ícono (verde) */
-  padding: 0.5rem; /* Espaciado interno del ícono */
-  border-radius: 50%; /* Hacer que el fondo del ícono sea circular */
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-right: 1rem; /* Espacio entre el ícono y el texto */
-}
-
-.create-session-button .icon-container img {
-  width: 1.25rem; /* Ajusta el tamaño del ícono */
-  height: 1.25rem; /* Ajusta el tamaño del ícono */
+  background-color: #f7f7f7;
+  color: #333;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 1rem;
+  font-size: 14px;
+  white-space: nowrap;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .create-session-button:hover {
-  background-color: #ececec; /* Color de fondo más claro en hover */
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Aumenta la sombra al hacer hover */
+  background-color: #ececec;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
-.create-session-button:active {
-  background-color: #ddd; /* Fondo más oscuro al hacer clic */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce la sombra al hacer clic */
-  transform: translateY(2px); /* Efecto de presionar el botón */
+.yes-sessions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  overflow-y: auto;
 }
-/* FINALIZA ESTILO DE BOTONES */ 
 
-/* Título de las sesiones */
-.sessions-title {
+.TituloPS {
   font-size: 1.5rem;
-  color: #333333;
-  margin-bottom: 2rem;
+  color: #865a3c;
 }
 
-/* Mensaje cuando no hay sesiones */
 .no-sessions {
   font-size: 1.2rem;
   color: #333333;
   margin: 2rem 0;
   padding: 2rem;
-  background-color: #FAE1DD; /* Fondo suave para el mensaje */
-  border-radius: 10px; /* Bordes redondeados para el mensaje */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para el mensaje */
-}
-
-/* Contenedor que envuelve las tarjetas de sesión */
-.yes-sessions {
-  display: flex;
-  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en varias filas */
-  gap: 1rem; /* Espacio entre las tarjetas */
-  justify-content: flex-start; /* Alineación de las tarjetas hacia la izquierda */
-  overflow-y: auto; /* Scroll si hay demasiadas tarjetas */
-  height: 100%; /* Tomará toda la altura disponible del contenedor */
-}
-/* Estilo para cada tarjeta (SessionCard) */
-.session-card {
-  width: 25vh; /* Ajusta el tamaño de las tarjetas según sea necesario */
-  height: auto;
-  flex: 0 1 auto; /* Asegura que las tarjetas respeten su tamaño y se envuelvan */
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.session-card:hover {
-  transform: scale(1.05); /* Aumenta el tamaño un poco al hacer hover */
-}
-
-/* Botón para añadir nuevas sesiones, si aplica */
-.add-new-session {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.5rem 1rem;
-  background-color: #FAD4D4; /* Color para el botón de nuevas sesiones */
-  color: #333;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.add-new-session:hover {
-  background-color: #F3C2C0; /* Un color ligeramente más oscuro al pasar el cursor */
-}
-
-
-select {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  margin: 10px 0;
-}
-
-select {
-width: 100%;
-padding: 10px 15px;
-background-color: #f7f7f7; /* Fondo gris claro */
-color: #333; /* Texto oscuro */
-border-radius: 4px;
-border: 1px solid #cccccc; /* Borde gris */
-appearance: none; /* Remueve la flecha predeterminada */
--webkit-appearance: none;
--moz-appearance: none;
-cursor: pointer;
-font-size: 16px;
-box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
-}
-
-select:after {
-content: '▼';
-position: absolute;
-top: 50%;
-right: 15px;
-transform: translateY(0%);
-color: #333; /* Flecha de color oscuro */
-pointer-events: none; /* El icono no debe afectar la funcionalidad del select */
-font-size: 20px; /* Tamaño de la flecha */
-}
-
-/* Puedes agregar estilos adicionales para cuando se pasa el mouse por encima */
-select:hover {
-background-color: #eaeaea; /* Fondo un poco más oscuro al pasar el ratón por encima */
-}
-
-/* Scrollbar personalizado */
-.sessions-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.sessions-container::-webkit-scrollbar-thumb {
-  background-color: #cccccc; /* Color de la barra de desplazamiento */
+  background-color: #FAE1DD;
   border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Botón para crear una nueva sesión */
-.create-session-button {
-  width: 30vh;
-  font-size: small;
-}
-
-
-/* Media queries para diseños responsivos */
+/* Media queries para pantallas pequeñas */
 @media (max-width: 768px) {
-  .sessions-container {
-  margin: 1rem;
-  padding: 1rem;
-  }
-
-  .sessions-title, .no-sessions, .add-new-session {
-  font-size: 1rem;
-  }
-  
-  .menu-toggle {
-  font-size: 0.9rem;
-  padding: 0.3rem 0.6rem;
-  }
   .sessions-header {
-    flex-direction: column; /* Coloca el título y los botones uno debajo del otro en pantallas pequeñas */
+    flex-direction: column;
     align-items: flex-start;
+    gap: 10px; /* Añade espacio entre los elementos */
   }
 
   .buttons-group {
-    justify-content: center;
     width: 100%;
+    justify-content: center;
+    display: grid;
+    align-content: space-evenly;
   }
+
+  .create-session-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .yes-sessions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sessions-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px; /* Añade espacio entre los elementos */
+  }
+
+  .buttons-group {
+    width: 100%;
+    justify-content: center;
+    display: grid;
+    align-content: space-evenly;
+  }
+
+  .yes-sessions {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b7b7b7;
+  border-radius: 10px;
 }
