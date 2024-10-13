@@ -1,10 +1,15 @@
-/* src/Vista.css */
+/* Importa una fuente más moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 /* Estilos generales */
 .vista-container {
-  font-family: 'Roboto', sans-serif; /* Cambia la fuente a una más moderna */
-  padding: 30px; /* Aumentar el padding */
+  font-family: 'Poppins', sans-serif; /* Nueva fuente */
+  padding: 30px;
   margin-top: 5vh;
+  background-color: #f7f9fc; /* Fondo claro */
+  color: #333; /* Texto oscuro para buen contraste */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  border-radius: 15px; /* Bordes redondeados */
 }
 
 /* Header */
@@ -12,95 +17,102 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px; /* Más espacio */
+  margin-bottom: 30px;
 }
 
 .session-text {
-  margin-top: 30px;
-  font-size: 42px; /* Fuente más grande */
+  font-size: 36px; /* Tamaño de texto más adecuado */
   font-weight: bold;
-  color: #a57e5f; /* Un tono más suave */
+  color: #865a3c; /* Color de texto más oscuro */
 }
 
 /* Botón de cancelar */
 .cancel-button {
-  margin-top: 20px;
-  padding: 12px 24px;
-  font-size: 22px;
-  background-color: #a57e5f; /* Color más suave */
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #c29574; /* Rojo vibrante */
   color: white;
-  border-radius: 8px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s ease; /* Transición suave */
 }
 
 .cancel-button:hover {
-  background-color: #d9534f;
+  background-color: #e74c3c; /* Color al hacer hover */
 }
 
 .content {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Espacio entre las tarjetas */
+  gap: 20px;
 }
 
 /* Tarjeta card1 más grande */
 .card1 {
-  width: 40%; /* Tarjeta más grande */
-  height: 60vh; /* Mayor altura */
-  margin-left: 5vh;
-  padding: 25px; /* Aumentar padding */
-  border: 1px solid #8d6c46;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+  width: 35%;
+  padding: 25px;
+  border: 1px solid #dfc1a9; /* Borde más claro */
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Sombra más suave */
   text-align: center;
-  background-color: #a57e5f; /* Un color más suave y cálido */
+  background-color: #dfc1a9;
+  transition: transform 0.3s ease; /* Transición suave al hacer hover */
+}
+
+.card1:hover {
+  transform: translateY(-5px); /* Levantar la tarjeta al hacer hover */
 }
 
 /* Imagen de perfil */
 .profile-pic {
   width: 100%;
-  max-width: 220px; /* Imagen un poco más grande */
+  max-width: 180px; /* Tamaño más grande */
   height: auto;
-  border-radius: 50%;
+  border-radius: 50%; /* Redondeada */
   margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra */
 }
 
 /* Botones dentro de la tarjeta */
-.card-buttons button {
-  padding: 12px;
-  margin: 8px;
-  font-size: 18px;
+.card1 button {
+  padding: 12px 18px;
+  margin-top: 20px;
+  font-size: 16px;
+  background-color: #b88163; /* Azul suave */
+  color: white;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.card-buttons button:hover {
-  background-color: #ccc;
+.card1 button:hover {
+  background-color: #e74c3c;
 }
 
 .info {
   width: 55%;
-  padding: 10px;
-  margin-top: 25px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Tarjeta de temas más grande */
 .temas-card1 {
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  padding: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
   margin-top: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  background-color: #a57e5f;
-  width: 100%;
-  max-width: 650px; /* Tamaño máximo ajustado */
-  min-width: 350px; /* Aumentar el tamaño mínimo */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  background-color: #c29574;
 }
 
 .temas-card1 h2 {
-  margin-bottom: 25px;
-  font-size: 1.6rem;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  color: #8c6246;
 }
 
 /* Listas y botones */
@@ -110,97 +122,77 @@
 }
 
 .temas-card1 li {
-  padding: 12px 0;
-  font-size: 1.3rem;
+  padding: 10px 0;
+  font-size: 1.2rem;
 }
 
-.temas-card1 button {
-  margin-top: 25px;
-  padding: 12px 25px;
-  font-size: 1.1rem;
+.Btn-acciones-vista {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-/* Estrellas más llamativas */
+.Btn-acciones-vista button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #9d4d1a; /* Verde suave */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.Btn-acciones-vista button:hover {
+  background-color: #e74c3c;
+}
+
 .stars {
   display: flex;
   justify-content: center;
-  color: #ffcc00; /* Amarillo más brillante */
+  color: #f1c40f; /* Amarillo brillante */
 }
 
+/* Ajustes para Materia y Hora */
+.TitulosInfo h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #9d4d1a;
+}
 
-/* Media Queries para pantallas medianas y grandes (Responsive) */
+/* Línea divisoria entre TitulosInfo e Info2 */
+.divider {
+  width: 100%;
+  height: 2px;
+  background-color: #8d6c46; /* Color suave de la línea */
+  margin: 40px 0; /* Espacio arriba y abajo de la línea */
+  border: none;
+  border-radius: 8px; /* Bordes redondeados */
+  opacity: 0.6; /* Un poco de transparencia */
+}
 
+/* Media Queries para pantallas medianas y grandes */
 @media (min-width: 768px) {
-  .vista-container {
-    font-family: 'Roboto', sans-serif;
-    padding: 30px;
-    margin-top: 7vh;
-  }
-
-  .session-text {
-    font-size: 42px; /* Mantener tamaño de texto en pantallas más grandes */
-  }
-
-  .cancel-button {
-    padding: 14px 28px;
-    font-size: 24px;
-  }
-
-  .content {
-    flex-direction: row;
-  }
-
   .card1 {
-    width: 35%; /* Hacer más ancho */
-    margin-left: 5vh; /* Ajustar la posición más hacia la izquierda */
-    height: auto;
+    width: 40%; /* Aumentar tamaño */
   }
-
   .info {
-    width: 55%; /* Ajusta el ancho para pantallas medianas y grandes */
-  }
-
-  .temas-card1 {
-    width: 100%; /* Hacer la tarjeta de notas más grande */
-    max-width: 700px; /* Aumentar el tamaño máximo */
-    padding: 40px;
+    width: 50%;
   }
 }
 
-/* Media Queries para pantallas pequeñas (Mobile) */
-
+/* Media Queries para pantallas pequeñas */
 @media (max-width: 767px) {
-  .vista-container {
-    font-family: 'Roboto', sans-serif;
-    padding: 20px;
-    margin-top: 5vh;
-  }
-
-  .session-text {
-    font-size: 32px; /* Reducir el tamaño en pantallas pequeñas */
-  }
-
-  .cancel-button {
-    padding: 10px 20px;
-    font-size: 18px;
-  }
-
-  .content {
-    flex-direction: column;
-  }
-
   .card1 {
-    width: 100%; /* Ajustar el tamaño para pantallas pequeñas */
-    height: auto;
+    width: 100%;
     margin-left: 0;
   }
-
-  .temas-card1 {
+  .info {
     width: 100%;
-    padding: 20px; /* Reducir el padding */
+    padding: 20px;
   }
-  
-  .profile-pic {
-    max-width: 150px; /* Tamaño más pequeño para móviles */
+  .divider {
+    margin: 20px 0; /* Espacio más pequeño en pantallas pequeñas */
   }
 }

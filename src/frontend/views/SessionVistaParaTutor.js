@@ -53,6 +53,14 @@ const SessionVistaParaTutor = () => {
         fetchSession();
     }, [sessionId]);
 
+    const formatHour = (hourString) => {
+      const [hour, minute] = hourString.split(':');
+      const hourInt = parseInt(hour, 10);
+      const suffix = hourInt >= 12 ? 'pm' : 'am';
+      const formattedHour = hourInt % 12 || 12;  // Para manejar el caso de 12:00 pm o 12:00 am
+      return `${formattedHour}:${minute} ${suffix}`;
+  }
+
 
     if (loading) {
         return <p>Loading...</p>; // Display while data is loading
@@ -77,27 +85,31 @@ const SessionVistaParaTutor = () => {
           <p>Año: 3</p>
           <p>Carnet: 123456</p> 
           <StarRating rating={valorEstrellas} />
-          <button> Cerrar Sesion </button>
+          <button> Chat </button>
         </div>
 
         <div className="info">
         <div className='TitulosInfo'>
-          <h2>Materia: {session.CourseCode}</h2>
-          <h2> Inicio: {session.startHour}</h2> 
-          <h2> Finalización: {session.endHour}</h2>
+          <h2>Materia: {session.namecourse}</h2>
+          <h2>Hora: {formatHour(session.startHour)} a {formatHour(session.endHour)}</h2>
         </div>
-          <div className='Info2'>
 
+        <hr className="divider" /> {/* Linea divisoria  */}
+        
+          <div className='Info2'>
             <div className='temas'>
                 <h2> Notas para la sesion </h2>
                 <div className='temas-card1'>
-                <h2>Temas a repasar</h2>
+                <h2>  Temas a repasar: </h2>
                 <ul> 
-                {session.temas && session.temas.map((tema, index) => (
-                    <li key={index}>{tema}</li>
+                {session.tutorNotes && session.tutorNotes.map((notes, index) => (
+                    <li key={index}>{notes}</li>
                      ))}
                 </ul>
-                <button>Calificar sesion</button>
+                </div>
+                <div className='Btn-acciones-vista'>
+                <button> Calificar Sesion </button>
+                <button> Reportar Ausencia</button>
                 </div>
             </div>
           </div>
