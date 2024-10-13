@@ -41,14 +41,17 @@ jobs:
     - run: npm run start &
     - run: npm test
 
-    - name: Remove local tar file
-      run: rm -f deploy.tar.gz
-    
-    - name: Compress build directory and additional files
-      run: tar -czvf deploy.tar.gz build ./src/backend/main.js ./src/backend/db.js
+    - name: Compress build directory
+      run: tar -czvf deploy.tar.gz build
       
     - name: Deploy to Server
-      run: sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+      run: |
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./src/backend/main.js root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}/src/backend/
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./src/backend/db.js root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}/src/backend/
+
+    - name: Remove local tar file
+      run: rm -f deploy.tar.gz
       
     - name: Cleanup SSH Keys
       run: |
@@ -60,4 +63,5 @@ jobs:
         sshpass -p ${{ secrets.SERVER_PASSWORD }} ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "\
           cd ${SERVER_PATH} && \
           tar -xzvf deploy.tar.gz && \
+          rm -f deploy.tar.gz && \
           pm2 reload backend"
