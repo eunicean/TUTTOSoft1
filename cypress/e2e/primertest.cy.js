@@ -14,7 +14,7 @@ describe('Prueba de Funcionalidad: Inicio de Sesión ', () => {
     cy.url().should('include', '/sessions');
 
     // Verificar que la página de sesiones muestra el título correcto
-    cy.get('.sessions-title').should('contain', 'Próximas Sesiones');
+    cy.get('.TituloPS').should('contain', 'Próximas Sesiones');
 
 
   });
