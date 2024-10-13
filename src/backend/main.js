@@ -405,20 +405,57 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
 });
 
 app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
-    const { calificacion, comentario, id_receiver } = req.body;
-    const id_sender = req.user.id;
-    const sessionID = req.params.sessionID
+    const { calificacion, comentario } = req.body;
+    const id_sender = req.user.id; // ID del usuario autenticado desde el token
+    const sessionID = req.params.sessionID;
 
     try {
         const conexion = await pool.getConnection();
-        const [comentarios] = await pool.query(
-            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
-            VALUES(?,?,?,?,?)`,
-            [calificacion, comentario, id_sender, id_receiver, sessionID]
-        );
-        console.log('Comentario insertado:', comentarios);
-        res.json({ success: true, message: "Sesión calificada exitosamente" });
-        
+        try {
+            // Verificar si el usuario es tutor en esta sesión
+            const [tutorResult] = await conexion.query(
+                `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
+                [sessionID, id_sender]
+            );
+
+            let id_receiver;
+
+            if (tutorResult.length > 0) {
+                // Si es tutor, obtenemos el ID del estudiante desde `students_Session`
+                const [studentResult] = await conexion.query(
+                    `SELECT id_student FROM students_Session WHERE id_session = ?`,
+                    [sessionID]
+                );
+
+                if (studentResult.length === 0) {
+                    return res.status(404).json({ success: false, message: 'Estudiante no encontrado en esta sesión' });
+                }
+                id_receiver = studentResult[0].id_student;
+            } else {
+                // Si no es tutor, buscamos al tutor de la sesión
+                const [tutorInSession] = await conexion.query(
+                    `SELECT id_tutor FROM sessionPlanned WHERE id = ?`,
+                    [sessionID]
+                );
+
+                if (tutorInSession.length === 0) {
+                    return res.status(404).json({ success: false, message: 'Tutor no encontrado en esta sesión' });
+                }
+                id_receiver = tutorInSession[0].id_tutor;
+            }
+
+            // Insertar la calificación en la tabla `comment`
+            const [comentarios] = await conexion.query(
+                `INSERT INTO comment (rating, commentContent, id_sender, id_receiver, id_session) 
+                 VALUES (?, ?, ?, ?, ?)`,
+                [calificacion, comentario, id_sender, id_receiver, sessionID]
+            );
+
+            console.log('Comentario insertado:', comentarios);
+            res.json({ success: true, message: 'Sesión calificada exitosamente' });
+        } finally {
+            conexion.release();
+        }
     } catch (error) {
         console.error('Error al calificar la sesión:', error);
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -426,60 +463,79 @@ app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
 });
 
 
-app.post('/report-absence/', authenticateToken, async (req, res) => {
-    const {id_absentParticipant, message } = req.body;
-    const id_sender = req.user.id;
-
-    try {
-        const conexion = await pool.getConnection();
-        try {
-            const [result] = await conexion.query(
-                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message)
-                VALUES (?, ?, ?)`,
-                [id_sender, id_absentParticipant, message]
-            );
-            console.log('Reporte de ausencia insertado:', result);
-            res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
-        } finally {
-            conexion.release();
-        }
-    } catch (error) {
-        console.error('Error al registrar el reporte de ausencia:', error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
-    }
-});
-
 app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
-    const { id_absentParticipant, message } = req.body;
-    const id_sender = req.user.id;
+    const { message } = req.body;
+    const id_sender = req.user.id; // Usuario autenticado
     const sessionID = req.params.sessionID;
     const absentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato 'YYYY-MM-DD'
 
     try {
         const conexion = await pool.getConnection();
         try {
+            // Verificar si el usuario es tutor en esta sesión
+            const [tutorResult] = await conexion.query(
+                `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
+                [sessionID, id_sender]
+            );
+
+            let id_absentParticipant;
+
+            if (tutorResult.length > 0) {
+                // Si es tutor, el ausente es el estudiante
+                const [studentResult] = await conexion.query(
+                    `SELECT id_student FROM students_Session WHERE id_session = ?`,
+                    [sessionID]
+                );
+
+                if (studentResult.length === 0) {
+                    return res.status(404).json({ 
+                        success: false, 
+                        message: 'Estudiante no encontrado en esta sesión' 
+                    });
+                }
+                id_absentParticipant = studentResult[0].id_student;
+            } else {
+                // Si no es tutor, el ausente es el tutor
+                const [tutorInSession] = await conexion.query(
+                    `SELECT id_tutor FROM sessionPlanned WHERE id = ?`,
+                    [sessionID]
+                );
+
+                if (tutorInSession.length === 0) {
+                    return res.status(404).json({ 
+                        success: false, 
+                        message: 'Tutor no encontrado en esta sesión' 
+                    });
+                }
+                id_absentParticipant = tutorInSession[0].id_tutor;
+            }
+
+            // Insertar el reporte de ausencia en la base de datos
             const [result] = await conexion.query(
                 `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message, idSession, absentDate)
-                VALUES (?, ?, ?, ?, ?)`,
+                 VALUES (?, ?, ?, ?, ?)`,
                 [id_sender, id_absentParticipant, message, sessionID, absentDate]
             );
+
             console.log('Reporte de ausencia insertado:', result);
-            res.json({ 
-                success: true, 
-                message: "Reporte de ausencia registrado exitosamente", 
-                reportId: result.insertId 
+            res.json({
+                success: true,
+                message: 'Reporte de ausencia registrado exitosamente',
+                reportId: result.insertId
             });
+
         } finally {
             conexion.release();
         }
     } catch (error) {
         console.error('Error al registrar el reporte de ausencia:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor' 
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
         });
     }
 });
+
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
 app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
