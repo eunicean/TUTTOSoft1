@@ -1,7 +1,7 @@
-import conn from './conn.js'
+const conn = require('./conn.js');
 
 // Función para buscar un usuario por email
-export async function buscarUsuarioPorEmail(email) {
+async function buscarUsuarioPorEmail(email) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}'`);
@@ -11,7 +11,7 @@ export async function buscarUsuarioPorEmail(email) {
     }
 }
 
-export async function verificarUsuario(email,constrasenia) {
+async function verificarUsuario(email,constrasenia) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = '${email}' AND password = '${constrasenia}'`);
@@ -28,7 +28,7 @@ export async function verificarUsuario(email,constrasenia) {
 }
 
 // Función para crear un nuevo usuario
-export async function crearUsuario(id, username, email, password) {
+async function crearUsuario(id, username, email, password) {
     const conexion = await conn;
     try {
         const [result] = await conexion.execute(`INSERT INTO user (id, username, email, password) VALUES (${id}, '${username}', '${email}', '${password}')`);
@@ -38,7 +38,7 @@ export async function crearUsuario(id, username, email, password) {
     }
 }
 // Función para eliminar un usuario por ID
-export async function eliminarUsuarioPorID(id) {
+async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
     try {
         const [result] = await conexion.execute(`Delete from user where ID = ${id}`);
@@ -49,7 +49,7 @@ export async function eliminarUsuarioPorID(id) {
 }
 
 // Función para borrar chats con un usuario
-export async function borrarChatsConUsuario(idChat) {
+async function borrarChatsConUsuario(idChat) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`DELETE FROM chat_integrants WHERE id_chat = ${idChat}`);
@@ -60,7 +60,7 @@ export async function borrarChatsConUsuario(idChat) {
 }
 
 // Función para ver sesiones en curso
-export async function verSesionesEnCurso() {
+async function verSesionesEnCurso() {
     const conexion = await conn;
     try {
         const [sesion] = await conexion.execute(`SELECT * FROM sessionPlanned WHERE date = CURDATE() AND start_hour <= CURTIME() AND end_hour >= CURTIME()`);
@@ -71,7 +71,7 @@ export async function verSesionesEnCurso() {
 } //changes to do: add the userId to the sessionTo list, change from curdate from date to list all the 
 
 // Función para borrar una sesión
-export async function borrarSesion(date) {
+async function borrarSesion(date) {
     const conexion = await conn;
     try {
         const [sesion] = await conexion.execute(`DELETE FROM sessionPlanned WHERE date = '${date}'`);
@@ -82,7 +82,7 @@ export async function borrarSesion(date) {
 }
 
 // Todos los usuarios que son estudiantes
-export async function obtenerEstudiantes() {
+async function obtenerEstudiantes() {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -98,7 +98,7 @@ export async function obtenerEstudiantes() {
 }
 
 // Todos los mensajes de un chat específico
-export async function obtenerMensajesDeChat(idChat) {
+async function obtenerMensajesDeChat(idChat) {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -115,7 +115,7 @@ export async function obtenerMensajesDeChat(idChat) {
 }
 
 // Sesiones planificadas y su información de curso correspondiente
-export async function obtenerSesionesPlanificadas() {
+async function obtenerSesionesPlanificadas() {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -130,7 +130,7 @@ export async function obtenerSesionesPlanificadas() {
     }
 }
 
-export async function obtenerSesionesPlanificadasPorPersona(userId) {
+async function obtenerSesionesPlanificadasPorPersona(userId) {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -149,7 +149,7 @@ export async function obtenerSesionesPlanificadasPorPersona(userId) {
 }
 
 // Reportes de ausencia junto con la información del remitente y del ausente
-export async function obtenerReportesDeAusencia() {
+async function obtenerReportesDeAusencia() {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -166,7 +166,7 @@ export async function obtenerReportesDeAusencia() {
 }
 
 // Estudiantes y su disponibilidad
-export async function obtenerDisponibilidadEstudiantes() {
+async function obtenerDisponibilidadEstudiantes() {
     const pool = await crearPoolConexion();
     try {
         const conexion = await pool.getConnection();
@@ -181,7 +181,7 @@ export async function obtenerDisponibilidadEstudiantes() {
     }
 }
 
-export async function obtenerHorasDisponiblesPersona(id) {
+async function obtenerHorasDisponiblesPersona(id) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(`SELECT * FROM hoursdisponibility WHERE studentID = ?`, [id])
@@ -192,7 +192,7 @@ export async function obtenerHorasDisponiblesPersona(id) {
     }
 }
 
-export async function ingresarNuevasHoras(hora, day, studentID) {
+async function ingresarNuevasHoras(hora, day, studentID) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(`INSERT INTO hoursdisponibility(hournumber, day_week, studentID) VALUES(?,?,?)`, [hora, day, studentID])
@@ -203,7 +203,7 @@ export async function ingresarNuevasHoras(hora, day, studentID) {
     }
 }
 
-export async function eliminarHoras(hora, day, studentID) {
+async function eliminarHoras(hora, day, studentID) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(
@@ -217,7 +217,7 @@ export async function eliminarHoras(hora, day, studentID) {
     }
 }
 
-export async function obtenerTipoUsuarioPorId(userId){
+async function obtenerTipoUsuarioPorId(userId){
     const conexion = await conn;
     try {
         const [resultado] = await conexion.execute(
@@ -232,7 +232,7 @@ export async function obtenerTipoUsuarioPorId(userId){
 
 obtenerTipoUsuarioPorId(21231);
 // Función para calificar sesion
-export async function calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session) {
+async function calificarSesion(calificacion, comentario, id_sender, id_receiver, id_session) {
     const conexion = await conn;
     try {
         const [comentarios] = await conexion.execute(
@@ -248,3 +248,24 @@ export async function calificarSesion(calificacion, comentario, id_sender, id_re
 
 //calificarSesion(3,'chale',3,4,1);
 verSesionesEnCurso();
+
+module.exports = {
+    buscarUsuarioPorEmail,
+    verificarUsuario,
+    crearUsuario,
+    eliminarUsuarioPorID,
+    borrarChatsConUsuario,
+    verSesionesEnCurso,
+    borrarSesion,
+    obtenerEstudiantes,
+    obtenerMensajesDeChat,
+    obtenerSesionesPlanificadas,
+    obtenerSesionesPlanificadasPorPersona,
+    obtenerReportesDeAusencia,
+    obtenerDisponibilidadEstudiantes,
+    obtenerHorasDisponiblesPersona,
+    ingresarNuevasHoras,
+    eliminarHoras,
+    obtenerTipoUsuarioPorId,
+    calificarSesion,
+};
