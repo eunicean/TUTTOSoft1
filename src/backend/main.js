@@ -404,8 +404,8 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/grade-session', authenticateToken, async (req, res) => {
-    const { calificacion, comentario, id_receiver, id_session } = req.body;
+app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
+    const { calificacion, comentario, id_receiver, sessionID } = req.body;
     const id_sender = req.user.id;
 
     try {
@@ -413,7 +413,7 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
         const [comentarios] = await pool.query(
             `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
             VALUES(?,?,?,?,?)`,
-            [calificacion, comentario, id_sender, id_receiver, id_session]
+            [calificacion, comentario, id_sender, id_receiver, sessionID]
         );
         console.log('Comentario insertado:', comentarios);
         res.json({ success: true, message: "Sesión calificada exitosamente" });
@@ -425,7 +425,7 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
 });
 
 
-app.post('/report-absence', authenticateToken, async (req, res) => {
+app.post('/report-absence/', authenticateToken, async (req, res) => {
     const {id_absentParticipant, message } = req.body;
     const id_sender = req.user.id;
 
@@ -445,6 +445,38 @@ app.post('/report-absence', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Error al registrar el reporte de ausencia:', error);
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
+app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
+    const { id_absentParticipant, message } = req.body;
+    const id_sender = req.user.id;
+    const sessionID = req.params.sessionID;
+    const absentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato 'YYYY-MM-DD'
+
+    try {
+        const conexion = await pool.getConnection();
+        try {
+            const [result] = await conexion.query(
+                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message, idSession, absentDate)
+                VALUES (?, ?, ?, ?, ?)`,
+                [id_sender, id_absentParticipant, message, sessionID, absentDate]
+            );
+            console.log('Reporte de ausencia insertado:', result);
+            res.json({ 
+                success: true, 
+                message: "Reporte de ausencia registrado exitosamente", 
+                reportId: result.insertId 
+            });
+        } finally {
+            conexion.release();
+        }
+    } catch (error) {
+        console.error('Error al registrar el reporte de ausencia:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor' 
+        });
     }
 });
 
