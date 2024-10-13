@@ -6,36 +6,17 @@ body, html {
     background-color: #FFEFEF; /* Un tono suave de rosa */
 }
 
-/* Menú de hamburguesa */
-.menu-toggle {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    z-index: 1000;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #FFFFFF;
-    color: #333;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.menu-toggle:hover {
-    background-color: #F3C2C0;
-}
-
 /* Contenedor principal */
 .sessions-container, .profile-container {
     width: 90%;
-    margin: 2rem auto;
+    margin: 2rem auto; /* Centrado automático */
     padding: 2rem;
     background-color: #FFFFFF;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border-radius: 15px;
-    position: relative;
-    transition: transform 0.3s ease;
+    display: flex; /* Asegurarse de que los hijos puedan centrarse correctamente */
+    flex-direction: column; /* Alinear hijos verticalmente */
+    align-items: center; /* Centrar hijos horizontalmente */
 }
 
 /* Tarjeta de perfil */
@@ -43,11 +24,12 @@ body, html {
     background-color: #D9B59E;
     padding: 20px;
     border-radius: 10px;
-    display: flex;
+    display: flex; /* Flex para organizar internamente */
     flex-direction: column;
-    align-items: center;
-    width: 300px;
+    align-items: center; /* Centrar contenido horizontalmente */
+    width: 300px; /* Anchura fija para consistencia */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Espacio debajo de la tarjeta */
 }
 
 .profile-avatar {
@@ -55,124 +37,38 @@ body, html {
     height: 100px;
     border-radius: 50%;
     background-color: #5C3D2E;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Espacio entre imagen y texto */
 }
 
-h2 {
-    margin: 0;
-    font-size: 24px;
-    color: #5C3D2E;
-}
-
-p {
-    margin: 5px 0;
-    color: #5C3D2E;
+h2, p {
+    color: #5C3D2E; /* Unificar color de texto para h2 y p */
+    text-align: center; /* Alineación de texto para ajustar con el diseño centrado */
 }
 
 .button-group {
+    width: 100%; /* Aprovechar todo el ancho disponible */
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
+    justify-content: space-around; /* Espaciado equitativo alrededor de los botones */
+    flex-wrap: wrap; /* Permitir que los elementos se ajusten en pantallas pequeñas */
 }
 
 .button-group button {
-    background-color: #C18A5F;
-    color: white;
-    border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    margin-bottom: 10px;
-    width: 30%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 5px; /* Margen para asegurar espacio alrededor de botones */
 }
 
-.button-group button:hover {
-    opacity: 0.9;
-}
-
-
-/* Título de las sesiones */
-.sessions-title {
-    font-size: 1.5rem;
-    color: #333333;
-    margin-bottom: 2rem;
-}
-
-/* Mensaje cuando no hay sesiones */
-.no-sessions, .yes-sessions {
-    font-size: 1.2rem;
-    color: #333333;
-    margin: 2rem 0;
-    padding: 2rem;
-    background-color: #FAE1DD;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Botón para añadir nuevas sesiones */
-.add-new-session {
-    display: block;
-    margin: 1rem auto;
-    padding: 0.5rem 1rem;
-    background-color: #FAD4D4;
-    color: #333;
-    font-size: 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.add-new-session:hover {
-    background-color: #F3C2C0;
-}
-
-select {
-    width: 100%;
-    padding: 10px 15px;
-    background-color: #F7F7F7;
-    color: #333;
-    border-radius: 4px;
-    border: 1px solid #CCCCCC;
-    appearance: none;
-    cursor: pointer;
-    font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-select:hover {
-    background-color: #EAEAEA;
-}
-
-/* Media queries para diseños responsivos */
+/* Media queries para responsividad */
 @media (max-width: 768px) {
     .sessions-container, .profile-container {
-        margin: 1rem;
-        padding: 1rem;
+        width: 100%; /* Utilizar todo el ancho en dispositivos móviles */
+        margin: 0; /* Eliminar margen para utilizar el espacio completamente */
+        padding: 1rem; /* Padding reducido para pequeños dispositivos */
     }
 
-    .sessions-title, .no-sessions, .add-new-session {
-        font-size: 1rem;
-    }
-
-    .menu-toggle {
-        font-size: 0.9rem;
-        padding: 0.3rem 0.6rem;
-    }
-
-    .button-group {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .button-group button {
-        width: 100%;
-        margin-bottom: 10px;
+    .profile-card {
+        width: 90%; /* Mayor anchura en dispositivos pequeños para mejor visualización */
     }
 }
