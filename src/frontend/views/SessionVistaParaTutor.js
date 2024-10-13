@@ -1,7 +1,9 @@
-// src/Vista para verlo desde el punto de vista de tutor o estudiante...
+// src/Vista para verlo desde el punto de vista de tutor, donde sale informacion del
+// estudiante a quien le este dando clases...
+
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../css/TutorProfile.css';
+import '../css/SessionVistaParaTutor.css'
 import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';

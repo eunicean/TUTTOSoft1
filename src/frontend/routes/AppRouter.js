@@ -7,13 +7,13 @@ import Profile from '../views/Profile.js';
 import TestingView from '../views/testingView.js';
 import CancelView from '../views/CancelView.js';
 import CreateSession from '../views/createSession.js';
-import TutorProfile from '../views/TutorProfile.js';
 import SessionVistaParaTutor from '../views/SessionVistaParaTutor.js';
 import TestingHeader from '../views/VistaDePruebaHeader.js';
 import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
 import Searchtutor from '../views/Searchtutor.js';
-import Adminsearch from '../views/AdminSearch.js';
+import SessionVistaParaEstudiante from '../views/SessionVistaParaEstudiante.js';
+import Chat from '../views/Chat.js'; // Importa el componente de Chat
 import RateTutorView from '../views/RateTutorView.js';
 
 
@@ -41,21 +41,21 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/register" element={<Register />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path='/sessionVistaTutor/:sessionId' element={<SessionVistaParaTutor />} />
+          <Route path='/DetallesTutor/:sessionId' element={<SessionVistaParaTutor />} />
           <Route path="/cancel-session/:sessionId" element={<CancelView />} />
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence/:sessionId' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
           <Route path='/seachtutor' element={<Searchtutor />} />
-          <Route path='/adminsearch' element={<Adminsearch />} />
+          <Route path='/DetalleEstudiante/:sessionId' element ={<SessionVistaParaEstudiante />} />
+          <Route path='/chat' element={<Chat />} /> {/* Nueva ruta para el Chat */}
           <Route path="/rate-tutor/:sessionId" element={<RateTutorView />}  />
         </Routes>
       </div>
     </>
   );
 };
-
 
 const AppRouter = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
