@@ -10,6 +10,7 @@ import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
 
 const SessionVistaParaTutorOEstudiante = () => {
+    
     const { sessionId } = useParams();
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -80,49 +81,51 @@ const SessionVistaParaTutorOEstudiante = () => {
     }
 
   return (
-    <div className="vista-container">
-    {/* <Navbar /> */}
-      <div className="header1">
-      {/* <button className="menu-toggle">Menu</button> */}
-        <span className="session-text">Sesión</span>
-        <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
-      </div>
-      <div className="content">
-        <div className="card1">
-          <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
-          <h3>Nombre:  {session.studentName}</h3>
-          <p>Año: 3</p>
-          <p>Carnet: 123456</p> 
-          <StarRating rating={valorEstrellas} />
-          <button> Chat </button>
-        </div>
-
-        <div className="info">
-        <div className='TitulosInfo'>
-          <h2>Materia: {session.namecourse}</h2>
-          <h2>Hora: {formatHour(session.startHour)} a {formatHour(session.endHour)}</h2>
-        </div>
-
-        <hr className="divider" /> {/* Linea divisoria  */}
-        
-          <div className='Info2'>
-            <div className='temas'>
-                <h2> Notas para la sesion </h2>
-                <div className='temas-card1'>
-                <h2>  Temas a repasar: </h2>
-                <ul> 
-                {session.tutorNotes && session.tutorNotes.map((notes, index) => (
-                    <li key={index}>{notes}</li>
-                     ))}
-                </ul>
+        <div className="vista-container">
+            <div className="header1">
+                <span className="session-text">Sesión</span>
+                <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
+            </div>
+            
+            <div className="content">
+                <div className="card1">
+                    <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
+                    <h3>Nombre:  {session.studentName}</h3>
+                    <p>Año: 3</p>
+                    <p>Carnet: 123456</p> 
+                    <StarRating rating={valorEstrellas} />
+                    <button> Chat </button>
                 </div>
-                <div className='Btn-acciones-vista'>
-                <button> Calificar Sesion </button>
-                <button> Reportar Ausencia</button>
+
+                <div className="info">
+                    <div className='TitulosInfo'>
+                    <h2>Materia: {session.namecourse}</h2>
+                    <h2>Hora: {formatHour(session.startHour)} a {formatHour(session.endHour)}</h2>
+                </div>
+
+                <hr className="divider" /> {/* Linea divisoria  */}
+                
+                <div className='Info2'>
+                    <div className='temas'>
+                        <h2> Notas para la sesion </h2>
+                        <div className='temas-card1'>
+                        <h2>  Temas a repasar: </h2>
+                        <ul> 
+                        {session.tutorNotes && session.tutorNotes.map((notes, index) => (
+                            <li key={index}>{notes}</li>
+                            ))}
+                        </ul>
+                    </div>
+                        <div className='Btn-acciones-vista'>
+                            <button> Calificar Sesion </button>
+                            <button> Reportar Ausencia</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        </div>
     );
-};
+}
 
 export default SessionVistaParaTutorOEstudiante;

@@ -46,7 +46,7 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence/:sessionId' element={<Absence />} />
-          <Route path='/tutorprofile' element={<TutorProfile />} />
+          {/* <Route path='/tutorprofile' element={<TutorPro  file />} /> */}
           <Route path='/seachtutor' element={<Searchtutor />} />
           <Route path='/DetalleEstudiante/:sessionId' element ={<SessionVistaParaEstudiante />} />
           <Route path='/chat' element={<Chat />} /> {/* Nueva ruta para el Chat */}

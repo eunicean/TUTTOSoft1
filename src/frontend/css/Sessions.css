@@ -78,6 +78,23 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+select {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #F7F7F7;
+  color: #333;
+  border-radius: 4px;
+  border: 1px solid #CCCCCC;
+  appearance: none;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+select:hover {
+  background-color: #EAEAEA;
+}
+
 /* Media queries para pantallas pequeñas */
 @media (max-width: 768px) {
   .sessions-header {
