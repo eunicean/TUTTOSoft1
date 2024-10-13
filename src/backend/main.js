@@ -79,7 +79,7 @@ app.get('/get-username-by-email', async (req, res) => {
 // Login endpoint
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    console.log(`Attempting login with email: ${email} and password: ${password}`);
+    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -158,7 +158,7 @@ app.get('/users/sessions', async (req, res) => {
 app.post('/register', async (req, res) => {
     //commmit de prueba
     const { username, email, password, role } = req.body;
-    console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -185,7 +185,7 @@ app.post('/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            console.log('User registered successfully:', result.insertId);
+            // console.log('User registered successfully:', result.insertId);
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -296,14 +296,15 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
-        console.log("Selected period is: " + periodo);
+        // console.log("Selected period is: " + periodo);
 
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE (ss.id_session IS NOT NULL OR sp.id_tutor = ?) AND (
                     (sp.start_hour BETWEEN ? AND ?) OR
                     (sp.end_hour BETWEEN ? AND ?)
@@ -311,15 +312,16 @@ app.get('/sessions', authenticateToken, async (req, res) => {
             params = [userId, userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE ss.id_session IS NOT NULL OR sp.id_tutor = ?`;
             params = [userId, userId];
         }
         
         const [results] = await pool.query(query, params);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json({ success: true, sessions: results });
         } else {
@@ -330,8 +332,6 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
-
 
 
 // Utility function for period times
@@ -363,11 +363,14 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     try {
         const sessionQuery = `
             SELECT 
-                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, sp.mode, 
+                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, c.namecourse, sp.mode, 
                 sp.tutorNotes, 
                 tutor.username as tutorName, student.username as studentName
             FROM 
                 sessionPlanned sp
+            
+            LEFT JOIN course c ON sp.course_code = c.course_code
+            
             JOIN 
                 user tutor ON sp.id_tutor = tutor.id
             JOIN 
@@ -380,7 +383,6 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
 
         // Ejecutar la consulta de la sesión
         const [sessionResults] = await pool.query(sessionQuery, [sessionId]);
-
         if (sessionResults.length > 0) {
             const session = {
                 id: sessionResults[0].id,
@@ -388,12 +390,14 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
                 startHour: sessionResults[0].start_hour,
                 endHour: sessionResults[0].end_hour,
                 courseCode: sessionResults[0].course_code,
+                namecourse: sessionResults[0].namecourse,
                 mode: sessionResults[0].mode,
                 tutorNotes: sessionResults[0].tutorNotes, 
                 tutorName: sessionResults[0].tutorName,
                 studentName: sessionResults[0].studentName
             };
-
+            
+            // console.log(sessionResults);
             res.json({ success: true, session });
         } else {
             res.status(404).json({ success: false, message: "Session not found" });
@@ -415,7 +419,7 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
             VALUES(?,?,?,?,?)`,
             [calificacion, comentario, id_sender, id_receiver, id_session]
         );
-        console.log('Comentario insertado:', comentarios);
+        // console.log('Comentario insertado:', comentarios);
         res.json({ success: true, message: "Sesión calificada exitosamente" });
         
     } catch (error) {
@@ -437,7 +441,7 @@ app.post('/report-absence', authenticateToken, async (req, res) => {
                 VALUES (?, ?, ?)`,
                 [id_sender, id_absentParticipant, message]
             );
-            console.log('Reporte de ausencia insertado:', result);
+            // console.log('Reporte de ausencia insertado:', result);
             res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
         } finally {
             conexion.release();
@@ -570,7 +574,7 @@ app.get('/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json(results);
         } else {
@@ -614,6 +618,137 @@ app.get('/tutors', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+
+app.get('/chats/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId;
+
+    try {
+        const messagesQuery = `
+            SELECT 
+                m.id AS messageId,
+                m.id_chat AS chatId,
+                m.id_sender,
+                u.username AS senderUsername,
+                m.message,
+                m.time_stamp
+            FROM 
+                messages_nueva m
+            JOIN 
+                users u ON m.id_sender = u.id
+            WHERE 
+                m.id_chat = ?
+            ORDER BY 
+                m.time_stamp;
+        `;
+
+        const [messages] = await pool.query(messagesQuery, [chatId]);
+
+        if (messages.length > 0) {
+            const formattedMessages = messages.map(message => ({
+                messageId: message.messageId,
+                chatId: message.chatId,
+                senderId: message.id_sender,
+                senderUsername: message.senderUsername,
+                content: message.message,
+                timeSent: message.time_stamp
+            }));
+
+            res.json({ success: true, chatId: chatId, messages: formattedMessages });
+        } else {
+            res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+
+app.get('/chats', authenticateToken, async (req, res) => {
+    const userId = req.user.id; // Extraer el ID del usuario autenticado
+
+    try {
+        const chatsQuery = `
+            SELECT 
+                cn.id AS chatId,
+                cn.id_sender,
+                cn.id_recipient,
+                m.message AS lastMessage,
+                m.time_stamp AS lastMessageTime
+            FROM 
+                chats_nueva cn
+            JOIN 
+                messages_nueva m ON cn.id = m.id_chat
+            WHERE 
+                cn.id_sender = ? OR cn.id_recipient = ?
+            GROUP BY 
+                cn.id
+            ORDER BY 
+                m.time_stamp DESC;
+        `;
+
+        const [chats] = await pool.query(chatsQuery, [userId, userId]);
+
+        if (chats.length > 0) {
+            const chatList = chats.map(chat => ({
+                chatId: chat.chatId,
+                otherParticipant: chat.id_sender === userId ? chat.id_recipient : chat.id_sender,
+                lastMessage: chat.lastMessage,
+                lastMessageTime: chat.lastMessageTime
+            }));
+
+            res.json({ success: true, chats: chatList });
+        } else {
+            res.json({ success: true, message: "No chats found", chats: [] });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+app.post('/send-message', authenticateToken, async (req, res) => {
+    const { id_recipient, message } = req.body;
+    const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
+
+    try {
+        // Verificar si ya existe un chat entre los dos usuarios
+        const existingChatQuery = `
+            SELECT id FROM chats_nueva
+            WHERE (id_sender = ? AND id_recipient = ?) OR (id_sender = ? AND id_recipient = ?);
+        `;
+        const [existingChat] = await pool.query(existingChatQuery, [id_sender, id_recipient, id_recipient, id_sender]);
+
+        let chatId;
+        if (existingChat.length > 0) {
+            chatId = existingChat[0].id;
+        } else {
+            // Crear un nuevo chat si no existe
+            const insertChatQuery = `
+                INSERT INTO chats_nueva (id_sender, id_recipient)
+                VALUES (?, ?);
+            `;
+            const [newChat] = await pool.query(insertChatQuery, [id_sender, id_recipient]);
+            chatId = newChat.insertId;
+        }
+
+        // Insertar el mensaje en messages_nueva
+        const insertMessageQuery = `
+            INSERT INTO messages_nueva (id_chat, id_sender, message)
+            VALUES (?, ?, ?);
+        `;
+        await pool.query(insertMessageQuery, [chatId, id_sender, message]);
+
+        res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
+    } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
