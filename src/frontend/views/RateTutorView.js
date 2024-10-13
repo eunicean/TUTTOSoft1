@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom'; // Para obtener sessionID desde la URL
 import Sidebar from '../components/Sidebar.js';
-import '../css/RateTutorView.css'; // Asegúrate de ajustar la ruta según la estructura de carpetas
+import '../css/RateTutorView.css'; // Ajusta la ruta según la estructura de tus carpetas
 
 function RateTutorView({ tutorId }) {
     // Estados para manejar la calificación, mensaje, apertura de la barra lateral y comentarios
@@ -8,24 +9,28 @@ function RateTutorView({ tutorId }) {
     const [message, setMessage] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [comments, setComments] = useState('');
+    const { sessionId } = useParams(); // Obtener sessionID desde la URL
 
     // Maneja el clic en una estrella y actualiza la calificación
     const handleStarClick = (value) => {
         setRating(value);
     };
 
-    // Envía la calificación del tutor al servidor
+    // Envía la calificación de la sesión al servidor
     const handleSubmitRating = async () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('http://localhost:5000/rate-tutor', {
+            const response = await fetch(`http://localhost:5000/grade-session/${sessionId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tutorId, rating, comments }),
+                body: JSON.stringify({
+                    calificacion: rating,
+                    comentario: comments,
+                }),
             });
 
             const data = await response.json();
@@ -35,7 +40,8 @@ function RateTutorView({ tutorId }) {
                 setMessage(`Error: ${data.message}`);
             }
         } catch (error) {
-            setMessage(`Calificación enviada: ${rating} estrellas`);
+            console.error('Error al enviar la calificación:', error);
+            setMessage('Ocurrió un error al enviar la calificación.');
         }
     };
 
@@ -52,7 +58,7 @@ function RateTutorView({ tutorId }) {
                     <span className="menu-bar"></span>
                     <span className="menu-bar"></span>
                 </button>
-                <h1>Calificar al tutor</h1>
+                <h1>Calificar al Tutor</h1>
                 <div className="rate-tutor-card">
                     <div className="rating-section">
                         <div className="stars">
@@ -73,12 +79,9 @@ function RateTutorView({ tutorId }) {
                             className="comments-box"
                         ></textarea>
                     </div>
-                    <div className="tutor-info">
-                        <div className="avatar-placeholder"></div>
-                        <p>Nombre de Tutor</p>
-                        <p>5to año</p>
-                    </div>
-                    <button className="submit-button" onClick={handleSubmitRating}>Enviar</button>
+                    <button className="submit-button" onClick={handleSubmitRating}>
+                        Enviar
+                    </button>
                     {message && <p className="message">{message}</p>}
                 </div>
             </div>
