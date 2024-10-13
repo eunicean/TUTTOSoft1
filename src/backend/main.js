@@ -1,16 +1,16 @@
-const {
-    verificarUsuario,
-    crearUsuario,
-    obtenerTipoUsuarioPorId,
-    obtenerSesionesPlanificadasPorPersona
-  } = require('./db.js');
-  
-const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const pool = require('./conn.js');
-const dotenv = require('dotenv');
+import {
+  verificarUsuario,
+  crearUsuario,
+  obtenerTipoUsuarioPorId,
+  obtenerSesionesPlanificadasPorPersona
+}
+from './db.js'
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import pool from './conn.js'; 
+import dotenv from 'dotenv';
 
 
 dotenv.config();
@@ -18,8 +18,7 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-const app = express();
-
+export const app = express();
 app.use(cors({
     origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -886,4 +885,4 @@ app.post('/send-message', authenticateToken, async (req, res) => {
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-module.exports = app;
+export default app;

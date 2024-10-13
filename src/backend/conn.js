@@ -1,6 +1,6 @@
-const { createPool } = require('mysql2/promise');
-const { Buffer } = require('buffer');
-const dotenv = require('dotenv');
+import { createPool } from 'mysql2/promise';
+import { Buffer } from 'buffer';
+import dotenv from 'dotenv';
 
 dotenv.config({ path: './.env' });
 // console.log('Loaded Environment Variables:', process.env);
@@ -38,4 +38,4 @@ const pool = createPool({
     queueLimit: 0
 });
 
-module.exports = pool;
+export default pool;
