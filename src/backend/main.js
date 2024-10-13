@@ -667,7 +667,7 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
                 cn.time_stamp DESC;
         `;
 
-        const [messages] = await pool.query(messagesQuery, [chatId]);
+        const [messages] = await pool.query(chatInfoQuery, [chatId]);
 
         if (messages.length > 0) {
             const formattedMessages = messages.map(message => ({
@@ -690,6 +690,7 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 });
 
 
+
 app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
   
@@ -699,16 +700,34 @@ app.get('/chats', authenticateToken, async (req, res) => {
             cn.id AS chatId,
             cn.id_sender,
             cn.id_recipient,
-            cn.message AS lastMessage,
-            cn.time_stamp AS lastMessageTime
+            m.message AS lastMessage,
+            m.time_stamp AS lastMessageTime
         FROM 
             chats_nueva cn
+        JOIN 
+            (
+                SELECT 
+                    m1.id_chat,
+                    m1.message,
+                    m1.time_stamp
+                FROM 
+                    messages_nueva m1
+                JOIN 
+                    (
+                        SELECT 
+                            id_chat, 
+                            MAX(time_stamp) AS max_time
+                        FROM 
+                            messages_nueva
+                        GROUP BY 
+                            id_chat
+                    ) m2 ON m1.id_chat = m2.id_chat AND m1.time_stamp = m2.max_time
+            ) m ON cn.id = m.id_chat
         WHERE 
             cn.id_sender = ? OR cn.id_recipient = ?
-        GROUP BY 
-            cn.id
         ORDER BY 
-            cn.time_stamp DESC;
+            m.time_stamp DESC;
+
       `;
   
       const [chats] = await pool.query(chatsQuery, [userId, userId]);
@@ -716,8 +735,8 @@ app.get('/chats', authenticateToken, async (req, res) => {
       if (chats.length > 0) {
         const chatList = chats.map(chat => ({
           chatId: chat.chatId,
-          senderId: chat.id_sender,
-          recipientId: chat.id_recipient,
+          otherUsername: chat.otherUsername,
+          otherUserId: chat.otherUserId,
           lastMessage: chat.lastMessage,
           lastMessageTime: chat.lastMessageTime
         }));
@@ -730,9 +749,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
       console.error('Database error:', error);
       res.status(500).json({ success: false, message: "Internal server error" });
     }
-});
-
+  });
   
+
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
     const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
@@ -751,20 +770,19 @@ app.post('/send-message', authenticateToken, async (req, res) => {
         } else {
             // Crear un nuevo chat si no existe
             const insertChatQuery = `
-                INSERT INTO chats_nueva (id_sender, id_recipient, time_stamp)
-                VALUES (?, ?, NOW());
+                INSERT INTO chats_nueva (id_sender, id_recipient)
+                VALUES (?, ?);
             `;
             const [newChat] = await pool.query(insertChatQuery, [id_sender, id_recipient]);
             chatId = newChat.insertId;
         }
 
         // Insertar el mensaje en messages_nueva
-        const actualMessage = message.trim() !== '' ? message : 'Nuevo chat iniciado';
         const insertMessageQuery = `
-            INSERT INTO messages_nueva (id_chat, id_sender, message, time_stamp)
-            VALUES (?, ?, ?, NOW());
+            INSERT INTO messages_nueva (id_chat, id_sender, message)
+            VALUES (?, ?, ?);
         `;
-        await pool.query(insertMessageQuery, [chatId, id_sender, actualMessage]);
+        await pool.query(insertMessageQuery, [chatId, id_sender, message]);
 
         res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
     } catch (error) {
@@ -772,7 +790,6 @@ app.post('/send-message', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
-
 
 
 const PORT = 5000;
