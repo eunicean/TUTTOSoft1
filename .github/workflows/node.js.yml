@@ -53,6 +53,5 @@ jobs:
         rm -f ${{ github.workspace }}/deploy_key.pub
         
     - name: Reload Server with PM2
-      run: |
-        sshpass -p ${{ secrets.SERVER_PASSWORD }} ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "cd ${SERVER_PATH} && pm2 reload backend"
+      run: sshpass -p ${{ secrets.SERVER_PASSWORD }} ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} "cd ${SERVER_PATH} && pm2 reload backend"
         
