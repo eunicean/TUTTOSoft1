@@ -619,45 +619,52 @@ app.get('/tutors', async (req, res) => {
     }
 });
 
+
 app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
-        const chatInfoQuery = `
+        const messagesQuery = `
             SELECT 
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient,
-                cn.message,
-                cn.time_stamp
+                m.id AS messageId,
+                m.id_chat AS chatId,
+                m.id_sender,
+                u.username AS senderUsername,
+                m.message,
+                m.time_stamp
             FROM 
-                chats_nueva cn
+                messages_nueva m
+            JOIN 
+                users u ON m.id_sender = u.id
             WHERE 
-                cn.id = ?
+                m.id_chat = ?
             ORDER BY 
-                cn.time_stamp DESC;
+                m.time_stamp;
         `;
 
-        const [chatDetails] = await pool.query(chatInfoQuery, [chatId]);
+        const [messages] = await pool.query(messagesQuery, [chatId]);
 
-        if (chatDetails.length > 0) {
-            const messages = chatDetails.map(detail => ({
-                idMessage: detail.chatId,
-                senderId: detail.id_sender,
-                recipientId: detail.id_recipient,
-                content: detail.message,
-                timeSent: detail.time_stamp
+        if (messages.length > 0) {
+            const formattedMessages = messages.map(message => ({
+                messageId: message.messageId,
+                chatId: message.chatId,
+                senderId: message.id_sender,
+                senderUsername: message.senderUsername,
+                content: message.message,
+                timeSent: message.time_stamp
             }));
 
-            res.json({ success: true, chatId: chatId, messages: messages });
+            res.json({ success: true, chatId: chatId, messages: formattedMessages });
         } else {
-            res.status(404).json({ success: false, message: "Chat not found" });
+            res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
         }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
@@ -666,18 +673,20 @@ app.get('/chats', authenticateToken, async (req, res) => {
         const chatsQuery = `
             SELECT 
                 cn.id AS chatId,
-                u.username AS otherUsername,
-                u.id AS otherUserId
+                cn.id_sender,
+                cn.id_recipient,
+                m.message AS lastMessage,
+                m.time_stamp AS lastMessageTime
             FROM 
                 chats_nueva cn
             JOIN 
-                users u ON u.id = cn.id_recipient OR u.id = cn.id_sender
+                messages_nueva m ON cn.id = m.id_chat
             WHERE 
                 cn.id_sender = ? OR cn.id_recipient = ?
             GROUP BY 
                 cn.id
             ORDER BY 
-                cn.time_stamp DESC;
+                m.time_stamp DESC;
         `;
 
         const [chats] = await pool.query(chatsQuery, [userId, userId]);
@@ -685,8 +694,9 @@ app.get('/chats', authenticateToken, async (req, res) => {
         if (chats.length > 0) {
             const chatList = chats.map(chat => ({
                 chatId: chat.chatId,
-                otherUsername: chat.otherUsername,
-                otherUserId: chat.otherUserId
+                otherParticipant: chat.id_sender === userId ? chat.id_recipient : chat.id_sender,
+                lastMessage: chat.lastMessage,
+                lastMessageTime: chat.lastMessageTime
             }));
 
             res.json({ success: true, chats: chatList });
@@ -702,42 +712,42 @@ app.get('/chats', authenticateToken, async (req, res) => {
 
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
-    const id_sender = req.user.id; // Tomamos el ID del usuario autenticado para evitar suplantación
+    const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
 
     try {
-        // Obtener los roles de ambos usuarios
-        const userRolesQuery = `
-            SELECT id, typeuser FROM users WHERE id IN (?, ?);
+        // Verificar si ya existe un chat entre los dos usuarios
+        const existingChatQuery = `
+            SELECT id FROM chats_nueva
+            WHERE (id_sender = ? AND id_recipient = ?) OR (id_sender = ? AND id_recipient = ?);
         `;
-        const [roles] = await pool.query(userRolesQuery, [id_sender, id_recipient]);
+        const [existingChat] = await pool.query(existingChatQuery, [id_sender, id_recipient, id_recipient, id_sender]);
 
-        if (roles.length < 2) {
-            return res.status(404).json({ success: false, message: "Uno o ambos usuarios no encontrados" });
+        let chatId;
+        if (existingChat.length > 0) {
+            chatId = existingChat[0].id;
+        } else {
+            // Crear un nuevo chat si no existe
+            const insertChatQuery = `
+                INSERT INTO chats_nueva (id_sender, id_recipient)
+                VALUES (?, ?);
+            `;
+            const [newChat] = await pool.query(insertChatQuery, [id_sender, id_recipient]);
+            chatId = newChat.insertId;
         }
 
-        const sender = roles.find(user => user.id === id_sender);
-        const recipient = roles.find(user => user.id === id_recipient);
-
-        // Validar que un tutor envía a un estudiante o viceversa
-        if (!((sender.typeuser === 1 && recipient.typeuser === 2) || (sender.typeuser === 2 && recipient.typeuser === 1))) {
-            return res.status(403).json({ success: false, message: "No está permitido enviar mensajes entre estos roles" });
-        }
-
-        // Inserción del mensaje
+        // Insertar el mensaje en messages_nueva
         const insertMessageQuery = `
-            INSERT INTO chats_nueva (id_sender, id_recipient, message)
+            INSERT INTO messages_nueva (id_chat, id_sender, message)
             VALUES (?, ?, ?);
         `;
-        await pool.query(insertMessageQuery, [id_sender, id_recipient, message]);
+        await pool.query(insertMessageQuery, [chatId, id_sender, message]);
 
-        res.json({ success: true, message: "Mensaje enviado con éxito" });
+        res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
     } catch (error) {
         console.error('Error al enviar el mensaje:', error);
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
-
-
 
 
 const PORT = 5000;
