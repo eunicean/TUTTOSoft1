@@ -8,6 +8,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -39,8 +42,8 @@
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "cross-env PORT=5173 react-scripts start",
     "server": "nodemon src/backend/main.js",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "CI=false react-scripts build",
+    "test": "cypress run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -64,6 +67,8 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "nodemon": "^3.1.0"
+    "cypress": "^13.14.1",
+    "nodemon": "^3.1.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.x"
   }
 }

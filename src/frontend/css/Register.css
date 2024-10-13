@@ -47,13 +47,21 @@ Button {
   margin-top: 10px;
 }
 
+.session-card-button {
+  margin: 5px; /* Añade un margen alrededor de cada tarjeta */
+  padding: 15px; /* Ajusta el espacio interno de cada tarjeta */
+  background-color: #C67A53; /* Color de fondo de la tarjeta */
+  border-radius: 8px; /* Esquinas redondeadas para un mejor diseño */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Añade sombra para un mejor efecto */
+}
+
 @media (max-width: 600px) {
-  .register-container {
-      width: 95%;
-      min-height: auto;
-      padding: 20px;
+  .session-card-button {
+    margin: 10px 0; /* En pantallas pequeñas, usa márgenes más pequeños */
+    padding: 8px; /* Ajusta el padding para que sea más compacto en pantallas pequeñas */
   }
 }
+
 
 /* Select container for better alignment and design */
 .select-container {

@@ -1,0 +1,123 @@
+/* css/Chat.css */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Evita el desplazamiento en toda la página */
+  }
+ 
+  .chat-container {
+    display: flex;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    width: 100vw; /* Ocupa todo el ancho de la ventana */
+    overflow: hidden; /* Evita cualquier desplazamiento dentro del contenedor principal */
+  }
+ 
+  .chat-history {
+    width: 20%; /* Ocupa el 20% de la pantalla */
+    background-color: #F5EEDC;
+    padding: 20px;
+    border-right: 2px solid #C19A6B;
+    overflow-y: auto; /* Permite desplazamiento solo vertical si el historial es largo */
+    max-height: 100vh; /* Asegura que no se desborde el contenido */
+  }
+ 
+  .chat-history h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px; /* Tamaño de fuente más grande para el título */
+  }
+ 
+  .chat-history ul {
+    list-style-type: none;
+    padding: 0;
+  }
+ 
+  .chat-history li {
+    padding: 15px;
+    background-color: #C19A6B;
+    color: white;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px; /* Tamaño de fuente más grande para los elementos del historial */
+  }
+ 
+  .chat-history li:hover, .chat-history li.active {
+    background-color: #8C6239;
+  }
+ 
+  .chat-content {
+    width: 80%; /* El área de chat ocupa el 80% de la pantalla */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #FFF5EE;
+    max-height: 100vh; /* Para evitar que se desborde verticalmente */
+    overflow: hidden;
+  }
+ 
+  .chat-messages {
+    background-color: #F5EEDC;
+    padding: 20px;
+    border-radius: 10px;
+    flex-grow: 1;
+    overflow-y: auto; /* Desplazamiento vertical solo si los mensajes son demasiados */
+    max-height: calc(100vh - 150px); /* Ajustar altura disponible para evitar desplazamiento */
+  }
+ 
+  .chat-message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 18px; /* Tamaño de fuente más grande para los mensajes del chat */
+  }
+ 
+  /* Estilo para los mensajes del usuario */
+  .user-message {
+    background-color: #C19A6B; /* Color claro para el mensaje del usuario */
+    color: white;
+    text-align: right;
+  }
+ 
+  /* Estilo para los mensajes del estudiante X (café oscuro) */
+  .student-message {
+    background-color: #4E342E; /* Color café oscuro para los mensajes del Estudiante X */
+    color: white; /* Texto en blanco para contraste */
+    text-align: left;
+  }
+ 
+  /* Estilo para el mensaje de estado "Mensaje enviado" */
+  .status-message {
+    color: #6D4C41; /* Color café */
+    text-align: center;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+ 
+  .chat-input-container {
+    display: flex;
+    margin-top: 10px;
+  }
+ 
+  .chat-input {
+    width: 85%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 18px; /* Tamaño de fuente más grande para el campo de entrada */
+  }
+ 
+  .chat-button {
+    padding: 10px;
+    background-color: #C19A6B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 18px; /* Tamaño de fuente más grande para el botón */
+  }
+ 

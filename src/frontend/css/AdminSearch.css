@@ -1,0 +1,160 @@
+/* Mantén el estilo general del body y de admin-page */
+body {
+  font-family: 'Calibri', sans-serif;
+}
+
+.admin-page {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+/* Aplica position: sticky al header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #D9B799;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 1300px;
+  width: 100%;
+  top: 0; /* Posición fija en la parte superior */
+  position: sticky;
+  z-index: 1; /* Asegura que el header esté sobre las cards */
+}
+
+h1 {
+  color: #8B5E3C;
+}
+
+/* Resto de estilos */
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 15px;
+  border-radius: 18px;
+  border: 5px solid #ccc;
+  margin-right: 10px;
+}
+
+.filter-dropdown {
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  background-color: #f0d6c1;
+  margin-right: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 0 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #8B5E3C;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #e3c5a3;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 500px; /* Establecer un ancho fijo */
+  height: 150px; /* Establecer una altura fija */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px; /* Limitar el ancho máximo para mantener la consistencia */
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #fde0d6;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* Estilos responsivos para pantallas pequeñas */
+@media (max-width: 768px) {
+  .tutors-header {
+    margin-top: 650px; /* Margen superior para buscar tutores en móvil */
+  }
+  
+  .students-header {
+    margin-top: 300px; /* Margen superior para buscar estudiantes en móvil */
+  }
+  
+  .user-card {
+      width: 100%; /* Mantener un ancho del 100% en pantallas pequeñas */
+      max-width: 400px; /* Limitar el ancho máximo */
+      height: auto; /* Permitir que la altura se ajuste automáticamente */
+  }
+
+  .header {
+      max-width: 100%;
+  }
+}

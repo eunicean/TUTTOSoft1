@@ -12,6 +12,8 @@ import SessionVistaParaTutor from '../views/SessionVistaParaTutor.js';
 import TestingHeader from '../views/VistaDePruebaHeader.js';
 import SessionsHistory from '../views/SessionsHistory.js';
 import Absence from '../views/Absence.js';
+import Searchtutor from '../views/Searchtutor.js';
+import Adminsearch from '../views/AdminSearch.js';
 import RateTutorView from '../views/RateTutorView.js';
 
 
@@ -23,7 +25,7 @@ import Header from '../components/HeaderGeneral.js';
 
 const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  const excludedHeaderRoutes = ['/login', '/']; // Rutas donde no quieres mostrar el Header
+  const excludedHeaderRoutes = ['/login', '/', '/register']; // Rutas donde no quieres mostrar el Header
   return (
     <>
       {!excludedHeaderRoutes.includes(location.pathname) && (
@@ -39,12 +41,14 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path="/register" element={<Register />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path='/SessionVistaEstudiante/:sessionId' element={<SessionVistaParaTutor />} />
+          <Route path='/sessionVistaTutor/:sessionId' element={<SessionVistaParaTutor />} />
           <Route path="/cancel-session/:sessionId" element={<CancelView />} />
           <Route path="/sessions/create" element={<CreateSession />} />
           <Route path='/sessions-history' element={<SessionsHistory />} />
           <Route path='/absence' element={<Absence />} />
           <Route path='/tutorprofile' element={<TutorProfile />} />
+          <Route path='/seachtutor' element={<Searchtutor />} />
+          <Route path='/adminsearch' element={<Adminsearch />} />
           <Route path="/rate-tutor" element={<RateTutorView />}  />
         </Routes>
       </div>
