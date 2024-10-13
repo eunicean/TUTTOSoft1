@@ -413,6 +413,7 @@ app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
         const conexion = await pool.getConnection();
         try {
             // Verificar si el usuario es tutor en esta sesión
+            console.log(id_sender);
             const [tutorResult] = await conexion.query(
                 `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
                 [sessionID, id_sender]
@@ -472,6 +473,7 @@ app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
     try {
         const conexion = await pool.getConnection();
         try {
+            console.log(`Remitente -> ${id_sender}`);
             // Verificar si el usuario es tutor en esta sesión
             const [tutorResult] = await conexion.query(
                 `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
@@ -509,7 +511,6 @@ app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
                 }
                 id_absentParticipant = tutorInSession[0].id_tutor;
             }
-
             // Insertar el reporte de ausencia en la base de datos
             const [result] = await conexion.query(
                 `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message, idSession, absentDate)
