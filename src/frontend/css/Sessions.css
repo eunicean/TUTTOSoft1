@@ -64,8 +64,9 @@
 }
 
 .TituloPS {
-  font-size: 1.5rem;
+  font-size: 3rem;
   color: #865a3c;
+  margin: 1vh;
 }
 
 .no-sessions {
@@ -93,6 +94,23 @@ select {
 
 select:hover {
   background-color: #EAEAEA;
+}
+
+.session-filters {
+  padding: 20px;
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  margin-bottom: 20px;
+  text-align: center;
+  margin: 20px;
+}
+
+.session-filters label {
+  display: flex;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333; /* Color del texto */
+  margin-bottom: 10px;
 }
 
 /* Media queries para pantallas pequeñas */
