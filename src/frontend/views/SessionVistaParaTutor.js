@@ -120,6 +120,7 @@ const SessionVistaParaTutorOEstudiante = () => {
                         <button onClick={() => goRating(sessionId)}>
                             Calificar sesión
                         </button>
+                        
                         <button onClick={() => goReportAbsence(sessionId)}>
                             Reportar ausencia sesión
                         </button>
