@@ -16,10 +16,12 @@ import SessionVistaParaEstudiante from '../views/SessionVistaParaEstudiante.js';
 import Chat from '../views/Chat.js'; // Importa el componente de Chat
 import RateTutorView from '../views/RateTutorView.js';
 import AdminSearch from '../views/AdminSearch.js';
+import AdminTutor from '../views/AdminTutor.js';
+import ReportList from '../views/ReportList.js';
+import ReportDetails from '../views/ReportDetails.js'; // Ajusta la ruta según sea necesario
 
 import '../css/Register.css';
 import '../css/Router.css';
-
 import Sidebar from '../components/Sidebar.js';
 import Header from '../components/HeaderGeneral.js';
 
@@ -49,10 +51,12 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           {/* <Route path='/tutorprofile' element={<TutorPro  file />} /> */}
           <Route path='/seachtutor' element={<Searchtutor />} />
           <Route path='/adminsearch' element={<AdminSearch />} />
+          <Route path='/admintutor' element={<AdminTutor />} />
           <Route path='/DetalleEstudiante/:sessionId' element ={<SessionVistaParaEstudiante />} />
           <Route path='/chat' element={<Chat />} /> {/* Nueva ruta para el Chat */}
           <Route path="/rate-tutor/:sessionId" element={<RateTutorView />}  />
-
+          <Route path="/report/:tutorId" element={<ReportDetails />} />  {/* Ruta para los detalles del reporte */}
+          <Route path="/reportlist" element={<ReportList />} />
         </Routes>
       </div>
     </>
