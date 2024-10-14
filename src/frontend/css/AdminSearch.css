@@ -56,6 +56,21 @@ h1 {
   align-items: center;
 }
 
+.role-toggle-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #8B5E3C;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.role-toggle-button:hover {
+  background-color: #A0603E;
+}
+
+
 .switch {
   position: relative;
   display: inline-block;
@@ -102,6 +117,8 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+
+
 .user-card {
   display: flex;
   justify-content: space-between;
@@ -119,6 +136,7 @@ input:checked + .slider:before {
 .user-info {
   display: flex;
   align-items: center;
+  max-width: 90%;
 }
 
 .avatar-placeholder {
@@ -138,14 +156,31 @@ input:checked + .slider:before {
   justify-content: center;
 }
 
+.user-card button {
+  padding: 10px 20px;
+  max-width: 150px; /* Tamaño máximo para el botón */
+  width: 45%; /* El botón ocupará el 100% del espacio disponible hasta el tamaño máximo */
+  background-color: #8B5E3C;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.user-card button:hover {
+  background-color: #A0603E;
+}
+
+
 /* Estilos responsivos para pantallas pequeñas */
 @media (max-width: 768px) {
   .tutors-header {
-    margin-top: 650px; /* Margen superior para buscar tutores en móvil */
+    margin-top: 700px; /* Margen superior para buscar tutores en móvil */
   }
   
   .students-header {
-    margin-top: 300px; /* Margen superior para buscar estudiantes en móvil */
+    margin-top: 350px; /* Margen superior para buscar estudiantes en móvil */
   }
   
   .user-card {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../css/AdminSearch.css'; // Asegúrate de ajustar estilos como prefieras
+import '../css/AdminSearch.css';
 
-const UserCard = ({ name, subjects, year, rating, role, onToggleRole }) => {
+const UserCard = ({ name, subjects, year, rating, role, onToggleRole, viewTutors }) => {
   return (
     <div className="user-card">
       <div className="user-info">
@@ -21,10 +21,9 @@ const UserCard = ({ name, subjects, year, rating, role, onToggleRole }) => {
           )}
         </div>
       </div>
-      <label className="switch">
-        <input type="checkbox" checked={role === 'tutor'} onChange={onToggleRole} />
-        <span className="slider round"></span>
-      </label>
+      <button onClick={onToggleRole}>
+        {viewTutors ? 'Cambiar a Estudiante' : 'Cambiar a Tutor'}
+      </button>
     </div>
   );
 };
@@ -70,6 +69,7 @@ const AdminPage = () => {
     setUsers(prevUsers => {
       const updatedUsers = [...prevUsers];
       const user = updatedUsers[userIndex];
+      // Cambiar el rol del usuario y actualizar la lista
       user.role = user.role === 'tutor' ? 'estudiante' : 'tutor';
       return updatedUsers;
     });
@@ -96,6 +96,7 @@ const AdminPage = () => {
     setUsers(simulatedUsers);
   }, []);
   
+  // Filtrar usuarios según la vista seleccionada y otros criterios
   const filteredUsers = users.filter(user => {
     const matchesRole = viewTutors ? user.role === 'tutor' : user.role === 'estudiante';
     const matchesSubject = selectedSubject === '' || (user.subjects && user.subjects.includes(selectedSubject));
@@ -141,6 +142,7 @@ const AdminPage = () => {
               year={user.year}
               rating={user.rating}
               role={user.role} // Pasar el rol para que se muestre correctamente
+              viewTutors={viewTutors}
               onToggleRole={() => handleToggleRole(index)}
             />
           ))}
