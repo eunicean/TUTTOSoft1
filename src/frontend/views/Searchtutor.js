@@ -3,12 +3,12 @@ import '../css/Seachtutor.css';
 
 const TutorCard = ({ name, subjects, year, rating }) => {
   return (
-    <div className="tutor-card">
-      <div className="tutor-info">
-        <div className="avatar-placeholder"></div>
+    <div className="tutor-card-search">
+      <div className="tutor-info-search">
+        <div className="avatar-placeholder-search"></div>
         <div>
           <h4>{name}</h4>
-          <p>{subjects.join(', ')}</p> {/* Mostrar todas las materias */}
+          <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
           <p>{year} año</p>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}

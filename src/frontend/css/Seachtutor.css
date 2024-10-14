@@ -61,10 +61,10 @@ h1 {
 
 .tutors-list {
   flex: 2;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 
-.tutor-card {
+.tutor-card-search {
   display: flex;
   justify-content: space-between;
   background-color: #D9B799;
@@ -74,13 +74,13 @@ h1 {
   align-items: center;
 }
 
-.tutor-info {
+.tutor-info-search {
   display: flex;
   align-items: center;
   max-width: 80%;
 }
 
-.avatar-placeholder {
+.avatar-placeholder-search {
   width: 50px; /* Tamaño fijo para asegurar consistencia */
   height: 50px; /* Mantener altura fija */
   background-color: #fde0d6;
@@ -89,15 +89,6 @@ h1 {
   flex-shrink: 0; /* Evita que el tamaño se reduzca en pantallas pequeñas */
 }
 
-.tutor-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #e3c5a3;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
 .stars {
   color: #8B5E3C;
 }
