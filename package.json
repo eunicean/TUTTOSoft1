@@ -66,10 +66,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.x",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "cypress": "^13.14.1",
-    "nodemon": "^3.1.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.x"
+    "nodemon": "^3.1.0"
   }
 }

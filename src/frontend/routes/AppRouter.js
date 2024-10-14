@@ -15,7 +15,7 @@ import Searchtutor from '../views/Searchtutor.js';
 import SessionVistaParaEstudiante from '../views/SessionVistaParaEstudiante.js';
 import Chat from '../views/Chat.js'; // Importa el componente de Chat
 import RateTutorView from '../views/RateTutorView.js';
-
+import AdminSearch from '../views/AdminSearch.js';
 
 import '../css/Register.css';
 import '../css/Router.css';
@@ -48,9 +48,11 @@ const AppContent = ({ isSidebarOpen, toggleSidebar }) => {
           <Route path='/absence/:sessionId' element={<Absence />} />
           {/* <Route path='/tutorprofile' element={<TutorPro  file />} /> */}
           <Route path='/seachtutor' element={<Searchtutor />} />
+          <Route path='/adminsearch' element={<AdminSearch />} />
           <Route path='/DetalleEstudiante/:sessionId' element ={<SessionVistaParaEstudiante />} />
           <Route path='/chat' element={<Chat />} /> {/* Nueva ruta para el Chat */}
           <Route path="/rate-tutor/:sessionId" element={<RateTutorView />}  />
+
         </Routes>
       </div>
     </>
