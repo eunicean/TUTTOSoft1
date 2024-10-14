@@ -15,7 +15,7 @@ const TutorCard = ({ name, subjects, year, rating }) => {
           </div>
         </div>
       </div>
-      <button className="chat-btn">Chat</button>
+      <button  className="report-btn"> Reportes</button>
     </div>
   );
 };

@@ -93,7 +93,7 @@ h1 {
   color: #8B5E3C;
 }
 
-.chat-btn {
+.report-btn {
   background-color: #8B5E3C;
   color: white;
   border: none;
@@ -102,7 +102,7 @@ h1 {
   cursor: pointer;
 }
 
-.chat-btn:hover {
+.report-btn:hover {
   background-color: #6a452d;
 }
 
