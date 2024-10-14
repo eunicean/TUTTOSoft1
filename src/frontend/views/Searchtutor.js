@@ -9,7 +9,7 @@ const TutorCard = ({ name, subjects, year, rating }) => {
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
-          <p>{year} año</p>
+          <h4>{year} año</h4>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
           </div>
@@ -93,34 +93,38 @@ const TutorsPage = () => {
   });
 
   return (
-    <div className="tutors-page">
-      <div className="header-search">
-        <h1>Buscar Tutor</h1>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Nombre, materia, año"
-            value={searchTerm}
-            onChange={handleSearch}
-            className="search-input"
-          />
-          <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
+    <div className='outer-container-search'>
+      <div className={`sessions-container-search`}>
+        <div className="tutors-page">
+          <div className="header-search">
+            <h2>Buscar Tutor</h2>
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Nombre, materia, año"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="search-input"
+              />
+              <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
+            </div>
+          </div>
+          <div className="content">
+            <div className="tutors-list">
+              {filteredTutors.map((tutor, index) => (
+                <TutorCard
+                  key={index}
+                  name={tutor.name}
+                  subjects={tutor.subjects}
+                  year={tutor.year}
+                  rating={tutor.rating}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="content">
-        <div className="tutors-list">
-          {filteredTutors.map((tutor, index) => (
-            <TutorCard
-              key={index}
-              name={tutor.name}
-              subjects={tutor.subjects}
-              year={tutor.year}
-              rating={tutor.rating}
-            />
-          ))}
-        </div>
-      </div>
     </div>
+  </div>
   );
 };
 

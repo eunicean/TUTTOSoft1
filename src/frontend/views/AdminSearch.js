@@ -108,48 +108,58 @@ const AdminPage = () => {
   });
 
   return (
-    <div className="admin-page">
-      <div className={`header ${viewTutors ? 'tutors-header' : 'students-header'}`}>
-        <h1>{viewTutors ? 'Buscar Tutor' : 'Buscar Estudiante'}</h1>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Nombre, materia, año"
-            value={searchTerm}
-            onChange={handleSearch}
-            className="search-input"
-          />
-          {viewTutors && (
-            <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
-          )}
-        </div>
-        <div className="toggle-container">
-          <label>Buscar Estudiantes</label>
-          <label className="switch">
-            <input type="checkbox" checked={viewTutors} onChange={toggleView} />
-            <span className="slider round"></span>
-          </label>
-          <label>Buscar Tutores</label>
-        </div>
-      </div>
-      <div className="content">
-        <div className="users-list">
-          {filteredUsers.map((user, index) => (
-            <UserCard
-              key={index}
-              name={user.name}
-              subjects={user.subjects}
-              year={user.year}
-              rating={user.rating}
-              role={user.role} // Pasar el rol para que se muestre correctamente
-              viewTutors={viewTutors}
-              onToggleRole={() => handleToggleRole(index)}
-            />
-          ))}
+    <div className="outer-container-adminSea">
+      <div className="sessions-container-adminSea">
+        <div className="admin-page">
+          <div className={`header ${viewTutors ? 'tutors-header' : 'students-header'}`}>
+            <h1>{viewTutors ? 'Buscar Tutor' : 'Buscar Estudiante'}</h1>
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Nombre, materia, año"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="search-input"
+              />
+              {viewTutors && (
+                <FilterDropdown selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject} />
+              )}
+            </div>
+            <div className="toggle-container">
+              <label>Buscar Estudiantes</label>
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  id="toggleView"
+                  checked={viewTutors}
+                  onChange={toggleView}
+                />
+                <label className="custom-checkbox" htmlFor="toggleView"></label>
+              </div>
+              <label>Buscar Tutores</label>
+            </div>
+          </div>
+          <div className="content">
+            <div className="users-list">
+              {filteredUsers.map((user, index) => (
+                <UserCard
+                  key={index}
+                  name={user.name}
+                  subjects={user.subjects}
+                  year={user.year}
+                  rating={user.rating}
+                  role={user.role} // Pasar el rol para que se muestre correctamente
+                  viewTutors={viewTutors}
+                  onToggleRole={() => handleToggleRole(index)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default AdminPage;
