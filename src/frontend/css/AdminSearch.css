@@ -4,6 +4,7 @@ body {
 }
 
 .admin-page {
+  margin: 120px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -13,6 +14,7 @@ body {
 
 /* Aplica position: sticky al header */
 .header {
+  margin: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,6 +32,10 @@ h1 {
   color: #8B5E3C;
 }
 
+h2, p {
+  color: #5C3D2E; /* Unificar color de texto para h2 y p */
+  text-align: left; /* Alineación de texto para ajustar con el diseño centrado */
+}
 /* Resto de estilos */
 .search-container {
   display: flex;
@@ -172,7 +178,11 @@ input:checked + .slider:before {
   background-color: #A0603E;
 }
 
-
+.stars-admin {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 /* Estilos responsivos para pantallas pequeñas */
 @media (max-width: 768px) {
   .tutors-header {

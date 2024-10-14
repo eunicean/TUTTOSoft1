@@ -94,7 +94,7 @@ const TutorsPage = () => {
 
   return (
     <div className="tutors-page">
-      <div className="header">
+      <div className="header-search">
         <h1>Buscar Tutor</h1>
         <div className="search-container">
           <input

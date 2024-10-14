@@ -12,7 +12,7 @@ const UserCard = ({ name, subjects, year, rating, role, onToggleRole, viewTutors
             <>
               <p>{subjects.join(', ')}</p> {/* Mostrar materias solo para tutores */}
               <p>{year} año</p>
-              <div className="stars">
+              <div className="stars-admin">
                 {'★'.repeat(rating) + '☆'.repeat(5 - rating)} {/* Mostrar calificación */}
               </div>
             </>
