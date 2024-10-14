@@ -171,19 +171,7 @@ h1 {
   color: #8B5E3C;
 }
 
-/* Estilo para el botón */
-button {
-  background-color: #8B5E3C;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
-button:hover {
-  background-color: #6a452d;
-}
 
 /* Ajustes responsivos */
 @media (max-width: 768px) {
@@ -224,7 +212,4 @@ button:hover {
     align-items: center;
   }
 
-  button {
-    width: 100%;
-  }
 }

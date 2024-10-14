@@ -10,8 +10,8 @@ const UserCard = ({ name, subjects, year, rating, role, onToggleRole, viewTutors
           <h4>{name}</h4>
           {role === 'tutor' ? (
             <>
-              <p>{subjects.join(', ')}</p> {/* Mostrar materias solo para tutores */}
-              <p>{year} año</p>
+              <h4>{subjects.join(', ')}</h4> {/* Mostrar materias solo para tutores */}
+              <h4>{year} año</h4>
               <div className="stars-admin">
                 {'★'.repeat(rating) + '☆'.repeat(5 - rating)} {/* Mostrar calificación */}
               </div>
