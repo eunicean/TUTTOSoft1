@@ -117,8 +117,12 @@ const SessionVistaParaTutorOEstudiante = () => {
                         </ul>
                     </div>
                         <div className='Btn-acciones-vista'>
-                            <button> Calificar Sesion </button>
-                            <button> Reportar Ausencia</button>
+                        <button onClick={() => goRating(sessionId)}>
+                            Calificar sesión
+                        </button>
+                        <button onClick={() => goReportAbsence(sessionId)}>
+                            Reportar ausencia sesión
+                        </button>
                         </div>
                     </div>
                 </div>
