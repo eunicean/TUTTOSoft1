@@ -1,0 +1,113 @@
+/* Estilos para la vista de cancelación de sesiones */
+
+/* Contenedor principal */
+.absence-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Título */
+.absence-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #865a3c;
+    margin-bottom: 2rem;
+}
+
+/* Filtros de la sesión */
+.absence-filters {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+/* Textarea de razón de ausencia (más grande que el input) */
+.absence-reason-textarea {
+    width: 100%;
+    height: 150px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    resize: vertical; /* Permitir ajuste vertical */
+}
+
+/* Contenedor del botón */
+.absence-button-container {
+    display: flex;
+    justify-content: center; /* Centrar el botón */
+    margin-top: 1.5rem;
+}
+
+/* Botón de enviar */
+.absence-submit-button {
+    background-color: #b88163;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.absence-submit-button:hover {
+    background-color: #e74c3c;
+}
+
+/* Mensajes */
+.absence-message {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    color: #d9534f; /* Color para errores */
+    text-align: center;
+}
+
+/* Responsividad para dispositivos pequeños */
+@media (max-width: 768px) {
+    .absence-container {
+        padding: 2rem;
+    }
+
+    .absence-title {
+        font-size: 1.7rem;
+    }
+
+    .absence-reason-textarea {
+        font-size: 1.1rem;
+        height: 120px;
+    }
+
+    .absence-submit-button {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+/* Responsividad para pantallas medianas */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .absence-container {
+        padding: 2.5rem;
+    }
+
+    .absence-title {
+        font-size: 1.8rem;
+    }
+
+    .absence-reason-textarea {
+        font-size: 1.1rem;
+    }
+
+    .absence-submit-button {
+        font-size: 1.1rem;
+        padding: 0.9rem 1.7rem;
+    }
+}
