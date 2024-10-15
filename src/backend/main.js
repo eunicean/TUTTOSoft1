@@ -744,13 +744,10 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     try {
         const chatAndMessagesQuery = `
             SELECT 
-                c.id AS chatId,
-                c.id_sender,
-                c.id_recipient,
-                m.id AS messageId,
-                m.message AS content,
-                m.time_stamp AS timeSent,
-                u.username AS senderUsername
+                cn.id AS chatId,
+                cn.id_sender,
+                cn.id_recipient,
+                cn.time_stamp
             FROM 
                 chats_nueva c
             JOIN 
@@ -794,51 +791,63 @@ app.get('/chats', authenticateToken, async (req, res) => {
         const chatsQuery = `
         SELECT 
             cn.id AS chatId,
-            cn.id_sender,
-            cn.id_recipient,
+            CASE 
+                WHEN cn.id_sender = ? THEN cn.id_recipient
+                ELSE cn.id_sender
+            END AS otherUserId,
+            CASE 
+                WHEN cn.id_sender = ? THEN u2.username
+                ELSE u1.username
+            END AS otherUsername,
             m.message AS lastMessage,
-            m.time_stamp AS lastMessageTime,
-        CASE 
-            WHEN cn.id_sender = ? THEN cn.id_recipient
-            ELSE cn.id_sender
-        END AS otherUserId,
-        CASE 
-            WHEN cn.id_sender = ? THEN u1.username
-            ELSE u2.username
-        END AS otherUsername
+            m.max_time_stamp AS lastMessageTime
         FROM 
             chats_nueva cn
-            JOIN messages_nueva m ON cn.id = m.id_chat
-            JOIN user u1 ON u1.id = cn.id_sender
-            JOIN user u2 ON u2.id = cn.id_recipient
-        WHERE cn.id_sender = ? OR cn.id_recipient = ?
-        ORDER BY m.time_stamp DESC;
-        `;
+        LEFT JOIN 
+            user u1 ON cn.id_sender = u1.id
+        LEFT JOIN 
+            user u2 ON cn.id_recipient = u2.id
+        LEFT JOIN 
+            (
+                SELECT 
+                    id_chat,
+                    MAX(time_stamp) AS max_time_stamp,
+                    SUBSTRING_INDEX(GROUP_CONCAT(message ORDER BY time_stamp DESC), ',', 1) AS message
+                FROM 
+                    messages_nueva
+                GROUP BY 
+                    id_chat
+            ) m ON cn.id = m.id_chat
+        WHERE 
+            cn.id_sender = ? OR cn.id_recipient = ?
+        ORDER BY 
+            m.max_time_stamp DESC;
 
-        const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
+      `;
 
+      const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
+  
+      if (chats.length > 0) {
+        const chatList = chats.map(chat => ({
+          chatId: chat.chatId,
+          otherUserId: chat.otherUserId,
+          otherUsername: chat.otherUsername,
+          lastMessage: chat.lastMessage,
+          lastMessageTime: chat.lastMessageTime
+        }));
 
-        if (chats.length > 0) {
-            const chatList = chats.map(chat => ({
-                chatId: chat.chatId,
-                otherUserId: chat.otherUserId,
-                otherUsername: chat.otherUsername,
-                lastMessage: chat.lastMessage,
-                lastMessageTime: chat.lastMessageTime
-            }));
-
-            res.json({ success: true, chats: chatList });
-            // console.log(chatList);
-        } else {
-            res.json({ success: true, message: "No chats found", chats: [] });
-        }
+        res.json({ success: true, chats: chatList });
+        console.log(chatList);
+      } else {
+        res.json({ success: true, message: "No chats found", chats: [] });
+      }
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+      console.error('Database error:', error);
+      res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
 
-
+  
 
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
