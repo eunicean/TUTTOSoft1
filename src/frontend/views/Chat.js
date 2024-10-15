@@ -26,29 +26,19 @@ const Chat = () => {
   };
 
   const fetchChats = async () => {
-    const response = await axios.get('/chats', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }});
-    if (response.data.success) {
-      const uniqueChats = removeDuplicateChats(response.data.chats);
-      setChats(uniqueChats);
+    try {
+      const response = await axios.get('/chats', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      if (response.data.success) {
+        setChats(response.data.chats);
+      } else {
+        setChats([]);
+      }
+    } catch (error) {
+      console.error('Error al obtener los chats:', error);
     }
   };
-
-  function removeDuplicateChats(chats) {
-    const chatMap = new Map();
-    chats.forEach(chat => {
-      if (!chatMap.has(chat.chatId)) {
-        chatMap.set(chat.chatId, chat);
-      }
-    });
-    return Array.from(chatMap.values());
-  }
-
-  useEffect(() => {
-    fetchUserProfile();
-    if (user.typeuser) {
-      fetchChats();
-    }
-  }, [user.typeuser]);
 
   const fetchMessages = async (chatId) => {
     try {
@@ -105,7 +95,7 @@ const Chat = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         if (response.data.success) {
-          setMessages([...messages, { content: inputMessage, senderUsername: user.username }]);
+          setMessages([...messages, { content: inputMessage, senderUsername: 'Tú' }]);
           setInputMessage('');
           setStatusMessage('Mensaje enviado');
           setTimeout(() => setStatusMessage(''), 2000);
@@ -131,29 +121,29 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
-        <div className="chat-history">
-          <h2>Historial de Chats</h2>
-          {chats.length > 0 ? (
-            <ul>
-              {chats.map((chat) => (
-                <li key={chat.chatId} onClick={() => fetchMessages(chat.chatId)}
-                    className={selectedChat === chat.chatId ? 'active' : ''}>
-                  <strong>{chat.otherUsername}</strong><br />
-                  <small>{chat.lastMessage}</small><br />
-                  <small>{new Date(chat.lastMessageTime).toLocaleString()}</small>
-                </li>
-              ))}
-            </ul>
-          ) : <p>No hay chats disponibles.</p>}
-          <h3>{user.typeuser === '2' ? 'Estudiantes Disponibles:' : 'Tutores Disponibles:'}</h3>
+      <div className="chat-history">
+        <h2>Historial de Chats</h2>
+        {chats.length > 0 ? (
           <ul>
-            {user.typeuser === '2' ? students.map(student => (
-              <li key={student.id} onClick={() => startChatWithUser(student.id)}>{student.username}</li>
-            )) : tutors.map(tutor => (
-              <li key={tutor.id} onClick={() => startChatWithUser(tutor.id)}>{tutor.username}</li>
+            {chats.map((chat) => (
+              <li key={chat.chatId} onClick={() => fetchMessages(chat.chatId)}
+                  className={selectedChat === chat.chatId ? 'active' : ''}>
+                <strong>{chat.otherUsername}</strong><br />
+                <small>{chat.lastMessage}</small><br />
+                <small>{new Date(chat.lastMessageTime).toLocaleString()}</small>
+              </li>
             ))}
           </ul>
-        </div>
+        ) : <p>No hay chats disponibles.</p>}
+        <h3>{user.typeuser === '2' ? 'Estudiantes Disponibles:' : 'Tutores Disponibles:'}</h3>
+        <ul>
+          {user.typeuser === '2' ? students.map(student => (
+            <li key={student.id} onClick={() => startChatWithUser(student.id)}>{student.username}</li>
+          )) : tutors.map(tutor => (
+            <li key={tutor.id} onClick={() => startChatWithUser(tutor.id)}>{tutor.username}</li>
+          ))}
+        </ul>
+      </div>
       <div className="chat-content">
         {selectedChat ? (
           <>
