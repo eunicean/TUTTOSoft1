@@ -17,7 +17,7 @@ function SessionsHistory(){
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/session-history');
+        const url = new URL('https://209.126.125.63/api/session-history');
 
         try {
             const response = await fetch(url, {

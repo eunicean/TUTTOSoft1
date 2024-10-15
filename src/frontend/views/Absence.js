@@ -18,7 +18,7 @@ function CancelSessionView({ sessionId }) {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/cancel-session', {
+            const response = await fetch('https://209.126.125.63/api/cancel-session', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

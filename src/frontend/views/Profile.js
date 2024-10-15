@@ -15,7 +15,7 @@ function ProfileView() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'http://localhost:5000/profile';
+            const url = 'https://209.126.125.63/api/profile';
 
             try {
                 const response = await fetch(url, {
@@ -50,7 +50,7 @@ function ProfileView() {
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/profile/update';
+        const url = 'https://209.126.125.63/api/profile/update';
 
         try {
             const response = await fetch(url, {

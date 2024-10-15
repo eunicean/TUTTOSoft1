@@ -15,7 +15,7 @@ function CancelView() {
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
-        const url = `http://localhost:5000/cancel-session/${sessionId}`;
+        const url = `https://209.126.125.63/api/cancel-session/${sessionId}`;
         setLoading(true);
 
         if (!reason.trim()) {

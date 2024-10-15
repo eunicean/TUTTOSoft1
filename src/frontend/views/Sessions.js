@@ -20,7 +20,7 @@ function Sessions() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'http://localhost:5000/profile';
+            const url = 'https://209.126.125.63/api/profile';
 
             try {
                 const response = await fetch(url, {
@@ -53,7 +53,7 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/sessions');
+        const url = new URL('https://209.126.125.63/api/sessions');
     
         if (queryPeriodo) {
             url.searchParams.append('periodo', queryPeriodo);
@@ -122,7 +122,7 @@ function Sessions() {
                         <option value="noche">Noche</option>
                     </select>
                 </div>
-                {user.typeuser === '2' && (  // Mostrar el botón solo si el usuario es un tutor
+                {user.typeuser === '2' && (
                     <button onClick={() => navigate('/sessions/create')} className="create-session-button">
                         Crear Nueva Sesión
                     </button>

@@ -19,8 +19,8 @@ const SessionVistaParaTutor = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `http://localhost:5000/sessions/${sessionId}`; 
-            // const url = `http://localhost:5000/session-info/${sessionId}`;   
+            const url = `https://209.126.125.63/api/sessions/${sessionId}`; 
+            // const url = `/api/session-info/${sessionId}`;   
             // no se cual de las dos es xd
 
             try {

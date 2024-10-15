@@ -8,6 +8,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -38,7 +41,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "cross-env PORT=5173 react-scripts start",
-    "server": "nodemon src/backend/main.js",
+    "server": "nodemon src/backend/main.cjs",
     "build": "react-scripts build",
     "test": "cypress open",
     "eject": "react-scripts eject"

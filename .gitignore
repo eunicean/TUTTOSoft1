@@ -1,3 +1,17 @@
 node_modules/
 ca-certificate.crt
 .env
+build.tar.gz
+build/asset-manifest.json
+build/favicon.ico
+build/icon.png
+build/index.html
+build/logo192.png
+build/logo512.png
+build/manifest.json
+build/robots.txt
+build/static/css/main.09241d0f.css
+build/static/css/main.09241d0f.css.map
+build/static/js/main.0ccffe50.js
+build/static/js/main.0ccffe50.js.LICENSE.txt
+build/static/js/main.0ccffe50.js.map

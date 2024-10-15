@@ -1,26 +1,27 @@
-import {
-  verificarUsuario,
-  crearUsuario,
-  obtenerTipoUsuarioPorId,
-  obtenerSesionesPlanificadasPorPersona
-}
-from './db.js'
-import express from 'express';
-import cors from 'cors';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import pool from './conn.js'; 
-import dotenv from 'dotenv';
+const { 
+    verificarUsuario, 
+    crearUsuario, 
+    obtenerTipoUsuarioPorId, 
+    obtenerSesionesPlanificadasPorPersona 
+  } = require('./db.cjs');
+  
+  const express = require('express');
+  const cors = require('cors');
+  const jwt = require('jsonwebtoken');
+  const bcrypt = require('bcrypt');
+  const pool = require('./conn.cjs');
 
+console.log("main si se ejecuta");
 
-dotenv.config();
+// dotenv.config();
+const app = express();
 
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-export const app = express();
+//module.exports = app;
 app.use(cors({
-    origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
+    origin: ['http://localhost:5173', 'https://209.126.125.63'], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -57,7 +58,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 //Endpoint to show the username of the searched email
-app.get('/get-username-by-email', async (req, res) => {
+app.get('/api/get-username-by-email', async (req, res) => {
     const { email } = req.query;
 
     try {
@@ -77,7 +78,7 @@ app.get('/get-username-by-email', async (req, res) => {
 
 
 // Login endpoint
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     console.log(`Attempting login with email: ${email} and password: ${password}`);
 
@@ -122,7 +123,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Endpoint para obtener el tipo de usuario por ID
-app.get('/users/type', async (req, res) => {
+app.get('/api/users/type', async (req, res) => {
   const { userId } = req.query; // Obtén el ID del usuario de la consulta
   try {
     const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
@@ -138,7 +139,7 @@ app.get('/users/type', async (req, res) => {
 });
 
 // Endpoint para obtener las sesiones planificadas por persona
-app.get('/users/sessions', async (req, res) => {
+app.get('/api/users/sessions', async (req, res) => {
   const { userId } = req.query; // Obtén el ID del usuario de la consulta
   try {
     const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
@@ -155,7 +156,7 @@ app.get('/users/sessions', async (req, res) => {
 
 
 // Registration endpoint
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     //commmit de prueba
     const { username, email, password, role } = req.body;
     console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
@@ -197,7 +198,7 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.get('/profile', authenticateToken, async (req, res) => {
+app.get('/api/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
@@ -237,7 +238,7 @@ app.get('/profile', authenticateToken, async (req, res) => {
 
 
 
-app.post('/profile/update', authenticateToken, async (req, res) => {
+app.post('/api/profile/update', authenticateToken, async (req, res) => {
     const { username, email } = req.body;
     try {
         // Asumiendo que `db` es tu conexión a la base de datos y tiene un método para actualizar
@@ -251,7 +252,7 @@ app.post('/profile/update', authenticateToken, async (req, res) => {
 
 
 // Endpoint to create a new session
-app.post('/sessions/create', authenticateToken, async (req, res) => {
+app.post('/api/sessions/create', authenticateToken, async (req, res) => {
     const { date, startHour, endHour, subject, mode, studentEmail } = req.body;
     const tutorId = req.user.id;
 
@@ -290,7 +291,7 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 
 
 // Period-based sessions endpoint
-app.get('/sessions', authenticateToken, async (req, res) => {
+app.get('/api/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
@@ -358,7 +359,7 @@ function getPeriodoTimes(periodo) {
 
 
 // Endpoint for fetching detailed session information
-app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
+app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
     const sessionId = req.params.sessionId;
     try {
         const sessionQuery = `
@@ -404,7 +405,7 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/grade-session', authenticateToken, async (req, res) => {
+app.post('/api/grade-session', authenticateToken, async (req, res) => {
     const { calificacion, comentario, id_receiver, id_session } = req.body;
     const id_sender = req.user.id;
 
@@ -425,7 +426,7 @@ app.post('/grade-session', authenticateToken, async (req, res) => {
 });
 
 
-app.post('/report-absence', authenticateToken, async (req, res) => {
+app.post('/api/report-absence', authenticateToken, async (req, res) => {
     const {id_absentParticipant, message } = req.body;
     const id_sender = req.user.id;
 
@@ -449,7 +450,7 @@ app.post('/report-absence', authenticateToken, async (req, res) => {
 });
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
-app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
+app.post('/api/cancel-session/:sessionID', authenticateToken, async (req, res) => {
     const { sessionId, reason } = req.body;
     const userId = req.user.id; // Obtener el ID del usuario desde el token de autenticación
 
@@ -494,7 +495,7 @@ app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
 });
 
 
-app.get('/average-rating', authenticateToken, async (req, res) => {
+app.get('/api/average-rating', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         let query = `
@@ -518,7 +519,7 @@ app.get('/average-rating', authenticateToken, async (req, res) => {
 
 
 //Endpoint para listar todas las sesiones pasadas de un usuario
-app.get('/session-history', authenticateToken, async (req, res) => {
+app.get('/api/session-history', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
@@ -566,7 +567,7 @@ app.get('/session-history', authenticateToken, async (req, res) => {
 
 
 // Endpoint to get all courses
-app.get('/courses', async (req, res) => {
+app.get('/api/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
@@ -584,7 +585,7 @@ app.get('/courses', async (req, res) => {
 
 
 // Endpoint to get all tutors with their courses and average rating
-app.get('/tutors', async (req, res) => {
+app.get('/api/tutors', async (req, res) => {
     try {
         const query = `
             SELECT x.id, x.username, x.email, x.typeuser, 
@@ -618,4 +619,4 @@ app.get('/tutors', async (req, res) => {
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-export default app;
+module.exports = app;

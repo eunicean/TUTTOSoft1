@@ -24,7 +24,7 @@ function Sessions() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create'; // Adjust the URL as necessary
+        const url = 'https://209.126.125.63/api/sessions/create'; // Adjust the URL as necessary
 
         try {
             const response = await fetch(url, {
@@ -57,7 +57,7 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/sessions');
+        const url = new URL('https://209.126.125.63/api/sessions');
 
         if (queryPeriodo) {
             url.searchParams.append('periodo', queryPeriodo);

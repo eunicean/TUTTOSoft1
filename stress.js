@@ -8,7 +8,7 @@ export let options = {
 
 export default function () {
   // Hacer una solicitud POST al endpoint de inicio de sesión
-  let loginRes = http.post('http://localhost:5000/login', {
+  let loginRes = http.post('/api/login', {
     email: 'tutotest@uvg.edu.gt',  
     password: 'hash1', 
   });
@@ -29,7 +29,7 @@ export default function () {
   };
 
   // 2. Solicitar las sesiones agendadas
-  let sessionsRes = http.get('http://localhost:5000/sessions?periodo=all', headers);
+  let sessionsRes = http.get('/api/sessions?periodo=all', headers);
 
   // Verificar que la solicitud de sesiones fue exitosa
   check(sessionsRes, {
@@ -41,7 +41,7 @@ export default function () {
   console.log(`Found ${sessions.length} sessions`);
 
   // 3. Solicitar los detalles de una sesión específica (id = 18)
-  let sessionDetailRes = http.get('http://localhost:5000/sessions/18', headers);
+  let sessionDetailRes = http.get('/api/sessions/18', headers);
 
   // Verificar que la solicitud de los detalles de la sesión fue exitosa
   check(sessionDetailRes, {
