@@ -1,192 +1,198 @@
-/* src/SessionVistaParaTutor.css */
+/* Importa una fuente más moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Estilos generales */
 .vista-container {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+  font-family: 'Poppins', sans-serif; /* Nueva fuente */
+  padding: 30px;
+  margin-top: 5vh;
+  background-color: #f7f9fc; /* Fondo claro */
+  color: #333; /* Texto oscuro para buen contraste */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  border-radius: 15px; /* Bordes redondeados */
+}
+
+/* Header */
+.header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.session-text {
+  font-size: 36px; /* Tamaño de texto más adecuado */
+  font-weight: bold;
+  color: #865a3c; /* Color de texto más oscuro */
+}
+
+/* Botón de cancelar */
+.cancel-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #c29574; /* Rojo vibrante */
+  color: white;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.cancel-button:hover {
+  background-color: #e74c3c; /* Color al hacer hover */
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Tarjeta card1 más grande */
+.card1 {
+  width: 35%;
+  padding: 25px;
+  border: 1px solid #dfc1a9; /* Borde más claro */
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+  text-align: center;
+  background-color: #dfc1a9;
+  transition: transform 0.3s ease; /* Transición suave al hacer hover */
+}
+
+.card1:hover {
+  transform: translateY(-5px); /* Levantar la tarjeta al hacer hover */
+}
+
+/* Imagen de perfil */
+.profile-pic {
+  width: 100%;
+  max-width: 180px; /* Tamaño más grande */
+  height: auto;
+  border-radius: 50%; /* Redondeada */
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Botones dentro de la tarjeta */
+.card1 button {
+  padding: 12px 18px;
+  margin-top: 20px;
+  font-size: 16px;
+  background-color: #b88163; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card1 button:hover {
+  background-color: #e74c3c;
+}
+
+.info {
+  width: 55%;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Tarjeta de temas más grande */
+.temas-card1 {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 10px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  background-color: #c29574;
+}
+
+.temas-card1 h2 {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  color: #8c6246;
+}
+
+/* Listas y botones */
+.temas-card1 ul {
+  padding: 0;
+  width: 100%;
+}
+
+.temas-card1 li {
+  padding: 10px 0;
+  font-size: 1.2rem;
+}
+
+.Btn-acciones-vista {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.Btn-acciones-vista button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #9d4d1a; /* Verde suave */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.Btn-acciones-vista button:hover {
+  background-color: #e74c3c;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  color: #f1c40f; /* Amarillo brillante */
+}
+
+/* Ajustes para Materia y Hora */
+.TitulosInfo h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #9d4d1a;
+}
+
+/* Línea divisoria entre TitulosInfo e Info2 */
+.divider {
+  width: 100%;
+  height: 2px;
+  background-color: #8d6c46; /* Color suave de la línea */
+  margin: 40px 0; /* Espacio arriba y abajo de la línea */
+  border: none;
+  border-radius: 8px; /* Bordes redondeados */
+  opacity: 0.6; /* Un poco de transparencia */
+}
+
+/* Media Queries para pantallas medianas y grandes */
+@media (min-width: 768px) {
+  .card1 {
+    width: 40%; /* Aumentar tamaño */
   }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .session-text {   
-    margin-top: 40px;
-    font-size: 40px;
-    font-weight: bold;
-    color: #ba996f;
-  }
-  
-  .cancel-button {
-    margin-top: 40px;
-    padding: 10px 20px;
-    font-size: 20px;
-    background-color: #ba996f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .cancel-button:hover {
-    background-color: #ff1a1a;
-  }
-  
-  .content {
-    display: flex;
-  }
-  
-  .card {
-    width: 25%; 
-    height: 75vh;
-    margin-left: 10vh;
-    padding: 20px;
-    border: 1px solid #C04000;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    background-color: #ba996f;
-  }
-  
-  .profile-pic {
-    width: 35vh;
-    height: 35vh;
-    border-radius: 50%;
-    margin-bottom: 15px;
-  }
-  
-  .card-buttons button {
-    padding: 10px;
-    margin: 5px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .card-buttons button:hover {
-    background-color: #ddd;
-  }
-  
   .info {
     width: 50%;
-    padding: 2px;
-    margin-left: 15vh;
   }
-  
-  .session-time {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    color: #333;
-    margin: 0;
-  }
+}
 
-
-
-  .TitulosInfo {
-    text-align: left;
-    color: brown; /* Cambia el color a café */
-    padding: 0; /* Elimina cualquier relleno adicional */
-    margin: 0; /* Elimina cualquier margen adicional */
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 767px) {
+  .card1 {
+    width: 100%;
+    margin-left: 0;
   }
-  
-  .TitulosInfo h2 {
-    font-size: 45px; /* Ajusta el tamaño del texto h2 aquí */
-    margin-bottom: 100px;
-  }
-  
-  .TitulosInfo h3 {
-    font-size: 45px; /* Ajusta el tamaño del texto h3 aquí */
-    margin-top: 100px;
-    margin-bottom: 200px;
-  }
-  
-  .info h2, .info h3 {
-    margin: 10px 0;
-  }
-  
-  .Info2 {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center;     /* Centra verticalmente (opcional) */
-    flex-direction: column;  /* Alinea los elementos en columna (opcional) */
-    margin-top: 1vh;
-  }
-  .Notas, .DocsEstudiante {
-    margin-right: 20px;
-  }
-  .UploadBoxFile {
-    border: 1px solid #ccc;
-    border-radius: 10px;
+  .info {
+    width: 100%;
     padding: 20px;
-    margin: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #ba996f;
-    text-align: center;
-    max-width: 300px;
-  
   }
-  .UploadBoxFile input[type="file"] {
-    margin-bottom: 10px;
+  .divider {
+    margin: 20px 0; /* Espacio más pequeño en pantallas pequeñas */
   }
-  .UploadBoxFile button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  .UploadBoxFile button:hover {
-    background-color: #45a049;
-  }
-  .UploadBoxFile p {
-    margin-top: 10px;
-  }
-  .temas-card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 30px; /* Aumenta el padding para hacer el card más grande */
-    margin-top: 2px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Aumenta la sombra para un efecto más prominente */
-    background-color: #ba996f;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 500px; /* Establece un ancho fijo (puedes ajustar este valor) */
-    height: 300px;
-    overflow: hidden;
-    min-width: 300px; /* Establece un ancho mínimo para el card */
-  }
-  
-  .temas-card h2 {
-    margin-bottom: 20px; /* Aumenta el margen para que el título tenga más espacio */
-    font-size: 1.5rem; /* Aumenta el tamaño de la fuente del título */
-  }
-  
-  .temas-card ul {
-    list-style-type: none;
-    padding: 0;
-    width: 100%; /* Asegúrate de que la lista use el ancho completo del card */
-  }
-  
-  .temas-card li {
-    padding: 10px 0; /* Aumenta el padding en los elementos de la lista */
-    font-size: 1.2rem; /* Aumenta el tamaño de la fuente en la lista */
-  }
-  
-  .temas-card button {
-    margin-top: 20px; /* Aumenta el margen superior para separar el botón del contenido */
-    padding: 10px 20px; /* Aumenta el padding para el botón */
-    font-size: 1rem; /* Aumenta el tamaño de la fuente del botón */
-  }
-  
-  .stars {
-    display: flex;
-    justify-content: center;
-    color: #A0522D;
-  }
+}

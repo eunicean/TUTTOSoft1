@@ -1,0 +1,42 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: Node.js CI and Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASEHOSTNAME:  ${{ secrets.DATABASEHOSTNAME }}
+      DATABASEUSERNAME: ${{ secrets.DATABASEUSERNAME }}
+      DATABASEPASSWORD: ${{ secrets.DATABASEPASSWORD }}
+      DATABASENAME: ${{ secrets.DATABASENAME }}
+      DATABASEPORT: ${{ secrets.DATABASEPORT }}
+      DATABASESSLBASE64: ${{ secrets.DATABASESSLBASE64 }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_PATH: ${{ secrets.SERVER_PATH }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+
+    strategy:
+      matrix:
+        node-version: [ 21.x ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm run start &
+    - run: npm test

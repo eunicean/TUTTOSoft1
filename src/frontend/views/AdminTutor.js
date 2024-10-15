@@ -1,77 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import '../css/Seachtutor.css';
+// src/frontend/views/AdminTutor.js
 
-const TutorCard = ({ name, subjects, year, rating }) => {
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import FilterDropdown from '../components/FilterDropdown.js'; 
+import '../css/AdminTutor.css'; 
+
+const TutorCard = ({ name, subjects, year, rating, isAdmin, handleReportClick }) => {
   return (
-    <div className="tutor-card-search">
-      <div className="tutor-info-search">
-        <div className="avatar-placeholder-search"></div>
+    <div className="tutor-card-searchadmin">
+      <div className="tutor-info-searchadmin">
+        <div className="avatar-placeholder-searchadmin"></div>
         <div>
           <h4>{name}</h4>
-          <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
+          <h4>{subjects.join(', ')}</h4>
           <h4>{year} año</h4>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
           </div>
         </div>
-      </div>
-      <button  className="chat-btn-search"> chat</button>
+      </div>    
+        <button className="report-btn-search" onClick={handleReportClick}>Reportes</button>     
     </div>
   );
 };
 
-const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/courses');
-        const data = await response.json();
-        setCourses(data);  // Guardar los cursos obtenidos
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
-
-    fetchCourses();  // Llamar a la API cuando se cargue el componente
-  }, []);
-
-  return (
-    <select
-      value={selectedSubject}
-      onChange={(e) => setSelectedSubject(e.target.value)}
-      className="filter-dropdown"
-    >
-      <option value="">Seleccionar materia</option>
-      {courses.map((course) => (
-        <option key={course.course_code} value={course.namecourse}>
-          {course.namecourse}
-        </option>
-      ))}
-    </select>
-  );
-};
-
-const TutorsPage = () => {
+const TutorsPage = ({ isAdmin }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [tutors, setTutors] = useState([]);
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
+  // Función para manejar el clic en el botón de "Reportes"
+  const handleReportClick = (tutor) => {
+    navigate(`/report/${tutor.id}`, { state: { tutor } });  // Redirigir a la ruta con el ID del tutor y los datos del tutor
+  };
+
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await fetch('https://209.126.125.63/api/tutors');
+        const response = await fetch('http://localhost:5000/tutors');
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({
+          id: tutor.id,  // Asegúrate de que cada tutor tenga un ID
           name: tutor.username,
           subjects: tutor.courses.split(', '),
-          year: 5,  // Año fijo
+          year: 5,  // Ajustar según lo que necesites
           rating: Math.round(tutor.avg_rating)
         }));
         setTutors(formattedTutors);
@@ -93,11 +71,11 @@ const TutorsPage = () => {
   });
 
   return (
-    <div className='outer-container-search'>
+    <div className="outer-container-search">
       <div className={`sessions-container-search`}>
         <div className="tutors-page">
           <div className="header-search">
-            <h2>Buscar Tutor</h2>
+            <h2>{isAdmin ? 'Admin-Buscar Tutor' : 'admin-Buscar Tutor'}</h2>
             <div className="search-container">
               <input
                 type="text"
@@ -111,20 +89,26 @@ const TutorsPage = () => {
           </div>
           <div className="content">
             <div className="tutors-list">
-              {filteredTutors.map((tutor, index) => (
-                <TutorCard
-                  key={index}
-                  name={tutor.name}
-                  subjects={tutor.subjects}
-                  year={tutor.year}
-                  rating={tutor.rating}
-                />
-              ))}
+              {filteredTutors.length > 0 ? (
+                filteredTutors.map((tutor, index) => (
+                  <TutorCard
+                    key={index}
+                    name={tutor.name}
+                    subjects={tutor.subjects}
+                    year={tutor.year}
+                    rating={tutor.rating}
+                    isAdmin={isAdmin}
+                    handleReportClick={() => handleReportClick(tutor)}  // Pasar el tutor seleccionado
+                  />
+                ))
+              ) : (
+                <p>No se encontraron tutores.</p>
+              )}
             </div>
           </div>
         </div>
+      </div>
     </div>
-  </div>
   );
 };
 

@@ -8,17 +8,29 @@
 .sidebar {
   position: fixed;
   top: 0;
-  right: -250px;
+  left: 0;
   width: 250px;
   height: 100%;
   background: var(--color-barra-lateral);
   padding: 20px;
+  z-index: 1000;
+  transform: translateX(-100%);
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
+  transition: left 0.3s ease;
 }
 
 .sidebar.open {
-  right: 0;
+  left: 0;
+  transform: translateX(0); 
+}
+
+
+.app-content {
+  transition: margin-left 0.3s ease;
+}
+
+.app-content.shifted {
+  margin-left: 250px; /* Empuja el contenido cuando el sidebar está abierto */
 }
 
 /* Sección superior (header) */

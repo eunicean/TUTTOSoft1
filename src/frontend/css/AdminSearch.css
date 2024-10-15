@@ -1,0 +1,215 @@
+/* Estilos globales */
+body {
+  font-family: 'Calibri', sans-serif;
+}
+
+.outer-container-adminSea {
+  height: calc(100vh - 12vh);
+  padding-top: 30px;
+  overflow-y: auto;
+  margin: 0 auto;
+  width: 95vw;
+  max-width: 1200px;
+}
+
+.sessions-container-adminSea {
+  width: 85%;
+  margin: 0 auto;
+  padding: 0rem;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-page {
+  padding: 15px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #D9B799;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+h1 {
+  color: #8B5E3C;
+  font-size: 2em;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 15px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  margin-right: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.filter-dropdown {
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  background-color: #f0d6c1;
+  margin-right: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Estilo para la lista de usuarios y tarjetas */
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.role-toggle-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #8B5E3C;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.role-toggle-button:hover {
+  background-color: #A0603E;
+}
+
+/* Estilos para el checkbox personalizado */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  display: none; /* Oculta el checkbox original */
+}
+
+.custom-checkbox {
+  width: 24px;
+  height: 24px;
+  background-color: #e4e4e4; /* Color de fondo */
+  border: 2px solid #d8660f; /* Borde del checkbox */
+  border-radius: 5px; /* Bordes redondeados */
+  position: relative; /* Necesario para el pseudo-elemento */
+  transition: background-color 0.3s, border-color 0.3s; /* Transiciones suaves */
+}
+
+.custom-checkbox:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 8px;
+  height: 12px;
+  border: solid #e2e2e2; /* Color de la marca de verificación */
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0; /* Oculta la marca de verificación inicialmente */
+  transition: opacity 0.2s; /* Transición suave */
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+  background-color: #613f25; /* Color de fondo al seleccionar */
+  border-color: #A0603E; /* Cambia el borde al seleccionar */
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox:after {
+  opacity: 1; /* Muestra la marca de verificación al seleccionar */
+}
+
+
+.users-list {
+  flex: 1;
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: #D9B799;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  max-width: 80%;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #fde0d6;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.stars-admin {
+  color: #8B5E3C;
+}
+
+
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-container {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .search-input, .filter-dropdown {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .users-list {
+    width: 100%;
+  }
+
+  .user-card {
+    width: 100%;
+    max-width: 400px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+}

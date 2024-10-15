@@ -80,7 +80,7 @@ app.get('/api/get-username-by-email', async (req, res) => {
 // Login endpoint
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    console.log(`Attempting login with email: ${email} and password: ${password}`);
+    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -159,7 +159,7 @@ app.get('/api/users/sessions', async (req, res) => {
 app.post('/api/register', async (req, res) => {
     //commmit de prueba
     const { username, email, password, role } = req.body;
-    console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -186,7 +186,7 @@ app.post('/api/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            console.log('User registered successfully:', result.insertId);
+            // console.log('User registered successfully:', result.insertId);
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -297,14 +297,15 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
-        console.log("Selected period is: " + periodo);
+        // console.log("Selected period is: " + periodo);
 
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE (ss.id_session IS NOT NULL OR sp.id_tutor = ?) AND (
                     (sp.start_hour BETWEEN ? AND ?) OR
                     (sp.end_hour BETWEEN ? AND ?)
@@ -312,15 +313,16 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
             params = [userId, userId, tiempoInicio, tiempoFin, tiempoInicio, tiempoFin];
         } else {
             query = `
-                SELECT sp.* 
+                SELECT sp.*, c.namecourse
                 FROM sessionPlanned sp
                 LEFT JOIN students_Session ss ON sp.id = ss.id_session AND ss.id_student = ?
+                LEFT JOIN course c ON sp.course_code = c.course_code
                 WHERE ss.id_session IS NOT NULL OR sp.id_tutor = ?`;
             params = [userId, userId];
         }
         
         const [results] = await pool.query(query, params);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json({ success: true, sessions: results });
         } else {
@@ -331,8 +333,6 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
-
 
 
 // Utility function for period times
@@ -364,11 +364,14 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
     try {
         const sessionQuery = `
             SELECT 
-                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, sp.mode, 
+                sp.id, sp.date, sp.start_hour, sp.end_hour, sp.course_code, c.namecourse, sp.mode, 
                 sp.tutorNotes, 
                 tutor.username as tutorName, student.username as studentName
             FROM 
                 sessionPlanned sp
+            
+            LEFT JOIN course c ON sp.course_code = c.course_code
+            
             JOIN 
                 user tutor ON sp.id_tutor = tutor.id
             JOIN 
@@ -381,7 +384,6 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
 
         // Ejecutar la consulta de la sesión
         const [sessionResults] = await pool.query(sessionQuery, [sessionId]);
-
         if (sessionResults.length > 0) {
             const session = {
                 id: sessionResults[0].id,
@@ -389,12 +391,14 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
                 startHour: sessionResults[0].start_hour,
                 endHour: sessionResults[0].end_hour,
                 courseCode: sessionResults[0].course_code,
+                namecourse: sessionResults[0].namecourse,
                 mode: sessionResults[0].mode,
                 tutorNotes: sessionResults[0].tutorNotes, 
                 tutorName: sessionResults[0].tutorName,
                 studentName: sessionResults[0].studentName
             };
-
+            
+            // console.log(sessionResults);
             res.json({ success: true, session });
         } else {
             res.status(404).json({ success: false, message: "Session not found" });
@@ -406,19 +410,58 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/grade-session', authenticateToken, async (req, res) => {
-    const { calificacion, comentario, id_receiver, id_session } = req.body;
-    const id_sender = req.user.id;
+    const { calificacion, comentario } = req.body;
+    const id_sender = req.user.id; // ID del usuario autenticado desde el token
+    const sessionID = req.params.sessionID;
 
     try {
         const conexion = await pool.getConnection();
-        const [comentarios] = await pool.query(
-            `INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session)
-            VALUES(?,?,?,?,?)`,
-            [calificacion, comentario, id_sender, id_receiver, id_session]
-        );
-        console.log('Comentario insertado:', comentarios);
-        res.json({ success: true, message: "Sesión calificada exitosamente" });
-        
+        try {
+            // Verificar si el usuario es tutor en esta sesión
+            console.log(id_sender);
+            const [tutorResult] = await conexion.query(
+                `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
+                [sessionID, id_sender]
+            );
+
+            let id_receiver;
+
+            if (tutorResult.length > 0) {
+                // Si es tutor, obtenemos el ID del estudiante desde `students_Session`
+                const [studentResult] = await conexion.query(
+                    `SELECT id_student FROM students_Session WHERE id_session = ?`,
+                    [sessionID]
+                );
+
+                if (studentResult.length === 0) {
+                    return res.status(404).json({ success: false, message: 'Estudiante no encontrado en esta sesión' });
+                }
+                id_receiver = studentResult[0].id_student;
+            } else {
+                // Si no es tutor, buscamos al tutor de la sesión
+                const [tutorInSession] = await conexion.query(
+                    `SELECT id_tutor FROM sessionPlanned WHERE id = ?`,
+                    [sessionID]
+                );
+
+                if (tutorInSession.length === 0) {
+                    return res.status(404).json({ success: false, message: 'Tutor no encontrado en esta sesión' });
+                }
+                id_receiver = tutorInSession[0].id_tutor;
+            }
+
+            // Insertar la calificación en la tabla `comment`
+            const [comentarios] = await conexion.query(
+                `INSERT INTO comment (rating, commentContent, id_sender, id_receiver, id_session) 
+                 VALUES (?, ?, ?, ?, ?)`,
+                [calificacion, comentario, id_sender, id_receiver, sessionID]
+            );
+
+            console.log('Comentario insertado:', comentarios);
+            res.json({ success: true, message: 'Sesión calificada exitosamente' });
+        } finally {
+            conexion.release();
+        }
     } catch (error) {
         console.error('Error al calificar la sesión:', error);
         res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -427,27 +470,78 @@ app.post('/api/grade-session', authenticateToken, async (req, res) => {
 
 
 app.post('/api/report-absence', authenticateToken, async (req, res) => {
-    const {id_absentParticipant, message } = req.body;
-    const id_sender = req.user.id;
+    const { message } = req.body;
+    const id_sender = req.user.id; // Usuario autenticado
+    const sessionID = req.params.sessionID;
+    const absentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato 'YYYY-MM-DD'
 
     try {
         const conexion = await pool.getConnection();
         try {
-            const [result] = await conexion.query(
-                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message)
-                VALUES (?, ?, ?)`,
-                [id_sender, id_absentParticipant, message]
+            console.log(`Remitente -> ${id_sender}`);
+            // Verificar si el usuario es tutor en esta sesión
+            const [tutorResult] = await conexion.query(
+                `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
+                [sessionID, id_sender]
             );
+
+            let id_absentParticipant;
+
+            if (tutorResult.length > 0) {
+                // Si es tutor, el ausente es el estudiante
+                const [studentResult] = await conexion.query(
+                    `SELECT id_student FROM students_Session WHERE id_session = ?`,
+                    [sessionID]
+                );
+
+                if (studentResult.length === 0) {
+                    return res.status(404).json({ 
+                        success: false, 
+                        message: 'Estudiante no encontrado en esta sesión' 
+                    });
+                }
+                id_absentParticipant = studentResult[0].id_student;
+            } else {
+                // Si no es tutor, el ausente es el tutor
+                const [tutorInSession] = await conexion.query(
+                    `SELECT id_tutor FROM sessionPlanned WHERE id = ?`,
+                    [sessionID]
+                );
+
+                if (tutorInSession.length === 0) {
+                    return res.status(404).json({ 
+                        success: false, 
+                        message: 'Tutor no encontrado en esta sesión' 
+                    });
+                }
+                id_absentParticipant = tutorInSession[0].id_tutor;
+            }
+            // Insertar el reporte de ausencia en la base de datos
+            const [result] = await conexion.query(
+                `INSERT INTO reportAbsence (id_sender, id_absentParticipant, message, idSession, absentDate)
+                 VALUES (?, ?, ?, ?, ?)`,
+                [id_sender, id_absentParticipant, message, sessionID, absentDate]
+            );
+
             console.log('Reporte de ausencia insertado:', result);
-            res.json({ success: true, message: "Reporte de ausencia registrado exitosamente", reportId: result.insertId });
+            res.json({
+                success: true,
+                message: 'Reporte de ausencia registrado exitosamente',
+                reportId: result.insertId
+            });
+
         } finally {
             conexion.release();
         }
     } catch (error) {
         console.error('Error al registrar el reporte de ausencia:', error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
+        });
     }
 });
+
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
 app.post('/api/cancel-session/:sessionID', authenticateToken, async (req, res) => {
@@ -571,7 +665,7 @@ app.get('/api/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
-        console.log(results);
+        // console.log(results);
         if (results.length > 0) {
             res.json(results);
         } else {
@@ -615,6 +709,179 @@ app.get('/api/tutors', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+// Endpoint para obtener la lista de estudiantes
+app.get('/students', async (req, res) => {
+    try {
+        const query = `
+            SELECT u.id, u.username, u.email, 
+                   COALESCE(avg_rating.avg_rating, 0) AS avg_rating
+            FROM user u
+            LEFT JOIN (
+                SELECT id_receiver, AVG(rating) AS avg_rating
+                FROM comment
+                GROUP BY id_receiver
+            ) avg_rating ON u.id = avg_rating.id_receiver
+            WHERE u.typeuser = 1  -- Estudiantes tienen el tipo de usuario 1
+            GROUP BY u.id, u.username, u.email, avg_rating.avg_rating;
+        `;
+
+        const [results] = await pool.query(query);
+
+        if (results.length > 0) {
+            res.json(results); // Devuelve los estudiantes encontrados
+        } else {
+            res.status(404).json({ message: 'No se encontraron estudiantes' });
+        }
+    } catch (error) {
+        console.error('Error en la base de datos:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
+
+app.get('/chats/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId;
+
+    try {
+        const chatInfoQuery = `
+            SELECT 
+                cn.id AS chatId,
+                cn.id_sender,
+                cn.id_recipient,
+                cn.message,
+                cn.time_stamp
+            FROM 
+                chats_nueva cn
+            WHERE 
+                cn.id = ?
+            ORDER BY 
+                cn.time_stamp DESC;
+        `;
+
+        const [messages] = await pool.query(chatInfoQuery, [chatId]);
+
+        if (messages.length > 0) {
+            const formattedMessages = messages.map(message => ({
+                messageId: message.messageId,
+                chatId: message.chatId,
+                senderId: message.id_sender,
+                senderUsername: message.senderUsername,
+                content: message.message,
+                timeSent: message.time_stamp
+            }));
+
+            res.json({ success: true, chatId: chatId, messages: formattedMessages });
+        } else {
+            res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+
+app.get('/chats', authenticateToken, async (req, res) => {
+    const userId = req.user.id; // Extraer el ID del usuario autenticado
+  
+    try {
+      const chatsQuery = `
+        SELECT 
+            cn.id AS chatId,
+            cn.id_sender,
+            cn.id_recipient,
+            m.message AS lastMessage,
+            m.time_stamp AS lastMessageTime
+        FROM 
+            chats_nueva cn
+        JOIN 
+            (
+                SELECT 
+                    m1.id_chat,
+                    m1.message,
+                    m1.time_stamp
+                FROM 
+                    messages_nueva m1
+                JOIN 
+                    (
+                        SELECT 
+                            id_chat, 
+                            MAX(time_stamp) AS max_time
+                        FROM 
+                            messages_nueva
+                        GROUP BY 
+                            id_chat
+                    ) m2 ON m1.id_chat = m2.id_chat AND m1.time_stamp = m2.max_time
+            ) m ON cn.id = m.id_chat
+        WHERE 
+            cn.id_sender = ? OR cn.id_recipient = ?
+        ORDER BY 
+            m.time_stamp DESC;
+
+      `;
+  
+      const [chats] = await pool.query(chatsQuery, [userId, userId]);
+  
+      if (chats.length > 0) {
+        const chatList = chats.map(chat => ({
+          chatId: chat.chatId,
+          otherUsername: chat.otherUsername,
+          otherUserId: chat.otherUserId,
+          lastMessage: chat.lastMessage,
+          lastMessageTime: chat.lastMessageTime
+        }));
+  
+        res.json({ success: true, chats: chatList });
+      } else {
+        res.json({ success: true, message: "No chats found", chats: [] });
+      }
+    } catch (error) {
+      console.error('Database error:', error);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  });
+  
+
+app.post('/send-message', authenticateToken, async (req, res) => {
+    const { id_recipient, message } = req.body;
+    const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
+
+    try {
+        // Verificar si ya existe un chat entre los dos usuarios
+        const existingChatQuery = `
+            SELECT id FROM chats_nueva
+            WHERE (id_sender = ? AND id_recipient = ?) OR (id_sender = ? AND id_recipient = ?);
+        `;
+        const [existingChat] = await pool.query(existingChatQuery, [id_sender, id_recipient, id_recipient, id_sender]);
+
+        let chatId;
+        if (existingChat.length > 0) {
+            chatId = existingChat[0].id;
+        } else {
+            // Crear un nuevo chat si no existe
+            const insertChatQuery = `
+                INSERT INTO chats_nueva (id_sender, id_recipient)
+                VALUES (?, ?);
+            `;
+            const [newChat] = await pool.query(insertChatQuery, [id_sender, id_recipient]);
+            chatId = newChat.insertId;
+        }
+
+        // Insertar el mensaje en messages_nueva
+        const insertMessageQuery = `
+            INSERT INTO messages_nueva (id_chat, id_sender, message)
+            VALUES (?, ?, ?);
+        `;
+        await pool.query(insertMessageQuery, [chatId, id_sender, message]);
+
+        res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
+    } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
