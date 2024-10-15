@@ -787,65 +787,58 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 
 
 app.get('/chats', authenticateToken, async (req, res) => {
-    const userId = req.user.id; // Extraer el ID del usuario autenticado
-  
+    const userId = req.user.id;  // Extraer el ID del usuario autenticado
+
     try {
-      const chatsQuery = `
+        // En la API que trae los chats, asegúrate de devolver correctamente el 'otherUserId'
+        const chatsQuery = `
         SELECT 
             cn.id AS chatId,
             cn.id_sender,
             cn.id_recipient,
             m.message AS lastMessage,
-            m.time_stamp AS lastMessageTime
+            m.time_stamp AS lastMessageTime,
+        CASE 
+            WHEN cn.id_sender = ? THEN cn.id_recipient
+            ELSE cn.id_sender
+        END AS otherUserId,
+        CASE 
+            WHEN cn.id_sender = ? THEN u1.username
+            ELSE u2.username
+        END AS otherUsername
         FROM 
             chats_nueva cn
-        JOIN 
-            (
-                SELECT 
-                    m1.id_chat,
-                    m1.message,
-                    m1.time_stamp
-                FROM 
-                    messages_nueva m1
-                JOIN 
-                    (
-                        SELECT 
-                            id_chat, 
-                            MAX(time_stamp) AS max_time
-                        FROM 
-                            messages_nueva
-                        GROUP BY 
-                            id_chat
-                    ) m2 ON m1.id_chat = m2.id_chat AND m1.time_stamp = m2.max_time
-            ) m ON cn.id = m.id_chat
-        WHERE 
-            cn.id_sender = ? OR cn.id_recipient = ?
-        ORDER BY 
-            m.time_stamp DESC;
+            JOIN messages_nueva m ON cn.id = m.id_chat
+            JOIN user u1 ON u1.id = cn.id_sender
+            JOIN user u2 ON u2.id = cn.id_recipient
+        WHERE cn.id_sender = ? OR cn.id_recipient = ?
+        ORDER BY m.time_stamp DESC;
+        `;
 
-      `;
-  
-      const [chats] = await pool.query(chatsQuery, [userId, userId]);
-  
-      if (chats.length > 0) {
-        const chatList = chats.map(chat => ({
-          chatId: chat.chatId,
-          otherUsername: chat.otherUsername,
-          otherUserId: chat.otherUserId,
-          lastMessage: chat.lastMessage,
-          lastMessageTime: chat.lastMessageTime
-        }));
-  
-        res.json({ success: true, chats: chatList });
-      } else {
-        res.json({ success: true, message: "No chats found", chats: [] });
-      }
+        const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
+
+
+        if (chats.length > 0) {
+            const chatList = chats.map(chat => ({
+                chatId: chat.chatId,
+                otherUserId: chat.otherUserId,
+                otherUsername: chat.otherUsername,
+                lastMessage: chat.lastMessage,
+                lastMessageTime: chat.lastMessageTime
+            }));
+
+            res.json({ success: true, chats: chatList });
+            // console.log(chatList);
+        } else {
+            res.json({ success: true, message: "No chats found", chats: [] });
+        }
     } catch (error) {
-      console.error('Database error:', error);
-      res.status(500).json({ success: false, message: "Internal server error" });
+        console.error('Database error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
-  });
-  
+});
+
+
 
 app.post('/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
@@ -880,6 +873,7 @@ app.post('/send-message', authenticateToken, async (req, res) => {
         await pool.query(insertMessageQuery, [chatId, id_sender, message]);
 
         res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
+        console.log("ID SENDER", id_sender,"CHAT ID",chatId, "MESSAGE", message)
     } catch (error) {
         console.error('Error al enviar el mensaje:', error);
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
