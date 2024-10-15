@@ -742,31 +742,36 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
-        const chatInfoQuery = `
+        const chatAndMessagesQuery = `
             SELECT 
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient,
-                cn.message,
-                cn.time_stamp
+                c.id AS chatId,
+                c.id_sender,
+                c.id_recipient,
+                m.id AS messageId,
+                m.message AS content,
+                m.time_stamp AS timeSent,
+                u.username AS senderUsername
             FROM 
-                chats_nueva cn
+                chats_nueva c
+            JOIN 
+                messages_nueva m ON c.id = m.id_chat
+            JOIN 
+                user u ON m.id_sender = u.id
             WHERE 
-                cn.id = ?
+                c.id = ?
             ORDER BY 
-                cn.time_stamp DESC;
+                m.time_stamp DESC;
         `;
+        const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
 
-        const [messages] = await pool.query(chatInfoQuery, [chatId]);
-
-        if (messages.length > 0) {
-            const formattedMessages = messages.map(message => ({
-                messageId: message.messageId,
-                chatId: message.chatId,
-                senderId: message.id_sender,
-                senderUsername: message.senderUsername,
-                content: message.message,
-                timeSent: message.time_stamp
+        if (results.length > 0) {
+            const formattedMessages = results.map(result => ({
+                messageId: result.messageId,
+                chatId: result.chatId,
+                senderId: result.id_sender,
+                senderUsername: result.senderUsername,
+                content: result.content,
+                timeSent: result.timeSent
             }));
 
             res.json({ success: true, chatId: chatId, messages: formattedMessages });
