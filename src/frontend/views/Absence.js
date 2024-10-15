@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
-import '../css/Sessions.css';
-import '../css/Sidebar.css';
-import '../css/Navbar.css';
+import '../css/Absence.css'; // Importamos el CSS
 
 function CancelSessionView({ Idsession }) {
     const [reason, setReason] = useState('');
@@ -27,7 +25,7 @@ function CancelSessionView({ Idsession }) {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message: reason }), // Enviamos el motivo como "message"
+                body: JSON.stringify({ message: reason }),
             });
 
             const data = await response.json();
@@ -42,31 +40,28 @@ function CancelSessionView({ Idsession }) {
         }
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
 
     return (
         <>
-            <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
-            <Navbar />
-            <div className={`sessions-container ${isSidebarOpen ? 'shifted' : ''}`}>
-                <button className="menu-toggle" onClick={toggleSidebar}>Menu</button>
-                <h1 className="sessions-title">Reportar Ausencia</h1>
-                <div className="session-filters">
+            <div className={`absence-container ${isSidebarOpen ? 'shifted' : ''}`}>
+                <h1 className="absence-title">Reportar Ausencia</h1>
+                <div className="absence-filters">
                     <label>
                         Motivo de la ausencia:
-                        <input 
-                            type="text" 
-                            value={reason} 
-                            onChange={(e) => setReason(e.target.value)} 
-                            className="periodo-selector" 
+                        <textarea
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                            className="absence-reason-textarea"
                         />
                     </label>
                 </div>
-                <button onClick={handleCancelSession} className="create-session-button">
-                    Enviar
-                </button>
-                {message && <p>{message}</p>}
+                <div className="absence-button-container">
+                    <button onClick={handleCancelSession} className="absence-submit-button">
+                        Enviar
+                    </button>
+                </div>
+                {message && <p className="absence-message">{message}</p>}
             </div>
         </>
     );
