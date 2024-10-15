@@ -759,15 +759,20 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 
         const [messages] = await pool.query(chatInfoQuery, [chatId]);
 
+        // Aquí agregamos un console.log para ver los mensajes recuperados de la base de datos
+        console.log('Mensajes recuperados de la base de datos:', messages);
+
         if (messages.length > 0) {
             const formattedMessages = messages.map(message => ({
                 messageId: message.messageId,
                 chatId: message.chatId,
                 senderId: message.id_sender,
-                senderUsername: message.senderUsername,
                 content: message.message,
                 timeSent: message.time_stamp
             }));
+
+            // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
+            console.log('Mensajes formateados que se enviarán:', formattedMessages);
 
             res.json({ success: true, chatId: chatId, messages: formattedMessages });
         } else {
@@ -778,6 +783,8 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+
 
 
 
