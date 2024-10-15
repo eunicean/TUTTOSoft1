@@ -24,6 +24,7 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
       ))}
     </select>
   );
+};
 
 const AdminPageContent = () => {
   const { users, toggleUserRole } = useData();
