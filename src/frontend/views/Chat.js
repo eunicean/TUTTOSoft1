@@ -15,7 +15,7 @@ const Chat = () => {
   // Función para obtener los datos del perfil del usuario
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get('/profile', {
+      const response = await axios.get('https://209.126.125.63/api/profile', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, // Token JWT desde localStorage
         },
@@ -31,7 +31,7 @@ const Chat = () => {
   // Función para obtener la lista de chats desde el backend
 const fetchChats = async () => {
   try {
-    const response = await axios.get('/chats', {
+    const response = await axios.get('https://209.126.125.63/api/chats', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -56,7 +56,7 @@ const fetchChats = async () => {
   // Función para obtener los mensajes de un chat específico
   const fetchMessages = async (chatId) => {
     try {
-      const response = await axios.get(`/chats/${chatId}`, {
+      const response = await axios.get(`/209.126.125.63/api/chats/${chatId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -74,7 +74,7 @@ const fetchChats = async () => {
   const fetchTutorsOrStudents = async () => {
     if (!user.typeuser) return; // Si el tipo de usuario no está listo, no continuar
     try {
-      const endpoint = user.typeuser === '2' ? '/students' : '/tutors'; // Dependiendo del tipo de usuario, obtenemos tutores o estudiantes
+      const endpoint = user.typeuser === '2' ? 'https://209.126.125.63/api/students' : 'https://209.126.125.63/api/tutors'; // Dependiendo del tipo de usuario, obtenemos tutores o estudiantes
       const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -109,7 +109,7 @@ const fetchChats = async () => {
 
       // Enviar un mensaje vacío para iniciar el chat
       const response = await axios.post(
-        '/send-message',
+        'https://209.126.125.63/api/send-message',
         { id_recipient: userId, message: '' }, // Enviar un primer mensaje vacío
         {
           headers: {
@@ -136,7 +136,7 @@ const fetchChats = async () => {
     if (inputMessage.trim() !== '' && selectedChat !== null) {
       try {
         const response = await axios.post(
-          '/send-message',
+          'https://209.126.125.63/api/send-message',
           { id_recipient: selectedChat, message: inputMessage },
           {
             headers: {

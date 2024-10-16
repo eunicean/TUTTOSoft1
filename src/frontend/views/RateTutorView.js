@@ -21,7 +21,7 @@ function RateTutorView({ tutorId }) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`http://localhost:5000/grade-session/${sessionId}`, {
+            const response = await fetch(`https://209.126.125.63/api/grade-session/${sessionId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -98,7 +98,7 @@ function CreateSession() {
             
             if (data.success) {
                 setNewSession({ subject: '', date: '', startHour: '', endHour: '', mode: '', studentEmail: '' });
-                navigate('/sessions'); // Navega de vuelta a la vista de sesiones
+                navigate('https://209.126.125.63/api/sessions'); // Navega de vuelta a la vista de sesiones
             } else {
                 throw new Error(data.message || 'Failed to create session');
             }

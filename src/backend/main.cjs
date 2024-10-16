@@ -3,13 +3,13 @@ const {
     crearUsuario, 
     obtenerTipoUsuarioPorId, 
     obtenerSesionesPlanificadasPorPersona 
-  } = require('./db.cjs');
+  } = require('/home/sf/db.js');
   
   const express = require('express');
   const cors = require('cors');
   const jwt = require('jsonwebtoken');
   const bcrypt = require('bcrypt');
-  const pool = require('./conn.cjs');
+  const pool = require('./conn.js');
 
 console.log("main si se ejecuta");
 
@@ -26,6 +26,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
 
 //Function to solve the autoincrement issue of the sessionPlanned table
 const getMaxSessionId = async () => {
@@ -409,7 +410,7 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/api/grade-session', authenticateToken, async (req, res) => {
+app.post('/api/grade-session/:sessionID', authenticateToken, async (req, res) => {
     const { calificacion, comentario } = req.body;
     const id_sender = req.user.id; // ID del usuario autenticado desde el token
     const sessionID = req.params.sessionID;
@@ -469,7 +470,7 @@ app.post('/api/grade-session', authenticateToken, async (req, res) => {
 });
 
 
-app.post('/api/report-absence', authenticateToken, async (req, res) => {
+app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const id_sender = req.user.id; // Usuario autenticado
     const sessionID = req.params.sessionID;
@@ -711,7 +712,7 @@ app.get('/api/tutors', async (req, res) => {
 });
 
 // Endpoint para obtener la lista de estudiantes
-app.get('/students', async (req, res) => {
+app.get('/api/students', async (req, res) => {
     try {
         const query = `
             SELECT u.id, u.username, u.email, 
@@ -739,7 +740,7 @@ app.get('/students', async (req, res) => {
     }
 });
 
-app.get('/chats/:chatId', authenticateToken, async (req, res) => {
+app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
@@ -782,7 +783,7 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 
 
 
-app.get('/chats', authenticateToken, async (req, res) => {
+app.get('/api/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
   
     try {
@@ -843,7 +844,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
   });
   
 
-app.post('/send-message', authenticateToken, async (req, res) => {
+app.post('/api/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
     const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
 
