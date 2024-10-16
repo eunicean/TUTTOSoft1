@@ -744,21 +744,25 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
     try {
         const chatAndMessagesQuery = `
             SELECT 
+                m.id AS messageId,
+                m.message AS content,
+                m.time_stamp AS timeSent,
+                u.username AS senderUsername,  -- Asegúrate de obtener el nombre del remitente
                 cn.id AS chatId,
                 cn.id_sender,
-                cn.id_recipient,
-                cn.time_stamp
+                cn.id_recipient
             FROM 
-                chats_nueva c
+                chats_nueva cn
             JOIN 
-                messages_nueva m ON c.id = m.id_chat
+                messages_nueva m ON cn.id = m.id_chat
             JOIN 
                 user u ON m.id_sender = u.id
             WHERE 
-                c.id = ?
+                cn.id = ?
             ORDER BY 
-                m.time_stamp DESC;
+                m.time_stamp ASC;  -- Cambié a ASC para mostrar los mensajes en orden cronológico
         `;
+
         const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
 
         if (results.length > 0) {
@@ -780,6 +784,7 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 
