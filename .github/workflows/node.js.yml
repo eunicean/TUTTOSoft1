@@ -46,7 +46,11 @@ jobs:
       
     - name: Compress build directory
       run: tar -czvf deploy.tar.gz build
-    
+    - name: Deploy to Server
+      run: |
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./src/backend/main.js root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no ./src/backend/db.js root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
     - name: Remove local tar file
       run: rm -f deploy.tar.gz
     - name: Cleanup SSH Keys
