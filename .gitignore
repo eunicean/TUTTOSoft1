@@ -1,3 +1,5 @@
 node_modules/
 ca-certificate.crt
 .env
+
+.scannerwork/
