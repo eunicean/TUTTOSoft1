@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
-
-
+import { DatePicker, TimePicker } from '@material-ui/pickers'; // Importar los componentes de Material-UI
 import '../css/Sessions.css';
-import '../css/Sidebar.css';
-import '../css/Navbar.css';
+import '../css/Seachtutor.css'; 
 
 function CreateSession() {
     const [newSession, setNewSession] = useState({
         subject: '',
-        date: '',
-        startHour: '',
-        endHour: '',
+        date: new Date(), // Cambia el formato a Date para los selectores
+        startHour: new Date(),
+        endHour: new Date(),
         mode: '',
-        studentEmail: ''  // Añadir campo de correo electrónico del estudiante
+        studentEmail: '' 
     });
-    const [studentUsername, setStudentUsername] = useState(''); 
+    const [studentUsername, setStudentUsername] = useState('');
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [courses, setCourses] = useState([]);
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         setNewSession({ ...newSession, [e.target.name]: e.target.value });
+    };
+
+    const handleDateChange = (date) => {
+        setNewSession({ ...newSession, date });
+    };
+
+    const handleStartHourChange = (startHour) => {
+        setNewSession({ ...newSession, startHour });
+    };
+
+    const handleEndHourChange = (endHour) => {
+        setNewSession({ ...newSession, endHour });
     };
 
     useEffect(() => {
@@ -36,12 +44,7 @@ function CreateSession() {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                if (Array.isArray(data)) {
-                    setCourses(data);
-                    console.log(setCourses)
-                } else {
-                    throw new Error('Data is not an array');
-                }
+                setCourses(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error('Failed to fetch courses:', error);
                 setError('Failed to load courses');
@@ -49,8 +52,6 @@ function CreateSession() {
         };
         fetchCourses();
     }, []);
-    
-    
 
     const handleEmailChange = async (e) => {
         const email = e.target.value;
@@ -74,14 +75,11 @@ function CreateSession() {
         }
     };
 
-
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create';
         setLoading(true);
-
         try {
-            const response = await fetch(url, {
+            const response = await fetch('http://localhost:5000/sessions/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -95,10 +93,9 @@ function CreateSession() {
             }
 
             const data = await response.json();
-            
             if (data.success) {
-                setNewSession({ subject: '', date: '', startHour: '', endHour: '', mode: '', studentEmail: '' });
-                navigate('/sessions'); // Navega de vuelta a la vista de sesiones
+                setNewSession({ subject: '', date: new Date(), startHour: new Date(), endHour: new Date(), mode: '', studentEmail: '' });
+                navigate('/sessions');
             } else {
                 throw new Error(data.message || 'Failed to create session');
             }
@@ -111,44 +108,45 @@ function CreateSession() {
     };
 
     return (
-        <div className="create-session-container">
-            {/* <Navbar /> */}
-            <h1>Crear Nueva Sesión</h1>
-            <div className={`create-session-form  ${isSidebarOpen ? 'shifted' : ''}`}>
-                <p>Cursos:</p>
-                <select name="subject" value={newSession.subject} onChange={handleInputChange}>
-                    <option value="">Selecciona un curso</option>
-                    {courses.map(course => (
-                        <option key={course.course_code} value={course.course_code}>{course.namecourse}</option>
-                    ))}
-                </select>
-                <p>Fecha de la sesión:</p>
-                <input type="date" name="date" value={newSession.date} onChange={handleInputChange} />
-                <p>Hora de inicio:</p>
-                <input type="time" name="startHour" value={newSession.startHour} onChange={handleInputChange} />
-                <p>Hora de finalización:</p>
-                <input type="time" name="endHour" value={newSession.endHour} onChange={handleInputChange} />
-                <p>Modalidad:</p>
-                <select className="select-container" name="mode" value={newSession.mode} onChange={handleInputChange}>
-                    <option value="">Selecciona la modalidad</option>
-                    <option value="VIRTUAL">VIRTUAL</option>
-                    <option value="PRESENCIAL">PRESENCIAL</option>
-                    <option value="AMBOS">AMBOS</option>
-                </select>
-                <p>Estudiante que recibirá la tutoría:</p>
-                <div className="student-email-container">
-                    <input 
-                        name="studentEmail" 
-                        value={newSession.studentEmail} 
-                        onChange={handleEmailChange} 
-                        placeholder="Correo del estudiante" 
-                    />
-                    <span>{studentUsername}</span>
+        <div className='outer-container-create'>
+            <div className={`sessions-container-create`}>
+                <h1>Crear Nueva Sesión</h1>
+                <div className={`create-session-form ${isSidebarOpen ? 'shifted' : ''}`}>
+                    <h4>Cursos:</h4>
+                    <select name="subject" value={newSession.subject} onChange={handleInputChange}>
+                        <option value="">Selecciona un curso</option>
+                        {courses.map(course => (
+                            <option key={course.course_code} value={course.course_code}>{course.namecourse}</option>
+                        ))}
+                    </select>
+                    <h4>Fecha de la sesión:</h4>
+                    <DatePicker value={newSession.date} onChange={handleDateChange} />
+                    <h4>Hora de inicio:</h4>
+                    <TimePicker value={newSession.startHour} onChange={handleStartHourChange} />
+                    <h4>Hora de finalización:</h4>
+                    <TimePicker value={newSession.endHour} onChange={handleEndHourChange} />
+                    <h4>Modalidad:</h4>
+                    <select name="mode" value={newSession.mode} onChange={handleInputChange}>
+                        <option value="">Selecciona la modalidad</option>
+                        <option value="VIRTUAL">VIRTUAL</option>
+                        <option value="PRESENCIAL">PRESENCIAL</option>
+                        <option value="AMBOS">AMBOS</option>
+                    </select>
+                    <h4>Estudiante que recibirá la tutoría:</h4>
+                    <div className="student-email-container">
+                        <input 
+                            name="studentEmail" 
+                            value={newSession.studentEmail} 
+                            onChange={handleEmailChange} 
+                            placeholder="Correo del estudiante" 
+                        />
+                        <span>{studentUsername}</span>
+                    </div>
+                    <button onClick={submitNewSession} disabled={loading}>
+                        {loading ? 'Creando...' : 'Crear Sesión'}
+                    </button>
+                    {error && <p className="error-message">{error}</p>}
                 </div>
-                <button onClick={submitNewSession} disabled={loading}>
-                    {loading ? 'Creando...' : 'Crear Sesión'}
-                </button>
-                {error && <p className="error-message">{error}</p>}
             </div>
         </div>
     );
