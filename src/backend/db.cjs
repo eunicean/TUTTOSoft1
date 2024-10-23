@@ -1,4 +1,4 @@
-const conn = require('./conn.js');
+const conn = require('./conn.cjs');
 
 // Función para buscar un usuario por email
 async function buscarUsuarioPorEmail(email) {

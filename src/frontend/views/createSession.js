@@ -39,7 +39,9 @@ function CreateSession() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch('https://209.126.125.63/api/courses');
+                const baseUrl = process.env.REACT_APP_API_URL || '';
+                const url = `${baseUrl}/api/courses`;
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -59,7 +61,9 @@ function CreateSession() {
 
         if (email) {
             try {
-                const response = await fetch(`https://209.126.125.63/api/get-username-by-email?email=${email}`);
+                const baseUrl = process.env.REACT_APP_API_URL || '';
+                const url = `${baseUrl}/api/get-username-by-email?email=${email}`;
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     setStudentUsername(data.username || 'Usuario no encontrado');
@@ -77,8 +81,11 @@ function CreateSession() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'https://209.126.125.63/api/sessions/create';
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/sessions/create`;
+
         setLoading(true);
+        
         try {
             const response = await fetch(url, {
                 method: 'POST',

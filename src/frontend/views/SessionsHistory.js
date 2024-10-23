@@ -17,7 +17,9 @@ function SessionsHistory(){
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('https://209.126.125.63/api/session-history');
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+
+        const url = new URL(`${baseUrl}/api/session-history`);
 
         try {
             const response = await fetch(url, {

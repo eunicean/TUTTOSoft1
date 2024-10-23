@@ -26,7 +26,9 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('https://209.126.125.63/api/courses');
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/courses`;
+        const response = await fetch(url);
         const data = await response.json();
         setCourses(data);  // Guardar los cursos obtenidos
       } catch (error) {
@@ -65,7 +67,9 @@ const TutorsPage = () => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await fetch('https://209.126.125.63/api/tutors');
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/tutors`;
+        const response = await fetch(url);
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({

@@ -32,7 +32,8 @@ const SessionVistaParaTutorOEstudiante = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `https://209.126.125.63/api/sessions/${sessionId}`; 
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/sessions/${sessionId}`; 
             // const url = `/api/session-info/${sessionId}`;   
             // no se cual de las dos es xd
 

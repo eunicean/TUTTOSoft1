@@ -16,7 +16,7 @@ const Chat = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get('https://209.126.125.63/api/profile', {
+      const response = await axios.get('/api/profile', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       if (response.data.success) {
@@ -29,7 +29,7 @@ const Chat = () => {
 
   const fetchChats = async () => {
     try {
-      const response = await axios.get('https://209.126.125.63/api/chats', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      const response = await axios.get('/api/chats', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
       if (response.data.success) {
         const uniqueChats = removeDuplicateChats(response.data.chats);
         setChats(uniqueChats);
@@ -68,7 +68,10 @@ const Chat = () => {
       setMessages([]); // Limpia los mensajes anteriores temporalmente
       setSelectedChat(chatId);
 
-      const response = await axios.get(`https://209.126.125.63/api/chats/${chatId}`, {
+      const baseUrl = process.env.REACT_APP_API_URL || '';
+      const url = `${baseUrl}/api/chats/${chatId}`;
+
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
@@ -85,13 +88,19 @@ const Chat = () => {
     }
   };
 
+
   const fetchTutorsOrStudents = async () => {
     if (!user.typeuser) return;
-    const endpoint = user.typeuser === '2' ? 'https://209.126.125.63/api/students' : 'https://209.126.125.63/api/tutors';
+
+    // Usa la URL base desde las variables de entorno
+    const baseUrl = process.env.REACT_APP_API_URL || '';
+    const endpoint = user.typeuser === '2' ? `${baseUrl}/api/students` : `${baseUrl}/api/tutors`;
+
     try {
       const response = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
+      
       if (user.typeuser === '2') {
         setStudents(response.data);
       } else {
@@ -101,6 +110,7 @@ const Chat = () => {
       console.error('Error al obtener la lista de tutores/estudiantes:', error);
     }
   };
+
 
   const checkExistingChat = (userId) => {
     return chats.find(chat => chat.otherUserId === userId);
@@ -115,9 +125,14 @@ const Chat = () => {
       setTimeout(() => setStatusMessage(''), 2000);
     } else {
       try {
-        const response = await axios.post('https://209.126.125.63/api/send-message', { id_recipient: userId, message: '' }, {
+        // Usa la URL base desde las variables de entorno
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/send-message`;
+
+        const response = await axios.post(url, { id_recipient: userId, message: '' }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+
         if (response.data.success) {
           await fetchChats();
           setSelectedChat(response.data.chatId);
@@ -129,15 +144,20 @@ const Chat = () => {
         setStatusMessage('Error al iniciar el chat');
       }
     }
-  };
+};
 
   const handleSendMessage = async () => {
     if (inputMessage.trim() !== '' && selectedChat !== null) {
       try {
+        // Obtén la URL base desde las variables de entorno
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/send-message`;
+
         const recipientId = chats.find(chat => chat.chatId === selectedChat)?.otherUserId;
-        const response = await axios.post('https://209.126.125.63/api/send-message', { id_recipient: recipientId, message: inputMessage }, {
+        const response = await axios.post(url, { id_recipient: recipientId, message: inputMessage }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+        
         if (response.data.success) {
           const newMessage = { content: inputMessage, senderUsername: user.username, senderId: user.id };
           setMessages([...messages, newMessage]);
@@ -152,6 +172,7 @@ const Chat = () => {
       }
     }
   };
+
 
   useEffect(() => {
     fetchUserProfile();

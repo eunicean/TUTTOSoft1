@@ -3,13 +3,13 @@ const {
     crearUsuario, 
     obtenerTipoUsuarioPorId, 
     obtenerSesionesPlanificadasPorPersona 
-  } = require('/home/sf/db.js');
+  } = require('./db.cjs');
   
   const express = require('express');
   const cors = require('cors');
   const jwt = require('jsonwebtoken');
   const bcrypt = require('bcrypt');
-  const pool = require('./conn.js');
+  const pool = require('./conn.cjs');
 
 console.log("main si se ejecuta");
 
@@ -899,7 +899,7 @@ app.post('/api/send-message', authenticateToken, async (req, res) => {
 });
 
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 module.exports = app;

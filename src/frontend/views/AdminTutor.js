@@ -42,7 +42,10 @@ const TutorsPage = ({ isAdmin }) => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await fetch('https://209.126.125.63/api/tutors');
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/tutors`;
+
+        const response = await fetch(url);
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({

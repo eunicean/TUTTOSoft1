@@ -26,7 +26,9 @@ function Login() {
     }
 
     try {
-      const response = await fetch('https://209.126.125.63/api/login', {
+      const baseUrl = process.env.REACT_APP_API_URL || '';
+      const url = `${baseUrl}/api/login`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

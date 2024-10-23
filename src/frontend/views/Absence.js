@@ -19,7 +19,8 @@ function CancelSessionView({ Idsession }) {
         }
 
         try {
-            const response = await fetch(`https://209.126.125.63/api/report-absence/${sessionId}`, {
+            const baseUrl = process.env.REACT_APP_API_URL || '';  
+            const response = await fetch(`${baseUrl}/api/report-absence/${sessionId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
