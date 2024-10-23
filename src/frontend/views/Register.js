@@ -79,12 +79,12 @@ const Register = () => {
             placeholder="Confirm Password"
             required
           />
-          <div className="select-container">
+          {/* <div className="select-container">
             <select value={role} onChange={e => setRole(e.target.value)}>
               <option value="student">Student</option>
               <option value="tutor">Tutor</option>
             </select>
-          </div>
+          </div> */}
           {error && <span className="error">{error}</span>}
           <Button type="submit">Register</Button>
         </form>

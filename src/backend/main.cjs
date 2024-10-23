@@ -167,7 +167,7 @@ app.post('/api/register', async (req, res) => {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = role === 'student' ? 1 : 2;
+    const typeuser = 1;
 
     try {
         const connection = await pool.getConnection();
