@@ -743,27 +743,26 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
 
     try {
         const chatAndMessagesQuery = `
-            SELECT 
-                m.id AS messageId,
-                m.message AS content,
-                m.time_stamp AS timeSent,
-                u.username AS senderUsername,  -- Asegúrate de obtener el nombre del remitente
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient
-            FROM 
-                chats_nueva cn
-            JOIN 
-                messages_nueva m ON cn.id = m.id_chat
-            JOIN 
-                user u ON m.id_sender = u.id
-            WHERE 
-                cn.id = ?
-            ORDER BY 
-                m.time_stamp ASC;  -- Cambié a ASC para mostrar los mensajes en orden cronológico
-        `;
+  SELECT 
+    m.id AS messageId,
+    m.message AS content,
+    m.time_stamp AS timeSent,
+    u.username AS senderUsername,
+    u.id AS senderId  -- Asegúrate de incluir el ID correcto del remitente
+  FROM 
+    chats_nueva cn
+  JOIN 
+    messages_nueva m ON cn.id = m.id_chat
+  JOIN 
+    user u ON m.id_sender = u.id  -- Relacionar el remitente con el usuario
+  WHERE 
+    cn.id = ?
+  ORDER BY 
+    m.time_stamp ASC;
+`;
 
-        const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
+const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
+
 
         if (results.length > 0) {
             const formattedMessages = results.map(result => ({
@@ -792,7 +791,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id;  // Extraer el ID del usuario autenticado
 
     try {
-        // En la API que trae los chats, asegúrate de devolver correctamente el 'otherUserId'
+        // Aquí es donde debes asegurar que se devuelva el 'otherUserId' y 'otherUsername' correctamente
         const chatsQuery = `
         SELECT 
             cn.id AS chatId,
@@ -827,7 +826,6 @@ app.get('/chats', authenticateToken, async (req, res) => {
             cn.id_sender = ? OR cn.id_recipient = ?
         ORDER BY 
             m.max_time_stamp DESC;
-
       `;
 
       const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
@@ -851,6 +849,7 @@ app.get('/chats', authenticateToken, async (req, res) => {
       res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
+
 
   
 
