@@ -13,6 +13,13 @@ function SessionsHistory(){
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     const fetchSessionsHistory = async () => {
         setLoading(true);
         setError(null);

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
 import '../css/Absence.css'; // Importamos el CSS
@@ -9,6 +9,15 @@ function CancelSessionView({ Idsession }) {
     const [message, setMessage] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { sessionId } = useParams();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');

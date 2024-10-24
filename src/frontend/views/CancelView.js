@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Sidebar from '../components/Sidebar.js';
 import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -12,6 +12,13 @@ function CancelView() {
     const [showErrorModal, setShowErrorModal] = useState(false); // Estado para controlar el modal de error
     const [loading, setLoading] = useState(false); // Añadir estado de carga
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');

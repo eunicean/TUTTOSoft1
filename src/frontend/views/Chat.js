@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/Chat.css';
+import { useNavigate } from 'react-router-dom'; 
+
 
 const Chat = () => {
   const [chats, setChats] = useState([]);
@@ -11,8 +13,17 @@ const Chat = () => {
   const [user, setUser] = useState({});
   const [tutors, setTutors] = useState([]);
   const [students, setStudents] = useState([]);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false); // Nuevo estado para indicar que los mensajes están cargando
-  const cachedMessages = new Map(); // Para guardar conversaciones en caché
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false); 
+  const cachedMessages = new Map(); 
+
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);  
 
   const fetchUserProfile = async () => {
     try {

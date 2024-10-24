@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar.js';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import { useNavigate } from 'react-router-dom'; 
+
 
 function Sessions() {
     const [sessions, setSessions] = useState([]);
@@ -13,6 +15,15 @@ function Sessions() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
     const [newSession, setNewSession] = useState({ subject: '', date: '', time: '' });
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);

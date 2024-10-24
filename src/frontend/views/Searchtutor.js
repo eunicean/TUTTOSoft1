@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Seachtutor.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const TutorCard = ({ name, subjects, year, rating }) => {
   return (
@@ -22,6 +23,16 @@ const TutorCard = ({ name, subjects, year, rating }) => {
 
 const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   const [courses, setCourses] = useState([]);
+
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          navigate('/login');
+      }
+  }, [navigate]);
 
   useEffect(() => {
     const fetchCourses = async () => {

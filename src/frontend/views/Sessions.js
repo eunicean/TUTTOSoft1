@@ -18,6 +18,13 @@ function Sessions() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
             const baseUrl = process.env.REACT_APP_API_URL || '';
