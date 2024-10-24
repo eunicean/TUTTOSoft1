@@ -46,9 +46,9 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "cross-env PORT=5173 react-scripts start",
-    "server": "nodemon src/backend/main.js",
+    "server": "nodemon src/backend/main.cjs",
     "build": "CI=false react-scripts build",
-    "test": "cypress run",
+    "test": "cypress open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

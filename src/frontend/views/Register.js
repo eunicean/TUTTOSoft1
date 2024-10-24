@@ -24,7 +24,9 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      const baseUrl = process.env.REACT_APP_API_URL || '';
+      const url = `${baseUrl}/api/register`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, role })

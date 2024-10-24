@@ -16,7 +16,8 @@ function TestingView() {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `http://localhost:5000/session-info/${sessionId}`;
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/session-info/${sessionId}`;
 
             try {
                 const response = await fetch(url, {

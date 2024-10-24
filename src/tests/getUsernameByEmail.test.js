@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../backend/main.js';  // Importa correctamente el servidor Express
+import { app } from '../backend/main.cjs';  // Importa correctamente el servidor Express
 
 describe('GET /get-username-by-email', () => {
   let server;
