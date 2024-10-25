@@ -18,9 +18,17 @@ function Sessions() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'https://209.126.125.63/api/profile';
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/profile`;
 
             try {
                 const response = await fetch(url, {
@@ -53,24 +61,27 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('https://209.126.125.63/api/sessions');
-    
+        
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        let url = `${baseUrl}/api/sessions`;
+        
         if (queryPeriodo) {
-            url.searchParams.append('periodo', queryPeriodo);
+            url += `?periodo=${queryPeriodo}`;
         }
-
+    
         try {
-            const response = await fetch(url.toString(), {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
             const data = await response.json();
             const transformedSessions = data.sessions.map((session) => ({
                 id: session.id,
@@ -80,6 +91,7 @@ function Sessions() {
                 subject: session.namecourse,
                 mode: session.mode
             }));
+            
             setSessions(transformedSessions);
         } catch (error) {
             console.error("Could not fetch sessions:", error);
@@ -88,6 +100,7 @@ function Sessions() {
             setLoading(false);
         }
     };
+    
 
     useEffect(() => {
         fetchSessions();

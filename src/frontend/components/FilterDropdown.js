@@ -8,7 +8,7 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('https://209.126.125.63/api/courses');
+        const response = await fetch('/api/courses');
         const data = await response.json();
         setCourses(data); // Guardar los cursos obtenidos
       } catch (error) {

@@ -13,9 +13,17 @@ function ProfileView() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'https://209.126.125.63/api/profile';
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/profile`
 
             try {
                 const response = await fetch(url, {
@@ -50,7 +58,8 @@ function ProfileView() {
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        const url = 'https://209.126.125.63/api/profile/update';
+        const baseUrl = process.env.REACT_APP_API_URL || '';
+        const url = `${baseUrl}/api/profile/update`;
 
         try {
             const response = await fetch(url, {

@@ -1,6 +1,3 @@
-// src/Vista para verlo desde el punto de vista de tutor, donde sale informacion del
-// estudiante a quien le este dando clases...
-
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/SessionVistaParaTutor.css'
@@ -17,7 +14,14 @@ const SessionVistaParaTutorOEstudiante = () => {
     const [error, setError] = useState(null);
     const [isTutor, setIsTutor] = useState(false); // Nueva variable para verificar si es tutor o estudiante
     const navigate = useNavigate();
-    const valorEstrellas = 3; // de la calificación en la base de datos
+    const valorEstrellas = 3; 
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     // Funciones de navegación
     const goRating = (id) => {
@@ -32,7 +36,8 @@ const SessionVistaParaTutorOEstudiante = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `https://209.126.125.63/api/sessions/${sessionId}`; 
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/sessions/${sessionId}`; 
             // const url = `/api/session-info/${sessionId}`;   
             // no se cual de las dos es xd
 

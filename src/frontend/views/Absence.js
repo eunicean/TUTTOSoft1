@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
 import '../css/Absence.css'; // Importamos el CSS
@@ -10,6 +10,15 @@ function CancelSessionView({ Idsession }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { sessionId } = useParams();
 
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
 
@@ -19,7 +28,8 @@ function CancelSessionView({ Idsession }) {
         }
 
         try {
-            const response = await fetch(`https://209.126.125.63/api/report-absence/${sessionId}`, {
+            const baseUrl = process.env.REACT_APP_API_URL || '';  
+            const response = await fetch(`${baseUrl}/api/report-absence/${sessionId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

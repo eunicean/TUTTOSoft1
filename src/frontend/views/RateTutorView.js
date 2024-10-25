@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'; // Para obtener sessionID desde la URL
+import React, { useState,useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // Para obtener sessionID desde la URL
 import Sidebar from '../components/Sidebar.js';
 import '../css/RateTutorView.css'; // Ajusta la ruta según la estructura de tus carpetas
 
@@ -9,9 +9,18 @@ function RateTutorView({ tutorId }) {
     const [message, setMessage] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [comments, setComments] = useState('');
-    const { sessionId } = useParams(); // Obtener sessionID desde la URL
+    const { sessionId } = useParams(); 
 
-    // Maneja el clic en una estrella y actualiza la calificación
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     const handleStarClick = (value) => {
         setRating(value);
     };
@@ -21,7 +30,9 @@ function RateTutorView({ tutorId }) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`https://209.126.125.63/api/grade-session/${sessionId}`, {
+            const baseUrl = process.env.REACT_APP_API_URL || '';
+            const url = `${baseUrl}/api/grade-session/${sessionId}`;
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

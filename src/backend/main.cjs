@@ -3,13 +3,13 @@ const {
     crearUsuario, 
     obtenerTipoUsuarioPorId, 
     obtenerSesionesPlanificadasPorPersona 
-  } = require('/home/sf/db.js');
+  } = require('./db.cjs');
   
   const express = require('express');
   const cors = require('cors');
   const jwt = require('jsonwebtoken');
   const bcrypt = require('bcrypt');
-  const pool = require('./conn.js');
+  const pool = require('./conn.cjs');
 
 console.log("main si se ejecuta");
 
@@ -81,7 +81,6 @@ app.get('/api/get-username-by-email', async (req, res) => {
 // Login endpoint
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -91,16 +90,23 @@ app.post('/api/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            // Ensure to select the 'typeuser' field
-            const [results] = await connection.query('SELECT id, password, typeuser FROM user WHERE email = ?', [email]);
+            // Asegúrate de seleccionar los campos necesarios de la tabla user y year
+            const [results] = await connection.query(
+                `SELECT u.id, u.password, u.typeuser, y.year 
+                 FROM user u 
+                 LEFT JOIN year y ON u.id = y.student_id 
+                 WHERE u.email = ?`, 
+                [email]
+            );
 
             if (results.length > 0) {
                 const user = results[0];
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
                 if (passwordMatch) {
+                    // Incluye el campo 'year' en el token
                     const token = jwt.sign(
-                        { id: user.id, typeuser: user.typeuser },  
+                        { id: user.id, typeuser: user.typeuser, year: user.year },  
                         secretKey,
                         { expiresIn: '1h' }
                     );
@@ -158,16 +164,14 @@ app.get('/api/users/sessions', async (req, res) => {
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {
-    //commmit de prueba
-    const { username, email, password, role } = req.body;
-    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    const { username, email, password, role, year } = req.body; // Asegúrate de incluir el año en el request body.
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = 1;
+    const typeuser = 1; // Asumiendo que todos son registrados como estudiantes (typeuser = 1)
 
     try {
         const connection = await pool.getConnection();
@@ -187,7 +191,12 @@ app.post('/api/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            // console.log('User registered successfully:', result.insertId);
+            // Inserta el student_id (que es el user.id) en la tabla year
+            await connection.query(
+                'INSERT INTO year (student_id, year) VALUES (?, ?)',
+                [nextId, year]  // Asume que 'year' es parte del body request.
+            );
+
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -197,6 +206,7 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 app.get('/api/profile', authenticateToken, async (req, res) => {
@@ -745,27 +755,26 @@ app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
 
     try {
         const chatAndMessagesQuery = `
-            SELECT 
-                m.id AS messageId,
-                m.message AS content,
-                m.time_stamp AS timeSent,
-                u.username AS senderUsername,  -- Asegúrate de obtener el nombre del remitente
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient
-            FROM 
-                chats_nueva cn
-            JOIN 
-                messages_nueva m ON cn.id = m.id_chat
-            JOIN 
-                user u ON m.id_sender = u.id
-            WHERE 
-                cn.id = ?
-            ORDER BY 
-                m.time_stamp ASC;  -- Cambié a ASC para mostrar los mensajes en orden cronológico
-        `;
+  SELECT 
+    m.id AS messageId,
+    m.message AS content,
+    m.time_stamp AS timeSent,
+    u.username AS senderUsername,
+    u.id AS senderId  -- Asegúrate de incluir el ID correcto del remitente
+  FROM 
+    chats_nueva cn
+  JOIN 
+    messages_nueva m ON cn.id = m.id_chat
+  JOIN 
+    user u ON m.id_sender = u.id  -- Relacionar el remitente con el usuario
+  WHERE 
+    cn.id = ?
+  ORDER BY 
+    m.time_stamp ASC;
+`;
 
-        const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
+const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
+
 
         if (results.length > 0) {
             const formattedMessages = results.map(result => ({
@@ -796,7 +805,7 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
   
     try {
-        // En la API que trae los chats, asegúrate de devolver correctamente el 'otherUserId'
+        // Aquí es donde debes asegurar que se devuelva el 'otherUserId' y 'otherUsername' correctamente
         const chatsQuery = `
         SELECT 
             cn.id AS chatId,
@@ -831,7 +840,6 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
             cn.id_sender = ? OR cn.id_recipient = ?
         ORDER BY 
             m.max_time_stamp DESC;
-
       `;
 
       const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
@@ -855,6 +863,7 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
       res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 });
+
 
   
 
@@ -899,7 +908,7 @@ app.post('/api/send-message', authenticateToken, async (req, res) => {
 });
 
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 module.exports = app;

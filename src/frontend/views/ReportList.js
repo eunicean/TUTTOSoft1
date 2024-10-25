@@ -1,10 +1,17 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import '../css/ReportList.css'; // Estilos específicos para esta vista
 
 
 const ReportList = () => {
   const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
 
   const tutors = [
