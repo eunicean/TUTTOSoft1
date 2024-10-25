@@ -59,28 +59,24 @@ html, body {
     overflow: hidden;
   }
  
-  .chat-messages {
-    background-color: #F5EEDC;
-    padding: 20px;
-    border-radius: 10px;
-    flex-grow: 1;
-    overflow-y: auto; /* Desplazamiento vertical solo si los mensajes son demasiados */
-    max-height: calc(100vh - 150px); /* Ajustar altura disponible para evitar desplazamiento */
-  }
- 
   .chat-message {
+    display: inline-block; /* Hace que la burbuja se ajuste al contenido */
+    max-width: 60%; /* Limita el ancho máximo de la burbuja, puedes ajustarlo */
+    background-color: #f1f1f1; /* Color de fondo de la burbuja */
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 10px;
     margin-bottom: 10px;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 18px; /* Tamaño de fuente más grande para los mensajes del chat */
   }
- 
-  /* Estilo para los mensajes del usuario */
+  
   .user-message {
-    background-color: #C19A6B; /* Color claro para el mensaje del usuario */
-    color: white;
-    text-align: right;
+    background-color: #d1e7dd; /* Color para los mensajes del usuario */
+    align-self: flex-end; /* Alinear los mensajes del usuario a la derecha */
   }
+  
+  .other-message {
+    background-color: #ebcaaf; /* Color para los mensajes de los demás */
+    align-self: flex-start; /* Alinear los mensajes de los demás a la izquierda */
+  }  
  
   /* Estilo para los mensajes del estudiante X (café oscuro) */
   .student-message {

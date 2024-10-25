@@ -167,7 +167,7 @@ app.post('/api/register', async (req, res) => {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = role === 'student' ? 1 : 2;
+    const typeuser = 1;
 
     try {
         const connection = await pool.getConnection();
@@ -744,32 +744,41 @@ app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
-        const chatInfoQuery = `
+        const chatAndMessagesQuery = `
             SELECT 
+                m.id AS messageId,
+                m.message AS content,
+                m.time_stamp AS timeSent,
+                u.username AS senderUsername,  -- Asegúrate de obtener el nombre del remitente
                 cn.id AS chatId,
                 cn.id_sender,
-                cn.id_recipient,
-                cn.message,
-                cn.time_stamp
+                cn.id_recipient
             FROM 
                 chats_nueva cn
+            JOIN 
+                messages_nueva m ON cn.id = m.id_chat
+            JOIN 
+                user u ON m.id_sender = u.id
             WHERE 
                 cn.id = ?
             ORDER BY 
-                cn.time_stamp DESC;
+                m.time_stamp ASC;  -- Cambié a ASC para mostrar los mensajes en orden cronológico
         `;
 
-        const [messages] = await pool.query(chatInfoQuery, [chatId]);
+        const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
 
-        if (messages.length > 0) {
-            const formattedMessages = messages.map(message => ({
-                messageId: message.messageId,
-                chatId: message.chatId,
-                senderId: message.id_sender,
-                senderUsername: message.senderUsername,
-                content: message.message,
-                timeSent: message.time_stamp
+        if (results.length > 0) {
+            const formattedMessages = results.map(result => ({
+                messageId: result.messageId,
+                chatId: result.chatId,
+                senderId: result.id_sender,
+                senderUsername: result.senderUsername,
+                content: result.content,
+                timeSent: result.timeSent
             }));
+
+            // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
+            console.log('Mensajes formateados que se enviarán:', formattedMessages);
 
             res.json({ success: true, chatId: chatId, messages: formattedMessages });
         } else {
@@ -787,61 +796,66 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Extraer el ID del usuario autenticado
   
     try {
-      const chatsQuery = `
+        // En la API que trae los chats, asegúrate de devolver correctamente el 'otherUserId'
+        const chatsQuery = `
         SELECT 
             cn.id AS chatId,
-            cn.id_sender,
-            cn.id_recipient,
+            CASE 
+                WHEN cn.id_sender = ? THEN cn.id_recipient
+                ELSE cn.id_sender
+            END AS otherUserId,
+            CASE 
+                WHEN cn.id_sender = ? THEN u2.username
+                ELSE u1.username
+            END AS otherUsername,
             m.message AS lastMessage,
-            m.time_stamp AS lastMessageTime
+            m.max_time_stamp AS lastMessageTime
         FROM 
             chats_nueva cn
-        JOIN 
+        LEFT JOIN 
+            user u1 ON cn.id_sender = u1.id
+        LEFT JOIN 
+            user u2 ON cn.id_recipient = u2.id
+        LEFT JOIN 
             (
                 SELECT 
-                    m1.id_chat,
-                    m1.message,
-                    m1.time_stamp
+                    id_chat,
+                    MAX(time_stamp) AS max_time_stamp,
+                    SUBSTRING_INDEX(GROUP_CONCAT(message ORDER BY time_stamp DESC), ',', 1) AS message
                 FROM 
-                    messages_nueva m1
-                JOIN 
-                    (
-                        SELECT 
-                            id_chat, 
-                            MAX(time_stamp) AS max_time
-                        FROM 
-                            messages_nueva
-                        GROUP BY 
-                            id_chat
-                    ) m2 ON m1.id_chat = m2.id_chat AND m1.time_stamp = m2.max_time
+                    messages_nueva
+                GROUP BY 
+                    id_chat
             ) m ON cn.id = m.id_chat
         WHERE 
             cn.id_sender = ? OR cn.id_recipient = ?
         ORDER BY 
-            m.time_stamp DESC;
+            m.max_time_stamp DESC;
 
       `;
-  
-      const [chats] = await pool.query(chatsQuery, [userId, userId]);
+
+      const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
   
       if (chats.length > 0) {
         const chatList = chats.map(chat => ({
           chatId: chat.chatId,
-          otherUsername: chat.otherUsername,
           otherUserId: chat.otherUserId,
+          otherUsername: chat.otherUsername,
           lastMessage: chat.lastMessage,
           lastMessageTime: chat.lastMessageTime
         }));
-  
+
         res.json({ success: true, chats: chatList });
+        console.log(chatList);
       } else {
         res.json({ success: true, message: "No chats found", chats: [] });
       }
     } catch (error) {
       console.error('Database error:', error);
-      res.status(500).json({ success: false, message: "Internal server error" });
+      res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
-  });
+});
+
   
 
 app.post('/api/send-message', authenticateToken, async (req, res) => {
@@ -877,6 +891,7 @@ app.post('/api/send-message', authenticateToken, async (req, res) => {
         await pool.query(insertMessageQuery, [chatId, id_sender, message]);
 
         res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
+        console.log("ID SENDER", id_sender,"CHAT ID",chatId, "MESSAGE", message)
     } catch (error) {
         console.error('Error al enviar el mensaje:', error);
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
