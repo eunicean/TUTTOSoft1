@@ -47,7 +47,7 @@ jobs:
       run: tar -czvf deploy.tar.gz build
     - name: Deploy to Server
       run: |
-        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz ./src/backend/main.cjs ./src/backend/db.cjs root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
         
     - name: Remove local tar file
       run: rm -f deploy.tar.gz
