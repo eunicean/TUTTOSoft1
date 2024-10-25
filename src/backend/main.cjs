@@ -81,7 +81,6 @@ app.get('/api/get-username-by-email', async (req, res) => {
 // Login endpoint
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -91,16 +90,23 @@ app.post('/api/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            // Ensure to select the 'typeuser' field
-            const [results] = await connection.query('SELECT id, password, typeuser FROM user WHERE email = ?', [email]);
+            // Asegúrate de seleccionar los campos necesarios de la tabla user y year
+            const [results] = await connection.query(
+                `SELECT u.id, u.password, u.typeuser, y.year 
+                 FROM user u 
+                 LEFT JOIN year y ON u.id = y.student_id 
+                 WHERE u.email = ?`, 
+                [email]
+            );
 
             if (results.length > 0) {
                 const user = results[0];
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
                 if (passwordMatch) {
+                    // Incluye el campo 'year' en el token
                     const token = jwt.sign(
-                        { id: user.id, typeuser: user.typeuser },  
+                        { id: user.id, typeuser: user.typeuser, year: user.year },  
                         secretKey,
                         { expiresIn: '1h' }
                     );
@@ -158,16 +164,14 @@ app.get('/api/users/sessions', async (req, res) => {
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {
-    //commmit de prueba
-    const { username, email, password, role } = req.body;
-    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+    const { username, email, password, role, year } = req.body; // Asegúrate de incluir el año en el request body.
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = 1;
+    const typeuser = 1; // Asumiendo que todos son registrados como estudiantes (typeuser = 1)
 
     try {
         const connection = await pool.getConnection();
@@ -187,7 +191,12 @@ app.post('/api/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            // console.log('User registered successfully:', result.insertId);
+            // Inserta el student_id (que es el user.id) en la tabla year
+            await connection.query(
+                'INSERT INTO year (student_id, year) VALUES (?, ?)',
+                [nextId, year]  // Asume que 'year' es parte del body request.
+            );
+
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -197,6 +206,7 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 app.get('/api/profile', authenticateToken, async (req, res) => {
