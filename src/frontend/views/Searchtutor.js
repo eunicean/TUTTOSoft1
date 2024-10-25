@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Seachtutor.css';
 import { useNavigate } from 'react-router-dom'; 
+import baseUrl from '../../config.js';
 
 const TutorCard = ({ name, subjects, year, rating }) => {
   return (
@@ -37,7 +38,7 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = `${baseUrl}/api/courses`;
         const response = await fetch(url);
         const data = await response.json();
@@ -78,7 +79,7 @@ const TutorsPage = () => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = `${baseUrl}/api/tutors`;
         const response = await fetch(url);
         const data = await response.json();

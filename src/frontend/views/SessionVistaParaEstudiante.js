@@ -5,6 +5,7 @@ import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
+import baseUrl from '../../config.js';
 
 const SessionVistaParaTutorOEstudiante = () => {
     const { sessionId } = useParams();
@@ -25,7 +26,7 @@ const SessionVistaParaTutorOEstudiante = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const baseUrl = process.env.REACT_APP_API_URL || '';
+            
             const url = `${baseUrl}/api/sessions/${sessionId}`;
 
             try {

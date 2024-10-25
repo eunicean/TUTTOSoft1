@@ -6,7 +6,7 @@ import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import { useNavigate } from 'react-router-dom'; 
-
+import baseUrl from '../../config.js';
 
 function Sessions() {
     const [sessions, setSessions] = useState([]);
@@ -35,7 +35,7 @@ function Sessions() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = `${baseUrl}/api/sessions/create`; // Adjust the URL as necessary
 
         try {
@@ -69,7 +69,7 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = new URL(`${baseUrl}/api/sessions`);
 
         if (queryPeriodo) {

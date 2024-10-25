@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/Chat.css';
 import { useNavigate } from 'react-router-dom'; 
-
+import baseUrl from '../../config.js';
 
 const Chat = () => {
   const [chats, setChats] = useState([]);
@@ -86,9 +86,8 @@ function removeDuplicateChats(chats) {
       try {
         setIsLoadingMessages(true);
         setMessages([]);  // Limpiar los mensajes actuales
-        setSelectedChat(chatId);
-
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        setSelectedChat(chatId);  
+        console.log(baseUrl);
         const url = `${baseUrl}/api/chats/${chatId}`;
 
         const response = await axios.get(url, {
@@ -113,7 +112,6 @@ function removeDuplicateChats(chats) {
     if (!user.typeuser) return;
 
     // Usa la URL base desde las variables de entorno
-    const baseUrl = process.env.REACT_APP_API_URL || '';
     const endpoint = user.typeuser === '2' ? `${baseUrl}/api/students` : `${baseUrl}/api/tutors`;
 
     try {
@@ -146,7 +144,6 @@ function removeDuplicateChats(chats) {
     } else {
       try {
         // Usa la URL base desde las variables de entorno
-        const baseUrl = process.env.REACT_APP_API_URL || '';
         const url = `${baseUrl}/api/send-message`;
 
         const response = await axios.post(url, { id_recipient: userId, message: '' }, {
@@ -170,7 +167,6 @@ function removeDuplicateChats(chats) {
     if (inputMessage.trim() !== '' && selectedChat !== null) {
       try {
         // Obtén la URL base desde las variables de entorno
-        const baseUrl = process.env.REACT_APP_API_URL || '';
         const url = `${baseUrl}/api/send-message`;
 
         const recipientId = chats.find(chat => chat.chatId === selectedChat)?.otherUserId;

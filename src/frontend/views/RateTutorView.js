@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // Para obtener sessionID desde la URL
 import Sidebar from '../components/Sidebar.js';
 import '../css/RateTutorView.css'; // Ajusta la ruta según la estructura de tus carpetas
+import baseUrl from '../../config.js';
 
 function RateTutorView({ tutorId }) {
     // Estados para manejar la calificación, mensaje, apertura de la barra lateral y comentarios
@@ -30,7 +31,7 @@ function RateTutorView({ tutorId }) {
         const token = localStorage.getItem('token');
 
         try {
-            const baseUrl = process.env.REACT_APP_API_URL || '';
+            
             const url = `${baseUrl}/api/grade-session/${sessionId}`;
             const response = await fetch(url, {
                 method: 'POST',

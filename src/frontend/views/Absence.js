@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
-import '../css/Absence.css'; // Importamos el CSS
+import '../css/Absence.css'; 
+import baseUrl from '../../config.js';
+
 
 function CancelSessionView({ Idsession }) {
     const [reason, setReason] = useState('');
@@ -28,7 +30,6 @@ function CancelSessionView({ Idsession }) {
         }
 
         try {
-            const baseUrl = process.env.REACT_APP_API_URL || '';  
             const response = await fetch(`${baseUrl}/api/report-absence/${sessionId}`, {
                 method: 'POST',
                 headers: {

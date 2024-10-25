@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import baseUrl from '../../config.js';
 
 function Sessions() {
     const [sessions, setSessions] = useState([]);
@@ -27,7 +28,7 @@ function Sessions() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const baseUrl = process.env.REACT_APP_API_URL || '';
+            
             const url = `${baseUrl}/api/profile`;
 
             try {
@@ -62,7 +63,7 @@ function Sessions() {
         setError(null);
         const token = localStorage.getItem('token');
         
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         let url = `${baseUrl}/api/sessions`;
         
         if (queryPeriodo) {

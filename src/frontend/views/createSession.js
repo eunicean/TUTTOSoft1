@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.js';
 import Navbar from '../components/Navbar.js';
-
+import baseUrl from '../../config.js';
 
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
@@ -31,7 +31,6 @@ function CreateSession() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const baseUrl = process.env.REACT_APP_API_URL || '';
                 const url = `${baseUrl}/api/courses`;
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -60,7 +59,7 @@ function CreateSession() {
 
         if (email) {
             try {
-                const baseUrl = process.env.REACT_APP_API_URL || '';
+                
                 const url = `${baseUrl}/api/get-username-by-email?email=${email}`;
                 const response = await fetch(url);
                 if (response.ok) {
@@ -81,7 +80,7 @@ function CreateSession() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = `${baseUrl}/api/sessions/create`;
 
         setLoading(true);

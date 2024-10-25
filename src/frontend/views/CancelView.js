@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import Sidebar from '../components/Sidebar.js';
 import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import baseUrl from '../../config.js';
 
 function CancelView() {
     const { sessionId } = useParams();
@@ -22,7 +23,6 @@ function CancelView() {
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
         const url = `${baseUrl}/api/cancel-session/${sessionId}`;
         setLoading(true);
 

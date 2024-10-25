@@ -4,6 +4,7 @@ import Header from '../components/Header.js';
 import Button from '../components/Button.js';
 import Footer from '../components/Footer.js';
 import { useNavigate } from 'react-router-dom'; 
+import baseUrl from '../../config.js';
 
 // Componente de Entrada personalizado
 const Input = ({ type, placeholder, value, onChange }) => (
@@ -26,7 +27,7 @@ function Login() {
     }
 
     try {
-      const baseUrl = process.env.REACT_APP_API_URL || '';
+      
       const url = `${baseUrl}/api/login`;
       const response = await fetch(url, {
         method: 'POST',

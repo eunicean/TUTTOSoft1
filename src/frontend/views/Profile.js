@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
+import baseUrl from '../../config.js';
 
 function ProfileView() {
     const [user, setUser] = useState({});
@@ -22,7 +23,7 @@ function ProfileView() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const baseUrl = process.env.REACT_APP_API_URL || '';
+            
             const url = `${baseUrl}/api/profile`
 
             try {
@@ -58,7 +59,7 @@ function ProfileView() {
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
         const url = `${baseUrl}/api/profile/update`;
 
         try {

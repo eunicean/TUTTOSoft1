@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FilterDropdown from '../components/FilterDropdown.js'; 
 import '../css/AdminTutor.css'; 
+import baseUrl from '../../config.js';
 
 const TutorCard = ({ name, subjects, year, rating, isAdmin, handleReportClick }) => {
   return (
@@ -49,7 +50,6 @@ const TutorsPage = ({ isAdmin }) => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const baseUrl = process.env.REACT_APP_API_URL || '';
         const url = `${baseUrl}/api/tutors`;
 
         const response = await fetch(url);

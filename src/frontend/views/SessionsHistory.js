@@ -6,13 +6,14 @@ import HistoryCard from '../components/HistoryCard.js'; // Importa el componente
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/Historial.css';
+import baseUrl from '../../config.js';
 
 function SessionsHistory(){
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -24,7 +25,7 @@ function SessionsHistory(){
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const baseUrl = process.env.REACT_APP_API_URL || '';
+        
 
         const url = new URL(`${baseUrl}/api/session-history`);
 

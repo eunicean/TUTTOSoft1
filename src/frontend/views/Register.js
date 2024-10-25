@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Button from '../components/Button.js';
 import Footer from '../components/Footer.js';
-
+import baseUrl from '../../config.js';
 import '../css/Register.css';
 
 const Register = () => {
@@ -24,7 +24,7 @@ const Register = () => {
     setError('');
 
     try {
-      const baseUrl = process.env.REACT_APP_API_URL || '';
+      
       const url = `${baseUrl}/api/register`;
       const response = await fetch(url, {
         method: 'POST',
