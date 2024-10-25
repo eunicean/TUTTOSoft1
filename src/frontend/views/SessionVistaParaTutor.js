@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/SessionVistaParaTutor.css'
-import Header from '../components/HeaderYmenu.js';
+// import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
 import baseUrl from '../../config.js';
 
 const SessionVistaParaTutorOEstudiante = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
-import Sidebar from '../components/Sidebar.js';
+// import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';

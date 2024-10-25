@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SessionCard from '../components/Card.js';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
 import { useNavigate } from 'react-router-dom';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
@@ -114,8 +114,8 @@ function Sessions() {
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
+    // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    // const closeSidebar = () => setIsSidebarOpen(false);
 
     const handleSessionClick = (sessionId, session) => {
         navigate(`/DetallesTutor/${sessionId}`, { state: session });

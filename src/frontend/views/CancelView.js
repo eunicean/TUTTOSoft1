@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import Sidebar from '../components/Sidebar.js';
+// import Sidebar from '../components/Sidebar.js';
 import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import baseUrl from '../../config.js';
@@ -58,8 +58,8 @@ function CancelView() {
         setLoading(false);
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
+    // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    // const closeSidebar = () => setIsSidebarOpen(false);
 
     const openModal = () => {
         if (!reason.trim()) { // Verifica si el campo de motivo está vacío

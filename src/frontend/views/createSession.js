@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
 import baseUrl from '../../config.js';
 
 import '../css/Sessions.css';

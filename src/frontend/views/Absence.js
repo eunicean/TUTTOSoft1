@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
 import '../css/Absence.css'; 
 import baseUrl from '../../config.js';
 
@@ -51,7 +51,7 @@ function CancelSessionView({ Idsession }) {
         }
     };
 
-    const closeSidebar = () => setIsSidebarOpen(false);
+    // const closeSidebar = () => setIsSidebarOpen(false);
 
     return (
         <>
