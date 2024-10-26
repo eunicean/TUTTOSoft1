@@ -1,152 +1,267 @@
-import React, { useState } from 'react';
-import '../css/Chat.css'; // Importar el archivo CSS para estilos personalizados
-
+ 
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../css/Chat.css';
+import { useNavigate } from 'react-router-dom'; 
+import baseUrl from '../../config.js';
 
 const Chat = () => {
-  // Creamos un estado para almacenar los mensajes de cada chat
-  const [chats, setChats] = useState([
-    { id: 1, user: 'Estudiante 1', messages: [{ sender: 'Estudiante 1', text: 'Hola' }] },
-    { id: 2, user: 'Estudiante 2', messages: [{ sender: 'Estudiante 2', text: '¿Cómo estás?' }] },
-    { id: 3, user: 'Estudiante 3', messages: [{ sender: 'Estudiante 3', text: 'Gracias por tu ayuda' }] },
-  ]);
-  const [selectedChat, setSelectedChat] = useState(null); // El chat seleccionado
-  const [inputMessage, setInputMessage] = useState(''); // El mensaje que el usuario está escribiendo
-  const [statusMessage, setStatusMessage] = useState(''); // Mensaje temporal de "mensaje enviado"
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [user, setUser] = useState({});
+  const [tutors, setTutors] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false); 
+  const cachedMessages = new Map(); 
 
+  const navigate = useNavigate(); 
 
-  // Función para simular la respuesta del estudiante seleccionado
-  const simulateStudentResponse = (chatId) => {
-    setTimeout(() => {
-      const response = { sender: `Estudiante ${chatId}`, text: 'Respuesta automática' };
-      setChats((prevChats) =>
-        prevChats.map((chat) =>
-          chat.id === chatId
-            ? { ...chat, messages: [...chat.messages, response] } // Añadir la respuesta automática
-            : chat
-        )
-      );
-      // Forzar la actualización del chat seleccionado
-      setSelectedChat((prevSelectedChat) => {
-        if (prevSelectedChat && prevSelectedChat.id === chatId) {
-          return {
-            ...prevSelectedChat,
-            messages: [...prevSelectedChat.messages, response],
-          };
-        }
-        return prevSelectedChat;
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);  
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get('/api/profile', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-    }, 2000); // Simulamos un retraso de 2 segundos
+      if (response.data.success) {
+        setUser(response.data.user);
+        console.log("Perfil del usuario:", response.data.user);  // Verifica que el ID del usuario sea correcto
+      }
+    } catch (error) {
+      console.error('Error al obtener el perfil del usuario:', error);
+    }
+  };
+  
+
+
+const fetchChats = async () => {
+  try {
+    const response = await axios.get('/api/chats', {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+
+    if (response.data.success) {
+      const uniqueChats = removeDuplicateChats(response.data.chats);  // Elimina duplicados
+      setChats(uniqueChats);
+    }
+  } catch (error) {
+    console.error('Error al obtener los chats:', error);
+  }
+};
+
+useEffect(() => {
+  fetchChats();  // Llama solo una vez al montarse el componente
+}, []);  // No hay dependencias para que el efecto se ejecute una sola vez
+
+function removeDuplicateChats(chats) {
+  const chatMap = new Map();
+  chats.forEach(chat => {
+    if (!chatMap.has(chat.chatId)) {
+      chatMap.set(chat.chatId, chat);
+    }
+  });
+  return Array.from(chatMap.values());
+}
+
+  useEffect(() => {
+    if (user && user.typeuser) {
+      fetchChats(); // Se ejecutará solo cuando `user.typeuser` esté disponible
+    }
+  }, [user.typeuser]);  // Observa solo el tipo de usuario, no el objeto completo
+  
+  
+
+  const fetchMessages = async (chatId) => {
+    if (cachedMessages.has(chatId)) {
+      setMessages(cachedMessages.get(chatId));  // Si los mensajes están en caché, los usamos directamente
+    } else {
+      try {
+        setIsLoadingMessages(true);
+        setMessages([]);  // Limpiar los mensajes actuales
+        setSelectedChat(chatId);  
+        console.log(baseUrl);
+        const url = `${baseUrl}/api/chats/${chatId}`;
+
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+  
+        if (response.data.success) {
+          setMessages(response.data.messages);
+          cachedMessages.set(chatId, response.data.messages);  // Guardar en caché
+        }
+      } catch (error) {
+        console.error('Error al obtener los mensajes del chat:', error);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    }
+  };
+    
+  
+  
+  const fetchTutorsOrStudents = async () => {
+    if (!user.typeuser) return;
+
+    // Usa la URL base desde las variables de entorno
+    const endpoint = user.typeuser === '2' ? `${baseUrl}/api/students` : `${baseUrl}/api/tutors`;
+
+    try {
+      const response = await axios.get(endpoint, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      
+      if (user.typeuser === '2') {
+        setStudents(response.data);
+      } else {
+        setTutors(response.data);
+      }
+    } catch (error) {
+      console.error('Error al obtener la lista de tutores/estudiantes:', error);
+    }
   };
 
 
-  // Función para enviar un mensaje
-  const handleSendMessage = () => {
+  const checkExistingChat = (userId) => {
+    return chats.find(chat => chat.otherUserId === userId);
+  };
+
+  const startChatWithUser = async (userId) => {
+    const existingChat = checkExistingChat(userId);
+    if (existingChat) {
+      setSelectedChat(existingChat.chatId);
+      fetchMessages(existingChat.chatId);
+      setStatusMessage('Conversación ya iniciada.');
+      setTimeout(() => setStatusMessage(''), 2000);
+    } else {
+      try {
+        // Usa la URL base desde las variables de entorno
+        const url = `${baseUrl}/api/send-message`;
+
+        const response = await axios.post(url, { id_recipient: userId, message: '' }, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+
+        if (response.data.success) {
+          await fetchChats();
+          setSelectedChat(response.data.chatId);
+          setStatusMessage('Chat iniciado con éxito');
+          setTimeout(() => setStatusMessage(''), 2000);
+        }
+      } catch (error) {
+        console.error('Error al iniciar el chat:', error);
+        setStatusMessage('Error al iniciar el chat');
+      }
+    }
+};
+
+  const handleSendMessage = async () => {
     if (inputMessage.trim() !== '' && selectedChat !== null) {
-      const userMessage = { sender: 'Tú', text: inputMessage }; // Mensaje enviado por el usuario
-      // Actualizamos los mensajes del chat seleccionado
-      setChats((prevChats) =>
-        prevChats.map((chat) =>
-          chat.id === selectedChat.id
-            ? { ...chat, messages: [...chat.messages, userMessage] } // Agregamos el mensaje al historial del chat
-            : chat
-        )
-      );
-      // Actualizamos el estado de selectedChat para forzar el renderizado del nuevo mensaje
-      setSelectedChat((prevSelectedChat) => ({
-        ...prevSelectedChat,
-        messages: [...prevSelectedChat.messages, userMessage],
-      }));
-      setInputMessage(''); // Limpiar el campo de entrada
+      try {
+        // Obtén la URL base desde las variables de entorno
+        const url = `${baseUrl}/api/send-message`;
 
-
-      // Mostrar el mensaje de estado inmediatamente
-      setStatusMessage('Mensaje enviado');
-      setTimeout(() => {
-        setStatusMessage('');
-      }, 2000); // Ocultar el mensaje después de 2 segundos
-
-
-      simulateStudentResponse(selectedChat.id); // Simulamos la respuesta del estudiante
+        const recipientId = chats.find(chat => chat.chatId === selectedChat)?.otherUserId;
+        const response = await axios.post(url, { id_recipient: recipientId, message: inputMessage }, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        
+        if (response.data.success) {
+          const newMessage = { content: inputMessage, senderUsername: user.username, senderId: user.id };
+          setMessages([...messages, newMessage]);
+          setInputMessage('');
+          setStatusMessage('Mensaje enviado');
+          setTimeout(() => setStatusMessage(''), 2000);
+          await fetchChats();
+        }
+      } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        setStatusMessage('Error al enviar el mensaje');
+      }
     }
   };
 
 
-  // Función para manejar el evento de la tecla "Enter"
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSendMessage();
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (user.typeuser) {
+      fetchChats();
+      fetchTutorsOrStudents();
     }
-  };
-
-
-  // Función para seleccionar un chat (estudiante)
-  const handleChatSelect = (chat) => {
-    setSelectedChat(chat); // Seleccionamos el chat (estudiante)
-  };
-
+  }, [user.typeuser]);
 
   return (
     <div className="chat-container">
-      {/* Sección de historial de chats */}
       <div className="chat-history">
         <h2>Historial de Chats</h2>
-        <ul>
+        {chats.length > 0 ? (
+          <ul>
           {chats.map((chat) => (
-            <li
-              key={chat.id}
-              onClick={() => handleChatSelect(chat)}
-              className={selectedChat?.id === chat.id ? 'active' : ''}
-            >
-              {chat.user}
-              <br />
-              <small>{chat.messages[chat.messages.length - 1]?.text}</small> {/* Último mensaje */}
+            <li key={chat.chatId} 
+                onClick={() => fetchMessages(chat.chatId)} 
+                className={selectedChat === chat.chatId ? 'active' : ''} 
+                style={{ cursor: 'pointer' }}>
+              <strong>{chat.otherUsername || 'Usuario desconocido'}</strong><br />
+              <small>{chat.lastMessage}</small><br />
+              <small>{new Date(chat.lastMessageTime).toLocaleString()}</small>
             </li>
+          ))}
+        </ul>        
+        ) : <p>No hay chats disponibles.</p>}
+        
+        <h3>{user.typeuser === '2' ? 'Estudiantes Disponibles:' : 'Tutores Disponibles:'}</h3>
+        <ul>
+          {user.typeuser === '2' ? students.map(student => (
+            <li key={student.id} onClick={() => startChatWithUser(student.id)}>{student.username}</li>
+          )) : tutors.map(tutor => (
+            <li key={tutor.id} onClick={() => startChatWithUser(tutor.id)}>{tutor.username}</li>
           ))}
         </ul>
       </div>
-
-
-      {/* Sección del chat actual */}
+  
       <div className="chat-content">
-        {selectedChat ? (
-          <>
-            <div className="chat-messages">
-              {selectedChat.messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`chat-message ${msg.sender === 'Tú' ? 'user-message' : 'student-message'}`}
-                >
-                  <strong>{msg.sender}:</strong> {msg.text}
-                </div>
-              ))}
+  {selectedChat ? (
+    <>
+      {/* Contenedor de mensajes con desplazamiento */}
+      <div className="chat-messages">
+        {isLoadingMessages ? (
+          <p>Cargando mensajes...</p>
+        ) : messages.length > 0 ? (
+          messages.map((msg, index) => (
+            <div key={index} className={`chat-message ${msg.otherUserId === user.id ? 'user-message' : 'student-message'}`}>
+              <strong>{msg.senderId === user.id ? 'Tú' : msg.senderUsername}:</strong> {msg.content}
             </div>
-
-
-            <div className="chat-input-container">
-              <input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Escriba aquí"
-                className="chat-input"
-              />
-              <button onClick={handleSendMessage} className="chat-button">
-                Enviar
-              </button>
-            </div>
-
-
-            {statusMessage && <p className="status-message">{statusMessage}</p>}
-          </>
+          ))
         ) : (
-          <p>Selecciona un estudiante para comenzar a chatear</p>
+          <p>No hay mensajes en esta conversación.</p>
         )}
       </div>
+
+      {/* Campo de entrada del mensaje */}
+      <div className="chat-input-container">
+        <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}
+               placeholder="Escriba aquí" className="chat-input" />
+        <button onClick={handleSendMessage} className="chat-button">Enviar</button>
+      </div>
+
+      {statusMessage && <p className="status-message">{statusMessage}</p>}
+    </>
+  ) : <p>Selecciona un chat para comenzar</p>}
+</div>
+
     </div>
   );
 };
-
 
 export default Chat;

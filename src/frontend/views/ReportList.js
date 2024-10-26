@@ -1,15 +1,22 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import '../css/ReportList.css'; // Estilos específicos para esta vista
 
 
 const ReportList = () => {
   const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
 
   const tutors = [
-    { id: 1, name: 'Nombre de Tutor', carnet: '111111', sessions: 15, subject: 'Cálculo 1' },
-    { id: 2, name: 'Nombre de Tutor', carnet: '145861', sessions: 7, subject: 'Cálculo 1' },
+    { id: 7, name: 'Nombre de Tutor', carnet: '111111', sessions: 15, subject: 'Cálculo 1' },
+    { id: 8, name: 'Nombre de Tutor', carnet: '145861', sessions: 7, subject: 'Cálculo 1' },
     { id: 3, name: 'Nombre de Tutor', carnet: '157893', sessions: 5, subject: 'Cálculo 1' },
   ];
 

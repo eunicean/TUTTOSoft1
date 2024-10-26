@@ -2,17 +2,17 @@ import React from 'react';
 import { Link} from 'react-router-dom';
 
 const Sidebar = ({ isOpen, closeSidebar }) => {
-  const handleCancelSession = () => {
-    // Lógica para cancelar sesión
-    console.log('Sesión cancelada');
-    closeSidebar();
-  };
+  // const handleCancelSession = () => {
+  //   // Lógica para cancelar sesión
+  //   console.log('Sesión cancelada');
+  //   closeSidebar();
+  // };
 
-  const handleReportAbsence = () => {
-    // Lógica para reportar ausencia
-    console.log('Ausencia reportada');
-    closeSidebar();
-  };
+  // const handleReportAbsence = () => {
+  //   // Lógica para reportar ausencia
+  //   console.log('Ausencia reportada');
+  //   closeSidebar();
+  // };
 
   const handleLogout = () => {
     // Lógica para cerrar sesión

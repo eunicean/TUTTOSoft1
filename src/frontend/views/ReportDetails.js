@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/ReportDetails.css'; // Estilos específicos para esta vista
 
@@ -8,6 +9,12 @@ const ReportDetails = () => {
   const navigate = useNavigate();
   const { tutor } = location.state; // Obtener los datos del tutor seleccionados desde la otra vista
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
   const report = {
     attendancePercentage: 97,

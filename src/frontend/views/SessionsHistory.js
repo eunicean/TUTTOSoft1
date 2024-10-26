@@ -6,18 +6,28 @@ import HistoryCard from '../components/HistoryCard.js'; // Importa el componente
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/Historial.css';
+import baseUrl from '../../config.js';
 
 function SessionsHistory(){
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const fetchSessionsHistory = async () => {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/session-history');
+        
+
+        const url = new URL(`${baseUrl}/api/session-history`);
 
         try {
             const response = await fetch(url, {

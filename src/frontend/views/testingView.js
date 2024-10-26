@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SpecificSession from '../components/SpecificSession.js';
-
+import baseUrl from '../../config.js';
 import Sidebar from '../components/Sidebar.js';
 
 function TestingView() {
@@ -16,7 +16,8 @@ function TestingView() {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `http://localhost:5000/session-info/${sessionId}`;
+            
+            const url = `${baseUrl}/api/session-info/${sessionId}`;
 
             try {
                 const response = await fetch(url, {

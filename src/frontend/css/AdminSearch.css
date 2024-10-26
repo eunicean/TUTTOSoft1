@@ -1,36 +1,48 @@
-/* Mantén el estilo general del body y de admin-page */
+/* Estilos globales */
 body {
   font-family: 'Calibri', sans-serif;
 }
 
-.admin-page {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.outer-container-adminSea {
+  height: calc(100vh - 12vh);
+  padding-top: 30px;
   overflow-y: auto;
+  margin: 0 auto;
+  width: 95vw;
+  max-width: 1200px;
 }
 
-/* Aplica position: sticky al header */
+.sessions-container-adminSea {
+  width: 85%;
+  margin: 0 auto;
+  padding: 0rem;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-page {
+  padding: 15px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
   background-color: #D9B799;
   padding: 10px;
   border-radius: 10px;
-  max-width: 1300px;
-  width: 100%;
-  top: 0; /* Posición fija en la parte superior */
-  position: sticky;
-  z-index: 1; /* Asegura que el header esté sobre las cards */
 }
 
 h1 {
   color: #8B5E3C;
+  font-size: 2em;
 }
 
-/* Resto de estilos */
 .search-container {
   display: flex;
   align-items: center;
@@ -39,8 +51,10 @@ h1 {
 .search-input {
   padding: 15px;
   border-radius: 18px;
-  border: 5px solid #ccc;
+  border: 2px solid #ccc;
   margin-right: 10px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .filter-dropdown {
@@ -54,71 +68,94 @@ h1 {
 .toggle-container {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-  margin: 0 10px;
+/* Estilo para la lista de usuarios y tarjetas */
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
+.role-toggle-button {
+  padding: 10px 20px;
+  border: none;
   background-color: #8B5E3C;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-input:checked + .slider:before {
-  transform: translateX(26px);
+.role-toggle-button:hover {
+  background-color: #A0603E;
+}
+
+/* Estilos para el checkbox personalizado */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  display: none; /* Oculta el checkbox original */
+}
+
+.custom-checkbox {
+  width: 24px;
+  height: 24px;
+  background-color: #e4e4e4; /* Color de fondo */
+  border: 2px solid #d8660f; /* Borde del checkbox */
+  border-radius: 5px; /* Bordes redondeados */
+  position: relative; /* Necesario para el pseudo-elemento */
+  transition: background-color 0.3s, border-color 0.3s; /* Transiciones suaves */
+}
+
+.custom-checkbox:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 8px;
+  height: 12px;
+  border: solid #e2e2e2; /* Color de la marca de verificación */
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0; /* Oculta la marca de verificación inicialmente */
+  transition: opacity 0.2s; /* Transición suave */
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+  background-color: #613f25; /* Color de fondo al seleccionar */
+  border-color: #A0603E; /* Cambia el borde al seleccionar */
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox:after {
+  opacity: 1; /* Muestra la marca de verificación al seleccionar */
+}
+
+
+.users-list {
+  flex: 1;
 }
 
 .user-card {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #e3c5a3;
+  background-color: #D9B799;
   border-radius: 10px;
+  padding: 20px;
   margin-bottom: 20px;
-  width: 500px; /* Establecer un ancho fijo */
-  height: 150px; /* Establecer una altura fija */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 500px; /* Limitar el ancho máximo para mantener la consistencia */
+  align-items: center;
+  width: 100%;
 }
 
 .user-info {
   display: flex;
   align-items: center;
+  max-width: 80%;
 }
 
 .avatar-placeholder {
@@ -130,31 +167,49 @@ input:checked + .slider:before {
   flex-shrink: 0;
 }
 
-.users-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
+.stars-admin {
+  color: #8B5E3C;
 }
 
-/* Estilos responsivos para pantallas pequeñas */
+
+
+/* Ajustes responsivos */
 @media (max-width: 768px) {
-  .tutors-header {
-    margin-top: 650px; /* Margen superior para buscar tutores en móvil */
-  }
-  
-  .students-header {
-    margin-top: 300px; /* Margen superior para buscar estudiantes en móvil */
-  }
-  
-  .user-card {
-      width: 100%; /* Mantener un ancho del 100% en pantallas pequeñas */
-      max-width: 400px; /* Limitar el ancho máximo */
-      height: auto; /* Permitir que la altura se ajuste automáticamente */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .header {
-      max-width: 100%;
+  .search-container {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
   }
+
+  .search-input, .filter-dropdown {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .users-list {
+    width: 100%;
+  }
+
+  .user-card {
+    width: 100%;
+    max-width: 400px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
 }

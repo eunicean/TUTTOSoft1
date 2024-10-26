@@ -1,13 +1,13 @@
 describe('Prueba de Integración: Inicio de Sesión y Redirección a Sesiones', () => {
   before(() => {
     // Interceptar la solicitud de inicio de sesión
-    cy.intercept('GET', '/api/sessions', (req) => {
+    cy.intercept('GET', '/sessions', (req) => {
       req.headers['Authorization'] = 'Bearer dummy-token'; // Añadir el token de autenticación si es necesario
       req.reply({ fixture: 'sessions.json' });
     }).as('getSessions');
     
     // Interceptar la solicitud de sesiones
-    cy.intercept('GET', '/api/sessions', (req) => {
+    cy.intercept('GET', '/sessions', (req) => {
       req.headers['Authorization'] = 'Bearer dummy-token'; // Agregar token en el encabezado
       req.reply({ fixture: 'sessions.json' });
     }).as('getSessions');

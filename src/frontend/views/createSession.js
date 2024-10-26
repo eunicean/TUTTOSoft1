@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
-
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
+import baseUrl from '../../config.js';
 
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
@@ -31,7 +31,8 @@ function CreateSession() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch('http://localhost:5000/courses');
+                const url = `${baseUrl}/api/courses`;
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -58,7 +59,9 @@ function CreateSession() {
 
         if (email) {
             try {
-                const response = await fetch(`http://localhost:5000/get-username-by-email?email=${email}`);
+                
+                const url = `${baseUrl}/api/get-username-by-email?email=${email}`;
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     setStudentUsername(data.username || 'Usuario no encontrado');
@@ -77,9 +80,11 @@ function CreateSession() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create';
-        setLoading(true);
+        
+        const url = `${baseUrl}/api/sessions/create`;
 
+        setLoading(true);
+        
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -97,8 +102,8 @@ function CreateSession() {
             const data = await response.json();
             
             if (data.success) {
-                setNewSession({ subject: '', date: '', startHour: '', endHour: '', mode: '', studentEmail: '' });
-                navigate('/sessions'); // Navega de vuelta a la vista de sesiones
+                setNewSession({ subject: '', date: new Date(), startHour: new Date(), endHour: new Date(), mode: '', studentEmail: '' });
+                navigate('/sessions');
             } else {
                 throw new Error(data.message || 'Failed to create session');
             }

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Button from '../components/Button.js';
 import Footer from '../components/Footer.js';
-
+import baseUrl from '../../config.js';
 import '../css/Register.css';
 
 const Register = () => {
@@ -24,7 +24,9 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      
+      const url = `${baseUrl}/api/register`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, role })
@@ -79,12 +81,12 @@ const Register = () => {
             placeholder="Confirm Password"
             required
           />
-          <div className="select-container">
+          {/* <div className="select-container">
             <select value={role} onChange={e => setRole(e.target.value)}>
               <option value="student">Student</option>
               <option value="tutor">Tutor</option>
             </select>
-          </div>
+          </div> */}
           {error && <span className="error">{error}</span>}
           <Button type="submit">Register</Button>
         </form>
