@@ -3,3 +3,5 @@ ca-certificate.crt
 .env
 
 .scannerwork/
+src/backend/.env.deployment
+src/backend/.env.production
