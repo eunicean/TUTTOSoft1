@@ -90,11 +90,9 @@ app.post('/api/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            // Asegúrate de seleccionar los campos necesarios de la tabla user y year
             const [results] = await connection.query(
-                `SELECT u.id, u.password, u.typeuser, y.year 
+                `SELECT u.id, u.password, u.typeuser
                  FROM user u 
-                 LEFT JOIN year y ON u.id = y.student_id 
                  WHERE u.email = ?`, 
                 [email]
             );
@@ -104,9 +102,8 @@ app.post('/api/login', async (req, res) => {
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
                 if (passwordMatch) {
-                    // Incluye el campo 'year' en el token
                     const token = jwt.sign(
-                        { id: user.id, typeuser: user.typeuser, year: user.year },  
+                        { id: user.id, typeuser: user.typeuser},  
                         secretKey,
                         { expiresIn: '1h' }
                     );
@@ -164,7 +161,7 @@ app.get('/api/users/sessions', async (req, res) => {
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {
-    const { username, email, password, role, year } = req.body; // Asegúrate de incluir el año en el request body.
+    const { username, email, password, role} = req.body; // Asegúrate de incluir el año en el request body.
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -189,12 +186,6 @@ app.post('/api/register', async (req, res) => {
             const [result] = await connection.query(
                 'INSERT INTO user (id, username, email, password, typeuser) VALUES (?, ?, ?, ?, ?)',
                 [nextId, username, email, hashedPassword, typeuser]
-            );
-
-            // Inserta el student_id (que es el user.id) en la tabla year
-            await connection.query(
-                'INSERT INTO year (student_id, year) VALUES (?, ?)',
-                [nextId, year]  // Asume que 'year' es parte del body request.
             );
 
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });

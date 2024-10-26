@@ -37,6 +37,7 @@ function ProfileView() {
                 const data = await response.json();
                 if (data.success) {
                     setUser(data.user);
+                    // console.log("datos usuario", data.user)
                 } else {
                     throw new Error(data.message || 'Failed to fetch profile');
                 }
