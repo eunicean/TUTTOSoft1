@@ -44,7 +44,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "env-cmd -f .env.production concurrently --kill-others \"npm run server\" \"npm run client\"",
+    "start": "env-cmd -f .env.deployment concurrently --kill-others \"npm run server\" \"npm run client\"",
     "client": "cross-env PORT=5173 react-scripts start",
     "server": "nodemon src/backend/main.cjs",
     "build": "CI=false env-cmd -f .env.deployment  react-scripts build",
