@@ -89,7 +89,7 @@ html, body {
   align-self: flex-end; /* Alinea el mensaje a la derecha */
   border-radius: 10px;
   padding: 10px;
-  max-width: 60%;
+  max-width: 50%;
   margin-left: auto;
 }
 
