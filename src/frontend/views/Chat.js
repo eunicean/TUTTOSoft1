@@ -86,17 +86,25 @@ function removeDuplicateChats(chats) {
       try {
         setIsLoadingMessages(true);
         setMessages([]);  // Limpiar los mensajes actuales
-        setSelectedChat(chatId);  
+        setSelectedChat(chatId);
         console.log(baseUrl);
         const url = `${baseUrl}/api/chats/${chatId}`;
-
+  
         const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
   
         if (response.data.success) {
+          console.log("API response:", response.data.messages);  // Agrega este log para ver los datos de los mensajes
           setMessages(response.data.messages);
           cachedMessages.set(chatId, response.data.messages);  // Guardar en caché
+  
+          // Aquí agregamos los logs para verificar los mensajes y el user.id
+          console.log("user.id:", user.id);
+          console.log("messages:", response.data.messages);
+          response.data.messages.forEach(msg => {
+            console.log("msg.senderId:", msg.senderId, "=>", msg.senderId === user.id ? "Enviado" : "Recibido");
+          });
         }
       } catch (error) {
         console.error('Error al obtener los mensajes del chat:', error);
@@ -105,6 +113,7 @@ function removeDuplicateChats(chats) {
       }
     }
   };
+  
     
   
   
@@ -239,10 +248,15 @@ function removeDuplicateChats(chats) {
           <p>Cargando mensajes...</p>
         ) : messages.length > 0 ? (
           messages.map((msg, index) => (
-            <div key={index} className={`chat-message ${msg.otherUserId === user.id ? 'user-message' : 'student-message'}`}>
-              <strong>{msg.senderId === user.id ? 'Tú' : msg.senderUsername}:</strong> {msg.content}
+            <div
+              key={index}
+              className={`chat-message ${
+                msg.senderUsername === user.username ? 'user-message' : 'student-message'
+              }`}
+            >
+              <strong>{msg.senderUsername === user.username ? 'Tú' : msg.senderUsername}:</strong> {msg.content}
             </div>
-          ))
+          ))          
         ) : (
           <p>No hay mensajes en esta conversación.</p>
         )}
