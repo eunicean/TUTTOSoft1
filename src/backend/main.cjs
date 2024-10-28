@@ -307,17 +307,21 @@ app.post('/api/sessions/create', authenticateToken, async (req, res) => {
 app.get('/api/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
-        const periodo = req.query.periodo;
+        const userType = req.user.typeuser;
+        const periodo = req.query.periodo || "";  // Aseguramos que sea una cadena vacía si no está definida
         let query, params;
-        
-        const validPeriodos = ["mañana", "tarde", "noche"]; // Asegúrate de definir los valores válidos
+
+        // Incluye "" en los periodos válidos
+        const validPeriodos = ["", "manana", "tarde", "noche"];
+
+        console.log("Valor de `periodo` recibido en el servidor:", periodo);
 
         // Validar si el parámetro periodo es válido
         if (!validPeriodos.includes(periodo)) {
             return res.status(400).json({ success: false, message: "Invalid value for parameter: periodo" });
         }
 
+        // Definir la consulta basada en si el periodo está presente o no
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
@@ -341,7 +345,7 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         }
         
         const [results] = await pool.query(query, params);
-        // console.log(results);
+
         if (results.length > 0) {
             res.json({ success: true, sessions: results });
         } else {
@@ -352,6 +356,7 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 // Utility function for period times
