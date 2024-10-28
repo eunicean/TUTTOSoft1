@@ -56,12 +56,20 @@ function CreateSession() {
     const handleEmailChange = async (e) => {
         const email = e.target.value;
         setNewSession({ ...newSession, studentEmail: email });
-
+    
         if (email) {
             try {
-                
                 const url = `${baseUrl}/api/get-username-by-email?email=${email}`;
-                const response = await fetch(url);
+                const token = localStorage.getItem('token'); // Obtén el token del almacenamiento local
+    
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Añade el token en el encabezado
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
                 if (response.ok) {
                     const data = await response.json();
                     setStudentUsername(data.username || 'Usuario no encontrado');
@@ -76,7 +84,7 @@ function CreateSession() {
             setStudentUsername('');
         }
     };
-
+    
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');

@@ -58,8 +58,8 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-//Endpoint to show the username of the searched email
-app.get('/api/get-username-by-email', async (req, res) => {
+// Endpoint to show the username of the searched email, requires authentication
+app.get('/api/get-username-by-email', authenticateToken, async (req, res) => {
     const { email } = req.query;
 
     try {
@@ -161,7 +161,12 @@ app.get('/api/users/sessions', async (req, res) => {
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {
-    const { username, email, password, role} = req.body; // Asegúrate de incluir el año en el request body.
+    const { username, email, password, role } = req.body;
+
+    // Verificación de parámetros faltantes
+    if (!username || !email || !password || !role) {
+        return res.status(400).json({ success: false, message: "Missing required parameter(s)" });
+    }
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -197,7 +202,6 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
 
 
 app.get('/api/profile', authenticateToken, async (req, res) => {
@@ -242,8 +246,14 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 app.post('/api/profile/update', authenticateToken, async (req, res) => {
     const { username, email } = req.body;
+
+    // Verificación de campos obligatorios
+    if (!username || !email) {
+        return res.status(400).json({ success: false, message: "Missing required field(s): username or email" });
+    }
+
     try {
-        // Asumiendo que `db` es tu conexión a la base de datos y tiene un método para actualizar
+        // Actualización en la base de datos
         await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
         res.json({ success: true, message: 'Perfil actualizado correctamente.' });
     } catch (error) {
@@ -251,6 +261,7 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: 'Error interno del servidor.' });
     }
 });
+
 
 
 // Endpoint to create a new session
@@ -299,7 +310,13 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
         const periodo = req.query.periodo;
         let query, params;
-        // console.log("Selected period is: " + periodo);
+        
+        const validPeriodos = ["mañana", "tarde", "noche"]; // Asegúrate de definir los valores válidos
+
+        // Validar si el parámetro periodo es válido
+        if (!validPeriodos.includes(periodo)) {
+            return res.status(400).json({ success: false, message: "Invalid value for parameter: periodo" });
+        }
 
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
@@ -416,6 +433,11 @@ app.post('/api/grade-session/:sessionID', authenticateToken, async (req, res) =>
     const id_sender = req.user.id; // ID del usuario autenticado desde el token
     const sessionID = req.params.sessionID;
 
+    // Verificación del campo obligatorio `calificacion`
+    if (calificacion === undefined) {
+        return res.status(400).json({ success: false, message: "Missing required field: calificacion" });
+    }
+
     try {
         const conexion = await pool.getConnection();
         try {
@@ -476,6 +498,11 @@ app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) =
     const id_sender = req.user.id; // Usuario autenticado
     const sessionID = req.params.sessionID;
     const absentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato 'YYYY-MM-DD'
+
+    // Verificación del campo obligatorio `message`
+    if (!message) {
+        return res.status(400).json({ success: false, message: "Missing required field: message" });
+    }
 
     try {
         const conexion = await pool.getConnection();
@@ -543,6 +570,7 @@ app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) =
         });
     }
 });
+
 
 
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
@@ -746,48 +774,48 @@ app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
 
     try {
         const chatAndMessagesQuery = `
-  SELECT 
-    m.id AS messageId,
-    m.message AS content,
-    m.time_stamp AS timeSent,
-    u.username AS senderUsername,
-    u.id AS senderId  -- Asegúrate de incluir el ID correcto del remitente
-  FROM 
-    chats_nueva cn
-  JOIN 
-    messages_nueva m ON cn.id = m.id_chat
-  JOIN 
-    user u ON m.id_sender = u.id  -- Relacionar el remitente con el usuario
-  WHERE 
-    cn.id = ?
-  ORDER BY 
-    m.time_stamp ASC;
-`;
+            SELECT 
+                m.id AS messageId,
+                m.message AS content,
+                m.time_stamp AS timeSent,
+                u.username AS senderUsername,
+                u.id AS senderId  -- Asegúrate de incluir el ID correcto del remitente
+            FROM 
+                chats_nueva cn
+            JOIN 
+                messages_nueva m ON cn.id = m.id_chat
+            JOIN 
+                user u ON m.id_sender = u.id  -- Relacionar el remitente con el usuario
+            WHERE 
+                cn.id = ?
+            ORDER BY 
+                m.time_stamp ASC;
+            `;
 
-const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
+        const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
 
 
-        if (results.length > 0) {
-            const formattedMessages = results.map(result => ({
-                messageId: result.messageId,
-                chatId: result.chatId,
-                senderId: result.id_sender,
-                senderUsername: result.senderUsername,
-                content: result.content,
-                timeSent: result.timeSent
-            }));
+                if (results.length > 0) {
+                    const formattedMessages = results.map(result => ({
+                        messageId: result.messageId,
+                        chatId: result.chatId,
+                        senderId: result.id_sender,
+                        senderUsername: result.senderUsername,
+                        content: result.content,
+                        timeSent: result.timeSent
+                    }));
 
-            // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
-            console.log('Mensajes formateados que se enviarán:', formattedMessages);
+                    // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
+                    console.log('Mensajes formateados que se enviarán:', formattedMessages);
 
-            res.json({ success: true, chatId: chatId, messages: formattedMessages });
-        } else {
-            res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
-        }
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
+                    res.json({ success: true, chatId: chatId, messages: formattedMessages });
+                } else {
+                    res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
+                }
+            } catch (error) {
+                console.error('Database error:', error);
+                res.status(500).json({ success: false, message: "Internal server error" });
+            }
 });
 
 
@@ -855,8 +883,6 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
     }
 });
 
-
-  
 
 app.post('/api/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;

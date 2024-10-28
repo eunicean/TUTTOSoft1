@@ -93,26 +93,26 @@ describe('API Endpoints Testing', () => {
       });
     });
   
-    // it('POST /api/sessions/create - Should create a session', () => {
-    //   cy.request({
-    //     method: 'POST',
-    //     url: 'http://localhost:5000/api/sessions/create',
-    //     headers: {
-    //       Authorization: `Bearer ${authToken}`
-    //     },
-    //     body: {
-    //       date: '2024-12-01',
-    //       startHour: '08:00:00',
-    //       endHour: '10:00:00',
-    //       subject: 'Mathematics',
-    //       mode: 'online',
-    //       studentEmail: 'student@uvg.edu.gt'
-    //     }
-    //   }).then((response) => {
-    //     expect(response.status).to.eq(200);
-    //     expect(response.body).to.have.property('success', true);
-    //   });
-    // });
+    it('POST /api/sessions/create - Should create a session', () => {
+      cy.request({
+        method: 'POST',
+        url: 'http://localhost:5000/api/sessions/create',
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        },
+        body: {
+          date: '2024-12-01',
+          startHour: '08:00:00',
+          endHour: '10:00:00',
+          subject: 'Mathematics',
+          mode: 'online',
+          studentEmail: 'student@uvg.edu.gt'
+        }
+      }).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body).to.have.property('success', true);
+      });
+    });
   
     it('GET /api/sessions - Should return sessions by period', () => {
       cy.request({
@@ -189,21 +189,7 @@ describe('API Endpoints Testing', () => {
             expect(response.body).to.have.property('success', true);
         });
     });
-    
-  
-    // it('GET /api/average-rating - Should return average rating', () => {
-    //   cy.request({
-    //     method: 'GET',
-    //     url: 'http://localhost:5000/api/average-rating',
-    //     headers: {
-    //       Authorization: `Bearer ${authToken}`
-    //     }
-    //   }).then((response) => {
-    //     expect(response.status).to.eq(200);
-    //     expect(response.body).to.have.property('averageRating');
-    //   });
-    // });
-  
+
     it('GET /api/session-history - Should return session history', () => {
       cy.request({
         method: 'GET',
