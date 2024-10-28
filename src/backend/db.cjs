@@ -200,6 +200,7 @@ async function calificarSesion(calificacion, comentario, id_sender, id_receiver,
 }
 
 module.exports = {
+    obtenerTipoUsuarioPorId,
     buscarUsuarioPorEmail, 
     verificarUsuario,
     crearUsuario, 

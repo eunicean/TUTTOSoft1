@@ -591,27 +591,27 @@ app.post('/api/cancel-session/:sessionID', authenticateToken, async (req, res) =
 });
 
 
-app.get('/api/average-rating', authenticateToken, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        let query = `
-            SELECT AVG(rating) as averageRating 
-            FROM userRatings 
-            WHERE user_id = ?`; 
-        let params = [userId];
+// app.get('/api/average-rating', authenticateToken, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         let query = `
+//             SELECT AVG(rating) as averageRating 
+//             FROM userRatings 
+//             WHERE user_id = ?`; 
+//         let params = [userId];
 
-        const [results] = await pool.query(query, params);
+//         const [results] = await pool.query(query, params);
 
-        if (results.length > 0 && results[0].averageRating !== null) {
-            res.json({ success: true, averageRating: results[0].averageRating });
-        } else {
-            res.status(404).json({ success: false, message: "No ratings found for user" });
-        }
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
+//         if (results.length > 0 && results[0].averageRating !== null) {
+//             res.json({ success: true, averageRating: results[0].averageRating });
+//         } else {
+//             res.status(404).json({ success: false, message: "No ratings found for user" });
+//         }
+//     } catch (error) {
+//         console.error('Database error:', error);
+//         res.status(500).json({ success: false, message: "Internal server error" });
+//     }
+// });
 
 
 //Endpoint para listar todas las sesiones pasadas de un usuario
