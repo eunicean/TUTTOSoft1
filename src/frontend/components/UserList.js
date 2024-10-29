@@ -11,7 +11,6 @@ const UserList = ({ users, viewTutors, onToggleRole }) => {
           key={index}
           name={user.name}
           subjects={user.subjects}
-          year={user.year}
           rating={user.rating}
           role={user.role}
           onToggleRole={() => onToggleRole(index)}
