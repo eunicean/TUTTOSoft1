@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
-import '../css/Absence.css'; // Importamos el CSS
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal.js'; // Asegúrate de importar tu componente Modal
+import '../css/Absence.css';
+import baseUrl from '../../config.js';
 
-function CancelSessionView({ Idsession }) {
+function CancelSessionView({ isOpen, onClose }) {
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { sessionId } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
@@ -19,7 +26,7 @@ function CancelSessionView({ Idsession }) {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/report-absence/${sessionId}`, {
+            const response = await fetch(`${baseUrl}/api/report-absence/${sessionId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -31,6 +38,7 @@ function CancelSessionView({ Idsession }) {
             const data = await response.json();
             if (response.ok) {
                 setMessage('Reporte de ausencia registrado exitosamente');
+                onClose(); // Cerrar el modal después de la confirmación
             } else {
                 setMessage(`Error: ${data.message}`);
             }
@@ -40,11 +48,9 @@ function CancelSessionView({ Idsession }) {
         }
     };
 
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     return (
-        <>
-            <div className={`absence-container ${isSidebarOpen ? 'shifted' : ''}`}>
+        <Modal isOpen={isOpen} onClose={onClose} sessionId={sessionId}>
+            <div className="absence-container">
                 <h1 className="absence-title">Reportar Ausencia</h1>
                 <div className="absence-filters">
                     <label>
@@ -63,7 +69,7 @@ function CancelSessionView({ Idsession }) {
                 </div>
                 {message && <p className="absence-message">{message}</p>}
             </div>
-        </>
+        </Modal>
     );
 }
 

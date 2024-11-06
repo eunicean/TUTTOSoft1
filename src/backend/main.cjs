@@ -1,30 +1,32 @@
-import {
-  verificarUsuario,
-  crearUsuario,
-  obtenerTipoUsuarioPorId,
-  obtenerSesionesPlanificadasPorPersona
-}
-from './db.js'
-import express from 'express';
-import cors from 'cors';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import pool from './conn.js'; 
-import dotenv from 'dotenv';
+const { 
+    verificarUsuario, 
+    crearUsuario, 
+    obtenerTipoUsuarioPorId, 
+    obtenerSesionesPlanificadasPorPersona 
+  } = require('./db.cjs');
+  
+  const express = require('express');
+  const cors = require('cors');
+  const jwt = require('jsonwebtoken');
+  const bcrypt = require('bcrypt');
+  const pool = require('./conn.cjs');
 
+console.log("main si se ejecuta");
 
-dotenv.config();
+// dotenv.config();
+const app = express();
 
 const secretKey = process.env.JWT_SECRET || 'tu_secreto_aqui'; 
 let currentMaxSessionId;
 
-export const app = express();
+//module.exports = app;
 app.use(cors({
-    origin: ['http://localhost:5173'], // Adjust the CORS policy to accept requests from the frontend on port 5173
+    origin: ['http://localhost:5173', 'https://209.126.125.63'], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
 
 //Function to solve the autoincrement issue of the sessionPlanned table
 const getMaxSessionId = async () => {
@@ -56,8 +58,8 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-//Endpoint to show the username of the searched email
-app.get('/get-username-by-email', async (req, res) => {
+// Endpoint to show the username of the searched email, requires authentication
+app.get('/api/get-username-by-email', authenticateToken, async (req, res) => {
     const { email } = req.query;
 
     try {
@@ -77,9 +79,8 @@ app.get('/get-username-by-email', async (req, res) => {
 
 
 // Login endpoint
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    // console.log(`Attempting login with email: ${email} and password: ${password}`);
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
@@ -89,8 +90,12 @@ app.post('/login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         try {
-            // Ensure to select the 'typeuser' field
-            const [results] = await connection.query('SELECT id, password, typeuser FROM user WHERE email = ?', [email]);
+            const [results] = await connection.query(
+                `SELECT u.id, u.password, u.typeuser
+                 FROM user u 
+                 WHERE u.email = ?`, 
+                [email]
+            );
 
             if (results.length > 0) {
                 const user = results[0];
@@ -98,7 +103,7 @@ app.post('/login', async (req, res) => {
 
                 if (passwordMatch) {
                     const token = jwt.sign(
-                        { id: user.id, typeuser: user.typeuser },  
+                        { id: user.id, typeuser: user.typeuser},  
                         secretKey,
                         { expiresIn: '1h' }
                     );
@@ -122,7 +127,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Endpoint para obtener el tipo de usuario por ID
-app.get('/users/type', async (req, res) => {
+app.get('/api/users/type', async (req, res) => {
   const { userId } = req.query; // Obtén el ID del usuario de la consulta
   try {
     const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
@@ -138,7 +143,7 @@ app.get('/users/type', async (req, res) => {
 });
 
 // Endpoint para obtener las sesiones planificadas por persona
-app.get('/users/sessions', async (req, res) => {
+app.get('/api/users/sessions', async (req, res) => {
   const { userId } = req.query; // Obtén el ID del usuario de la consulta
   try {
     const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
@@ -155,17 +160,20 @@ app.get('/users/sessions', async (req, res) => {
 
 
 // Registration endpoint
-app.post('/register', async (req, res) => {
-    //commmit de prueba
+app.post('/api/register', async (req, res) => {
     const { username, email, password, role } = req.body;
-    // console.log(`Attempting to register a new user with username: ${username}, email: ${email}, role: ${role}`);
+
+    // Verificación de parámetros faltantes
+    if (!username || !email || !password || !role) {
+        return res.status(400).json({ success: false, message: "Missing required parameter(s)" });
+    }
 
     const domainRegex = /@uvg\.edu\.gt$/i;
     if (!domainRegex.test(email)) {
         return res.status(401).json({ success: false, message: "Invalid email domain. Only @uvg.edu.gt is allowed." });
     }
 
-    const typeuser = 1;
+    const typeuser = 1; // Asumiendo que todos son registrados como estudiantes (typeuser = 1)
 
     try {
         const connection = await pool.getConnection();
@@ -185,7 +193,6 @@ app.post('/register', async (req, res) => {
                 [nextId, username, email, hashedPassword, typeuser]
             );
 
-            // console.log('User registered successfully:', result.insertId);
             res.json({ success: true, message: "User registered successfully", userId: result.insertId });
         } finally {
             connection.release();
@@ -197,7 +204,7 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.get('/profile', authenticateToken, async (req, res) => {
+app.get('/api/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
@@ -237,10 +244,16 @@ app.get('/profile', authenticateToken, async (req, res) => {
 
 
 
-app.post('/profile/update', authenticateToken, async (req, res) => {
+app.post('/api/profile/update', authenticateToken, async (req, res) => {
     const { username, email } = req.body;
+
+    // Verificación de campos obligatorios
+    if (!username || !email) {
+        return res.status(400).json({ success: false, message: "Missing required field(s): username or email" });
+    }
+
     try {
-        // Asumiendo que `db` es tu conexión a la base de datos y tiene un método para actualizar
+        // Actualización en la base de datos
         await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
         res.json({ success: true, message: 'Perfil actualizado correctamente.' });
     } catch (error) {
@@ -250,8 +263,9 @@ app.post('/profile/update', authenticateToken, async (req, res) => {
 });
 
 
+
 // Endpoint to create a new session
-app.post('/sessions/create', authenticateToken, async (req, res) => {
+app.post('/api/sessions/create', authenticateToken, async (req, res) => {
     const { date, startHour, endHour, subject, mode, studentEmail } = req.body;
     const tutorId = req.user.id;
 
@@ -290,14 +304,24 @@ app.post('/sessions/create', authenticateToken, async (req, res) => {
 
 
 // Period-based sessions endpoint
-app.get('/sessions', authenticateToken, async (req, res) => {
+app.get('/api/sessions', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const userType = req.user.typeuser; // Suponiendo que este valor está disponible para determinar si es estudiante o tutor
-        const periodo = req.query.periodo;
+        const userType = req.user.typeuser;
+        const periodo = req.query.periodo || "";  // Aseguramos que sea una cadena vacía si no está definida
         let query, params;
-        // console.log("Selected period is: " + periodo);
 
+        // Incluye "" en los periodos válidos
+        const validPeriodos = ["", "manana", "tarde", "noche"];
+
+        console.log("Valor de `periodo` recibido en el servidor:", periodo);
+
+        // Validar si el parámetro periodo es válido
+        if (!validPeriodos.includes(periodo)) {
+            return res.status(400).json({ success: false, message: "Invalid value for parameter: periodo" });
+        }
+
+        // Definir la consulta basada en si el periodo está presente o no
         if (periodo) {
             const { tiempoInicio, tiempoFin } = getPeriodoTimes(periodo);
             query = `
@@ -321,7 +345,7 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         }
         
         const [results] = await pool.query(query, params);
-        // console.log(results);
+
         if (results.length > 0) {
             res.json({ success: true, sessions: results });
         } else {
@@ -332,6 +356,7 @@ app.get('/sessions', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 // Utility function for period times
@@ -358,7 +383,7 @@ function getPeriodoTimes(periodo) {
 
 
 // Endpoint for fetching detailed session information
-app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
+app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
     const sessionId = req.params.sessionId;
     try {
         const sessionQuery = `
@@ -408,10 +433,15 @@ app.get('/sessions/:sessionId', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
+app.post('/api/grade-session/:sessionID', authenticateToken, async (req, res) => {
     const { calificacion, comentario } = req.body;
     const id_sender = req.user.id; // ID del usuario autenticado desde el token
     const sessionID = req.params.sessionID;
+
+    // Verificación del campo obligatorio `calificacion`
+    if (calificacion === undefined) {
+        return res.status(400).json({ success: false, message: "Missing required field: calificacion" });
+    }
 
     try {
         const conexion = await pool.getConnection();
@@ -468,11 +498,16 @@ app.post('/grade-session/:sessionID', authenticateToken, async (req, res) => {
 });
 
 
-app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
+app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const id_sender = req.user.id; // Usuario autenticado
     const sessionID = req.params.sessionID;
     const absentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato 'YYYY-MM-DD'
+
+    // Verificación del campo obligatorio `message`
+    if (!message) {
+        return res.status(400).json({ success: false, message: "Missing required field: message" });
+    }
 
     try {
         const conexion = await pool.getConnection();
@@ -542,8 +577,9 @@ app.post('/report-absence/:sessionID', authenticateToken, async (req, res) => {
 });
 
 
+
 //Endpoint that to cancel planned sesions, it will insert the info into cancelled sessions table, and will remove it from the sessionPlanned table. 
-app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
+app.post('/api/cancel-session/:sessionID', authenticateToken, async (req, res) => {
     const { sessionId, reason } = req.body;
     const userId = req.user.id; // Obtener el ID del usuario desde el token de autenticación
 
@@ -588,31 +624,31 @@ app.post('/cancel-session/:sessionID', authenticateToken, async (req, res) => {
 });
 
 
-app.get('/average-rating', authenticateToken, async (req, res) => {
-    try {
-        const userId = req.user.id;
-        let query = `
-            SELECT AVG(rating) as averageRating 
-            FROM userRatings 
-            WHERE user_id = ?`; 
-        let params = [userId];
+// app.get('/api/average-rating', authenticateToken, async (req, res) => {
+//     try {
+//         const userId = req.user.id;
+//         let query = `
+//             SELECT AVG(rating) as averageRating 
+//             FROM userRatings 
+//             WHERE user_id = ?`; 
+//         let params = [userId];
 
-        const [results] = await pool.query(query, params);
+//         const [results] = await pool.query(query, params);
 
-        if (results.length > 0 && results[0].averageRating !== null) {
-            res.json({ success: true, averageRating: results[0].averageRating });
-        } else {
-            res.status(404).json({ success: false, message: "No ratings found for user" });
-        }
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
+//         if (results.length > 0 && results[0].averageRating !== null) {
+//             res.json({ success: true, averageRating: results[0].averageRating });
+//         } else {
+//             res.status(404).json({ success: false, message: "No ratings found for user" });
+//         }
+//     } catch (error) {
+//         console.error('Database error:', error);
+//         res.status(500).json({ success: false, message: "Internal server error" });
+//     }
+// });
 
 
 //Endpoint para listar todas las sesiones pasadas de un usuario
-app.get('/session-history', authenticateToken, async (req, res) => {
+app.get('/api/session-history', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const userType = req.user.typeuser;
@@ -660,7 +696,7 @@ app.get('/session-history', authenticateToken, async (req, res) => {
 
 
 // Endpoint to get all courses
-app.get('/courses', async (req, res) => {
+app.get('/api/courses', async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
@@ -678,7 +714,7 @@ app.get('/courses', async (req, res) => {
 
 
 // Endpoint to get all tutors with their courses and average rating
-app.get('/tutors', async (req, res) => {
+app.get('/api/tutors', async (req, res) => {
     try {
         const query = `
             SELECT x.id, x.username, x.email, x.typeuser, 
@@ -710,7 +746,7 @@ app.get('/tutors', async (req, res) => {
 });
 
 // Endpoint para obtener la lista de estudiantes
-app.get('/students', async (req, res) => {
+app.get('/api/students', async (req, res) => {
     try {
         const query = `
             SELECT u.id, u.username, u.email, 
@@ -738,7 +774,7 @@ app.get('/students', async (req, res) => {
     }
 });
 
-app.get('/chats/:chatId', authenticateToken, async (req, res) => {
+app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
 
     try {
@@ -747,55 +783,53 @@ app.get('/chats/:chatId', authenticateToken, async (req, res) => {
                 m.id AS messageId,
                 m.message AS content,
                 m.time_stamp AS timeSent,
-                u.username AS senderUsername,  -- Asegúrate de obtener el nombre del remitente
-                cn.id AS chatId,
-                cn.id_sender,
-                cn.id_recipient
+                u.username AS senderUsername,
+                u.id AS senderId  -- Asegúrate de incluir el ID correcto del remitente
             FROM 
                 chats_nueva cn
             JOIN 
                 messages_nueva m ON cn.id = m.id_chat
             JOIN 
-                user u ON m.id_sender = u.id
+                user u ON m.id_sender = u.id  -- Relacionar el remitente con el usuario
             WHERE 
                 cn.id = ?
             ORDER BY 
-                m.time_stamp ASC;  -- Cambié a ASC para mostrar los mensajes en orden cronológico
-        `;
+                m.time_stamp ASC;
+            `;
 
         const [results] = await pool.query(chatAndMessagesQuery, [chatId]);
 
-        if (results.length > 0) {
-            const formattedMessages = results.map(result => ({
-                messageId: result.messageId,
-                chatId: result.chatId,
-                senderId: result.id_sender,
-                senderUsername: result.senderUsername,
-                content: result.content,
-                timeSent: result.timeSent
-            }));
 
-            // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
-            console.log('Mensajes formateados que se enviarán:', formattedMessages);
+                if (results.length > 0) {
+                    const formattedMessages = results.map(result => ({
+                        messageId: result.messageId,
+                        chatId: result.chatId,
+                        senderId: result.id_sender,
+                        senderUsername: result.senderUsername,
+                        content: result.content,
+                        timeSent: result.timeSent
+                    }));
 
-            res.json({ success: true, chatId: chatId, messages: formattedMessages });
-        } else {
-            res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
-        }
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
+                    // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
+                    console.log('Mensajes formateados que se enviarán:', formattedMessages);
+
+                    res.json({ success: true, chatId: chatId, messages: formattedMessages });
+                } else {
+                    res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
+                }
+            } catch (error) {
+                console.error('Database error:', error);
+                res.status(500).json({ success: false, message: "Internal server error" });
+            }
 });
 
 
 
-
-app.get('/chats', authenticateToken, async (req, res) => {
-    const userId = req.user.id;  // Extraer el ID del usuario autenticado
-
+app.get('/api/chats', authenticateToken, async (req, res) => {
+    const userId = req.user.id; // Extraer el ID del usuario autenticado
+  
     try {
-        // En la API que trae los chats, asegúrate de devolver correctamente el 'otherUserId'
+        // Aquí es donde debes asegurar que se devuelva el 'otherUserId' y 'otherUsername' correctamente
         const chatsQuery = `
         SELECT 
             cn.id AS chatId,
@@ -830,7 +864,6 @@ app.get('/chats', authenticateToken, async (req, res) => {
             cn.id_sender = ? OR cn.id_recipient = ?
         ORDER BY 
             m.max_time_stamp DESC;
-
       `;
 
       const [chats] = await pool.query(chatsQuery, [userId, userId, userId, userId]);
@@ -855,9 +888,8 @@ app.get('/chats', authenticateToken, async (req, res) => {
     }
 });
 
-  
 
-app.post('/send-message', authenticateToken, async (req, res) => {
+app.post('/api/send-message', authenticateToken, async (req, res) => {
     const { id_recipient, message } = req.body;
     const id_sender = req.user.id; // Asumimos que el usuario autenticado es el remitente
 
@@ -898,7 +930,7 @@ app.post('/send-message', authenticateToken, async (req, res) => {
 });
 
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-export default app;
+module.exports = app;

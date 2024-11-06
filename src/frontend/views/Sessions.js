@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import SessionCard from '../components/Card.js';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
 import { useNavigate } from 'react-router-dom';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import CreateSession from './createSession.js';
+import baseUrl from '../../config.js';
 
 function Sessions() {
     const [sessions, setSessions] = useState([]);
@@ -15,12 +17,25 @@ function Sessions() {
     const [user, setUser] = useState({});
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    // ponerlo como un modal...
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'http://localhost:5000/profile';
+            
+            const url = `${baseUrl}/api/profile`;
 
             try {
                 const response = await fetch(url, {
@@ -53,24 +68,27 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/sessions');
-
+        
+        
+        let url = `${baseUrl}/api/sessions`;
+        
         if (queryPeriodo) {
-            url.searchParams.append('periodo', queryPeriodo);
+            url += `?periodo=${queryPeriodo}`;
         }
-
+    
         try {
-            const response = await fetch(url.toString(), {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
             const data = await response.json();
             const transformedSessions = data.sessions.map((session) => ({
                 id: session.id,
@@ -80,6 +98,7 @@ function Sessions() {
                 subject: session.namecourse,
                 mode: session.mode
             }));
+            
             setSessions(transformedSessions);
         } catch (error) {
             console.error("Could not fetch sessions:", error);
@@ -100,8 +119,8 @@ function Sessions() {
     if (loading) return <div className="loading-message">Cargando...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
+    // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    // const closeSidebar = () => setIsSidebarOpen(false);
 
     const handleSessionClick = (sessionId, session) => {
         navigate(`/DetallesTutor/${sessionId}`, { state: session });
@@ -115,10 +134,13 @@ function Sessions() {
                         <h1 className="TituloPS">Próximas Sesiones</h1>
                         <div className="buttons-group">
                             {user.typeuser === '2' && (
-                                <button onClick={() => navigate('/sessions/create')} className="create-session-button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><mask id="lineMdFilePlusTwotone0"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="#fff" fill-opacity="0" stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.15s" values="0;0.3"/><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path><path fill="#000" fill-opacity="0" stroke="none" d="M19 13c3.31 0 6 2.69 6 6c0 3.31 -2.69 6 -6 6c-3.31 0 -6 -2.69 -6 -6c0 -3.31 2.69 -6 6 -6Z"><set fill="freeze" attributeName="fill-opacity" begin="1s" to="1"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M16 19h6"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" values="8;0"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M19 16v6"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.2s" dur="0.2s" values="8;0"/></path></g></mask><rect width="24" height="24" fill="currentColor" mask="url(#lineMdFilePlusTwotone0)"/></svg>
-                                    Crear Nueva Sesión
-                                </button>
+                                <>
+                                    <button onClick={openModal} className="create-session-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><mask id="lineMdFilePlusTwotone0"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="#fff" fill-opacity="0" stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.15s" values="0;0.3"/><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path><path fill="#000" fill-opacity="0" stroke="none" d="M19 13c3.31 0 6 2.69 6 6c0 3.31 -2.69 6 -6 6c-3.31 0 -6 -2.69 -6 -6c0 -3.31 2.69 -6 6 -6Z"><set fill="freeze" attributeName="fill-opacity" begin="1s" to="1"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M16 19h6"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1s" dur="0.2s" values="8;0"/></path><path stroke-dasharray="8" stroke-dashoffset="8" d="M19 16v6"><animate fill="freeze" attributeName="stroke-dashoffset" begin="1.2s" dur="0.2s" values="8;0"/></path></g></mask><rect width="24" height="24" fill="currentColor" mask="url(#lineMdFilePlusTwotone0)"/></svg>
+                                        Crear Nueva Sesión
+                                    </button>
+                                    <CreateSession isOpen={isModalOpen} onClose={closeModal} />
+                                </>
                             )}
                             {(user.typeuser === '1' || user.typeuser === '2') && (
                                 <button onClick={() => navigate('/seachtutor')} className="create-session-button">

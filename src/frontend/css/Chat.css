@@ -1,119 +1,140 @@
 /* css/Chat.css */
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden; /* Evita el desplazamiento en toda la página */
-  }
- 
-  .chat-container {
-    display: flex;
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    width: 100vw; /* Ocupa todo el ancho de la ventana */
-    overflow: hidden; /* Evita cualquier desplazamiento dentro del contenedor principal */
-  }
- 
-  .chat-history {
-    width: 20%; /* Ocupa el 20% de la pantalla */
-    background-color: #F5EEDC;
-    padding: 20px;
-    border-right: 2px solid #C19A6B;
-    overflow-y: auto; /* Permite desplazamiento solo vertical si el historial es largo */
-    max-height: 100vh; /* Asegura que no se desborde el contenido */
-  }
- 
-  .chat-history h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px; /* Tamaño de fuente más grande para el título */
-  }
- 
-  .chat-history ul {
-    list-style-type: none;
-    padding: 0;
-  }
- 
-  .chat-history li {
-    padding: 15px;
-    background-color: #C19A6B;
-    color: white;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 18px; /* Tamaño de fuente más grande para los elementos del historial */
-  }
- 
-  .chat-history li:hover, .chat-history li.active {
-    background-color: #8C6239;
-  }
- 
-  .chat-content {
-    width: 80%; /* El área de chat ocupa el 80% de la pantalla */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #FFF5EE;
-    max-height: 100vh; /* Para evitar que se desborde verticalmente */
-    overflow: hidden;
-  }
- 
-  .chat-message {
-    display: inline-block; /* Hace que la burbuja se ajuste al contenido */
-    max-width: 60%; /* Limita el ancho máximo de la burbuja, puedes ajustarlo */
-    background-color: #f1f1f1; /* Color de fondo de la burbuja */
-    border-radius: 15px; /* Bordes redondeados */
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .user-message {
-    background-color: #d1e7dd; /* Color para los mensajes del usuario */
-    align-self: flex-end; /* Alinear los mensajes del usuario a la derecha */
-  }
-  
-  .other-message {
-    background-color: #ebcaaf; /* Color para los mensajes de los demás */
-    align-self: flex-start; /* Alinear los mensajes de los demás a la izquierda */
-  }  
- 
-  /* Estilo para los mensajes del estudiante X (café oscuro) */
-  .student-message {
-    background-color: #4E342E; /* Color café oscuro para los mensajes del Estudiante X */
-    color: white; /* Texto en blanco para contraste */
-    text-align: left;
-  }
- 
-  /* Estilo para el mensaje de estado "Mensaje enviado" */
-  .status-message {
-    color: #6D4C41; /* Color café */
-    text-align: center;
-    font-size: 16px;
-    margin-top: 10px;
-  }
- 
-  .chat-input-container {
-    display: flex;
-    margin-top: 10px;
-  }
- 
-  .chat-input {
-    width: 85%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 18px; /* Tamaño de fuente más grande para el campo de entrada */
-  }
- 
-  .chat-button {
-    padding: 10px;
-    background-color: #C19A6B;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-left: 10px;
-    cursor: pointer;
-    font-size: 18px; /* Tamaño de fuente más grande para el botón */
-  }
- 
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Evita el desplazamiento en toda la página */
+}
+
+.chat-container {
+  display: flex;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
+  width: 100vw; /* Ocupa todo el ancho de la ventana */
+  overflow: hidden; /* Evita cualquier desplazamiento dentro del contenedor principal */
+}
+
+.chat-history {
+  width: 20%; /* Ocupa el 20% de la pantalla */
+  background-color: #F5EEDC;
+  padding: 20px;
+  border-right: 2px solid #C19A6B;
+  overflow-y: auto; /* Permite desplazamiento solo vertical si el historial es largo */
+  max-height: 100vh; /* Asegura que no se desborde el contenido */
+}
+
+.chat-history h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px; /* Tamaño de fuente más grande para el título */
+}
+
+.chat-history ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.chat-history li {
+  padding: 15px;
+  background-color: #C19A6B;
+  color: white;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 18px; /* Tamaño de fuente más grande para los elementos del historial */
+}
+
+.chat-history li:hover, .chat-history li.active {
+  background-color: #8C6239;
+}
+
+.chat-content {
+  width: 80%; /* El área de chat ocupa el 80% de la pantalla */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #FFF5EE;
+  max-height: 100vh; /* Para evitar que se desborde verticalmente */
+  overflow: hidden;
+}
+
+.chat-messages {
+  background-color: #F5EEDC;
+  padding: 20px;
+  border-radius: 10px;
+  flex-grow: 1;
+  overflow-y: auto; /* Desplazamiento vertical solo si los mensajes son demasiados */
+  max-height: calc(100vh - 150px); /* Ajustar altura disponible para evitar desplazamiento */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos de los mensajes dentro del chat */
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 18px; /* Tamaño de fuente más grande para los mensajes del chat */
+  max-width: 60%; /* Limita el ancho máximo de los mensajes */
+  word-wrap: break-word; /* Permite que el texto se ajuste dentro del cuadro */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Añade sombra para un mejor diseño */
+}
+
+/* Estilo para los mensajes enviados por el usuario (a la derecha) */
+.user-message {
+  background-color: #C19A6B;
+  color: white;
+  text-align: right;
+  align-self: flex-end; /* Alinea el mensaje a la derecha */
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 50%;
+  margin-left: auto;
+}
+
+/* Estilo para los mensajes recibidos (a la izquierda) */
+.student-message {
+  background-color: #4E342E;
+  color: white;
+  text-align: left;
+  align-self: flex-start; /* Alinea el mensaje a la izquierda */
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 60%;
+  margin-right: auto;
+}
+
+
+
+/* Estilo para el mensaje de estado "Mensaje enviado" */
+.status-message {
+  color: #6D4C41; /* Color café */
+  text-align: center;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.chat-input-container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.chat-input {
+  width: 85%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 18px; /* Tamaño de fuente más grande para el campo de entrada */
+}
+
+.chat-button {
+  padding: 10px;
+  background-color: #C19A6B;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 18px; /* Tamaño de fuente más grande para el botón */
+}

@@ -1,14 +1,16 @@
-// src/Vista para verlo desde el punto de vista de tutor, donde sale informacion del
-// estudiante a quien le este dando clases...
-
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/SessionVistaParaTutor.css'
-import Header from '../components/HeaderYmenu.js';
+// import Header from '../components/HeaderYmenu.js';
 import StarRating from '../components/stars.js';
-import Sidebar from '../components/Sidebar.js';
-import Navbar from '../components/Navbar.js';
-
+// import Sidebar from '../components/Sidebar.js';
+// import Navbar from '../components/Navbar.js';
+import baseUrl from '../../config.js';
+// Estas son los modals que se importan 
+import RateTutorView from './RateTutorView.js';
+import CancelSessionView from './Absence.js';
+import CancelView from './CancelView.js';
+import { set } from 'date-fns';
 const SessionVistaParaTutorOEstudiante = () => {
     
     const { sessionId } = useParams();
@@ -17,7 +19,28 @@ const SessionVistaParaTutorOEstudiante = () => {
     const [error, setError] = useState(null);
     const [isTutor, setIsTutor] = useState(false); // Nueva variable para verificar si es tutor o estudiante
     const navigate = useNavigate();
-    const valorEstrellas = 3; // de la calificación en la base de datos
+    const valorEstrellas = 3; 
+
+    // modals separados para cada vista...
+    const [isRateModalOpen, setIsRateModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [isModalAusenciaSesion, setIsModalAusenciaSesion] = useState(false);
+    //funciones para abrir cerrar el modal de calificacion
+    const openRateModal =() => setIsRateModalOpen(true);
+    const closeRateModal =() => setIsRateModalOpen(false);
+    //funciones para abrir cerrar el modal de ausencia
+    const openReportModal =() => setIsReportModalOpen(true);
+    const closeReportModal =() => setIsReportModalOpen(false);
+    // funcion para abrir y cerrar el modal de reporta la sesion
+    const openModalAusenciaSesion =() => setIsModalAusenciaSesion(true);
+    const closeModalAusenciaSesion =() => setIsModalAusenciaSesion(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     // Funciones de navegación
     const goRating = (id) => {
@@ -32,7 +55,10 @@ const SessionVistaParaTutorOEstudiante = () => {
     useEffect(() => {
         const fetchSession = async () => {
             const token = localStorage.getItem('token');
-            const url = `http://localhost:5000/sessions/${sessionId}`;
+            
+            const url = `${baseUrl}/api/sessions/${sessionId}`; 
+            // const url = `/api/session-info/${sessionId}`;   
+            // no se cual de las dos es xd
 
             try {
                 const response = await fetch(url, {
@@ -84,7 +110,8 @@ const SessionVistaParaTutorOEstudiante = () => {
         <div className="vista-container">
             <div className="header1">
                 <span className="session-text">Sesión</span>
-                <button className="cancel-button" onClick={() => navigate(`/cancel-session/${sessionId}`)}>Cancelar Cita</button>
+                <button onClick={openModalAusenciaSesion} className="cancel-sessionBTN">Cancelar Sesión</button>
+                <CancelView isOpen={isModalAusenciaSesion} onClose={closeModalAusenciaSesion} sessionId={sessionId} />
             </div>
             
             <div className="content">
@@ -117,13 +144,10 @@ const SessionVistaParaTutorOEstudiante = () => {
                         </ul>
                     </div>
                         <div className='Btn-acciones-vista'>
-                        <button onClick={() => goRating(sessionId)}>
-                            Calificar sesión
-                        </button>
-                        
-                        <button onClick={() => goReportAbsence(sessionId)}>
-                            Reportar ausencia sesión
-                        </button>
+                        <button onClick={openRateModal} className="calificar-sessionBTN">Calificar Tutor</button>
+                        <RateTutorView isOpen={isRateModalOpen} onClose={closeRateModal} sessionId={sessionId} />
+                        <button onClick={openReportModal} className="reportar-sessionBTN">Reportar Ausencia</button>
+                        <CancelSessionView isOpen={isReportModalOpen} onClose={closeReportModal} sessionId={sessionId} />
                         </div>
                     </div>
                 </div>

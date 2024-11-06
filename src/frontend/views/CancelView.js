@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar.js';
+import React, { useState,useEffect } from 'react';
+// import Sidebar from '../components/Sidebar.js';
 import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal.js';
+import baseUrl from '../../config.js';
 
-function CancelView() {
+function CancelView({isOpen, onClose}) {
     const { sessionId } = useParams();
     const [reason, setReason] = useState('');
     const [message, setMessage] = useState('');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false); // Estado para controlar el modal de error
     const [loading, setLoading] = useState(false); // Añadir estado de carga
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     const handleCancelSession = async () => {
         const token = localStorage.getItem('token');
-        const url = `http://localhost:5000/cancel-session/${sessionId}`;
+        const url = `${baseUrl}/api/cancel-session/${sessionId}`;
         setLoading(true);
 
         if (!reason.trim()) {
@@ -50,9 +58,6 @@ function CancelView() {
         setLoading(false);
     };
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebar = () => setIsSidebarOpen(false);
-
     const openModal = () => {
         if (!reason.trim()) { // Verifica si el campo de motivo está vacío
             setMessage('Error: campo vacío');
@@ -66,14 +71,9 @@ function CancelView() {
     const closeErrorModal = () => setShowErrorModal(false); // Función para cerrar el modal de error
 
     return (
-        <>
-            {/* <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} /> */}
-            <div className={`cancel-session-container ${isSidebarOpen ? 'shifted' : ''}`}>
-                {/* <button className="menu-toggle" onClick={toggleSidebar}>
-                    <span className="menu-bar"></span>
-                    <span className="menu-bar"></span>
-                    <span className="menu-bar"></span>
-                </button> */}
+        <> 
+        <Modal isOpen={isOpen} onClose={onClose} sessionId={sessionId}> 
+                <div className={`cancel-session-container`}>
                 <h1>Cancelar Sesión</h1>
                 <div className="cancel-session-card">
                     <div className="cancel-session-reason">
@@ -115,6 +115,7 @@ function CancelView() {
                     </div>
                 )}
             </div>
+            </Modal>
         </>
     );
 }

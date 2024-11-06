@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Button from '../components/Button.js';
 import Footer from '../components/Footer.js';
-
+import baseUrl from '../../config.js';
 import '../css/Register.css';
 
 const Register = () => {
@@ -24,7 +24,9 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      
+      const url = `${baseUrl}/api/register`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, role })
@@ -85,8 +87,11 @@ const Register = () => {
               <option value="tutor">Tutor</option>
             </select>
           </div> */}
-          {error && <span className="error">{error}</span>}
-          <Button type="submit">Register</Button>
+          <div className="Div-final"> 
+            {error && <span className="error">{error}</span>} 
+            <button type='submit' className="BtnRegister">Registrarse</button>
+            <a href="/" className="back-link">Volver a inicio de sesion </a>
+            </div>
         </form>
       </div>
       <Footer />

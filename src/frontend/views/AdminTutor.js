@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FilterDropdown from '../components/FilterDropdown.js'; 
 import '../css/AdminTutor.css'; 
+import baseUrl from '../../config.js';
 
 const TutorCard = ({ name, subjects, year, rating, isAdmin, handleReportClick }) => {
   return (
@@ -30,6 +31,13 @@ const TutorsPage = ({ isAdmin }) => {
   const [tutors, setTutors] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        navigate('/login');
+    }
+  }, [navigate]);
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -42,14 +50,15 @@ const TutorsPage = ({ isAdmin }) => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await fetch('http://localhost:5000/tutors');
+        const url = `${baseUrl}/api/tutors`;
+
+        const response = await fetch(url);
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({
           id: tutor.id,  // Asegúrate de que cada tutor tenga un ID
           name: tutor.username,
           subjects: tutor.courses.split(', '),
-          year: 5,  // Ajustar según lo que necesites
           rating: Math.round(tutor.avg_rating)
         }));
         setTutors(formattedTutors);

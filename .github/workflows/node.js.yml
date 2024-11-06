@@ -35,8 +35,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-
-    - run: npm ci
+    - run: npm ci --legacy-peer-deps
     - run: npm run build --if-present
     - run: npm run start &
     # - run: npm test
@@ -48,7 +47,7 @@ jobs:
       run: tar -czvf deploy.tar.gz build
     - name: Deploy to Server
       run: |
-        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} scp -o StrictHostKeyChecking=no deploy.tar.gz ./src/backend/main.cjs ./src/backend/db.cjs root@${{ secrets.SERVER_IP }}:${{ secrets.SERVER_PATH }}
         
     - name: Remove local tar file
       run: rm -f deploy.tar.gz

@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar.js';
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
+import { useNavigate } from 'react-router-dom'; 
+import baseUrl from '../../config.js';
 
 function Sessions() {
     const [sessions, setSessions] = useState([]);
@@ -13,6 +15,15 @@ function Sessions() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [periodo, setPeriodo] = useState('');
     const [newSession, setNewSession] = useState({ subject: '', date: '', time: '' });
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
 
     const handlePeriodChange = (e) => {
         setPeriodo(e.target.value);
@@ -24,7 +35,8 @@ function Sessions() {
 
     const submitNewSession = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/sessions/create'; // Adjust the URL as necessary
+        
+        const url = `${baseUrl}/api/sessions/create`; // Adjust the URL as necessary
 
         try {
             const response = await fetch(url, {
@@ -57,7 +69,8 @@ function Sessions() {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('token');
-        const url = new URL('http://localhost:5000/sessions');
+        
+        const url = new URL(`${baseUrl}/api/sessions`);
 
         if (queryPeriodo) {
             url.searchParams.append('periodo', queryPeriodo);

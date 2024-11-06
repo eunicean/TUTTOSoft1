@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
-import Sidebar from '../components/Sidebar.js';
+// import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
+import baseUrl from '../../config.js';
 
 function ProfileView() {
     const [user, setUser] = useState({});
@@ -13,9 +14,17 @@ function ProfileView() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            const url = 'http://localhost:5000/profile';
+            
+            const url = `${baseUrl}/api/profile`
 
             try {
                 const response = await fetch(url, {
@@ -28,6 +37,7 @@ function ProfileView() {
                 const data = await response.json();
                 if (data.success) {
                     setUser(data.user);
+                    // console.log("datos usuario", data.user)
                 } else {
                     throw new Error(data.message || 'Failed to fetch profile');
                 }
@@ -50,7 +60,8 @@ function ProfileView() {
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:5000/profile/update';
+        
+        const url = `${baseUrl}/api/profile/update`;
 
         try {
             const response = await fetch(url, {

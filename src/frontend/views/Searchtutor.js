@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Seachtutor.css';
+import { useNavigate } from 'react-router-dom'; 
+import baseUrl from '../../config.js';
 
 const TutorCard = ({ name, subjects, year, rating }) => {
   return (
@@ -9,7 +11,6 @@ const TutorCard = ({ name, subjects, year, rating }) => {
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
-          <h4>{year} año</h4>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
           </div>
@@ -23,10 +24,22 @@ const TutorCard = ({ name, subjects, year, rating }) => {
 const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   const [courses, setCourses] = useState([]);
 
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          navigate('/login');
+      }
+  }, [navigate]);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:5000/courses');
+        
+        const url = `${baseUrl}/api/courses`;
+        const response = await fetch(url);
         const data = await response.json();
         setCourses(data);  // Guardar los cursos obtenidos
       } catch (error) {
@@ -65,7 +78,9 @@ const TutorsPage = () => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await fetch('http://localhost:5000/tutors');
+        
+        const url = `${baseUrl}/api/tutors`;
+        const response = await fetch(url);
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({
