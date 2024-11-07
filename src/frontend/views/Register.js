@@ -87,8 +87,11 @@ const Register = () => {
               <option value="tutor">Tutor</option>
             </select>
           </div> */}
-          {error && <span className="error">{error}</span>}
-          <Button type="submit">Register</Button>
+          <div className="Div-final"> 
+            {error && <span className="error">{error}</span>} 
+            <button type='submit' className="BtnRegister">Registrarse</button>
+            <a href="/" className="back-link">Volver a inicio de sesion </a>
+            </div>
         </form>
       </div>
       <Footer />

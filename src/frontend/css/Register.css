@@ -55,6 +55,13 @@ Button {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Añade sombra para un mejor efecto */
 }
 
+.Div-Final {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @media (max-width: 600px) {
   .session-card-button {
     margin: 10px 0; /* En pantallas pequeñas, usa márgenes más pequeños */
@@ -99,9 +106,4 @@ Button {
   font-size: 14px;
   text-align: center;
   width: 100%;
-}
-
-.register-container Button{
-    transform: translateX(45%);
-  
 }

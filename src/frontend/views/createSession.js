@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 // import Sidebar from '../components/Sidebar.js';
 // import Navbar from '../components/Navbar.js';
 import baseUrl from '../../config.js';
+import Modal from '../components/Modal.js';
 
 import '../css/Sessions.css';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 
-function CreateSession() {
+function CreateSession({ isOpen, onClose }) {
     const [newSession, setNewSession] = useState({
         subject: '',
         date: '',
@@ -124,6 +125,7 @@ function CreateSession() {
     };
 
     return (
+        <Modal isOpen={isOpen} onClose={onClose}>
         <div className="create-session-container">
             {/* <Navbar /> */}
             <h1>Crear Nueva Sesión</h1>
@@ -164,6 +166,7 @@ function CreateSession() {
                 {error && <p className="error-message">{error}</p>}
             </div>
         </div>
+        </Modal>
     );
 }
 

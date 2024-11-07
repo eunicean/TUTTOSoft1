@@ -11,7 +11,6 @@ const TutorCard = ({ name, subjects, year, rating }) => {
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
-          <h4>{year} año</h4>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
           </div>

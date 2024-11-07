@@ -59,7 +59,6 @@ const TutorsPage = ({ isAdmin }) => {
           id: tutor.id,  // Asegúrate de que cada tutor tenga un ID
           name: tutor.username,
           subjects: tutor.courses.split(', '),
-          year: 5,  // Ajustar según lo que necesites
           rating: Math.round(tutor.avg_rating)
         }));
         setTutors(formattedTutors);

@@ -58,7 +58,7 @@ const AdminPageContent = () => {
             <div className="search-container">
               <input
                 type="text"
-                placeholder="Nombre, materia, año"
+                placeholder="Nombre, materia"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
