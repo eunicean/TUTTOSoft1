@@ -28,7 +28,6 @@ app.use(cors({
 app.use(express.json());
 
 
-//Function to solve the autoincrement issue of the sessionPlanned table
 const getMaxSessionId = async () => {
     const query = 'SELECT MAX(id) as maxId FROM sessionPlanned';
     const [rows] = await pool.query(query);
@@ -41,11 +40,8 @@ const initializeMaxSessionId = async () => {
     console.log(`Current max session ID is: ${currentMaxSessionId}`);
 };
 
-// Llamar a esta función al iniciar el servidor
 initializeMaxSessionId();
 
-
-// Middleware to authenticate token
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -58,7 +54,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Endpoint to show the username of the searched email, requires authentication
 app.get('/api/get-username-by-email', authenticateToken, async (req, res) => {
     const { email } = req.query;
 
@@ -124,38 +119,6 @@ app.post('/api/login', async (req, res) => {
         console.error('Database error:', error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
-});
-
-// Endpoint para obtener el tipo de usuario por ID
-app.get('/api/users/type', async (req, res) => {
-  const { userId } = req.query; // Obtén el ID del usuario de la consulta
-  try {
-    const tipoUsuario = await obtenerTipoUsuarioPorId(userId); // Llama a la función obtenerTipoUsuarioPorId con el ID recibido
-    if (tipoUsuario) {
-      res.status(200).json({ tipoUsuario }); // Devuelve el tipo de usuario encontrado
-    } else {
-      res.status(404).json({ error: 'User not found' }); // Devuelve un error si el usuario no se encuentra
-    }
-  } catch (error) {
-    console.error('Error obtaining user type:', error);
-    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
-  }
-});
-
-// Endpoint para obtener las sesiones planificadas por persona
-app.get('/api/users/sessions', async (req, res) => {
-  const { userId } = req.query; // Obtén el ID del usuario de la consulta
-  try {
-    const sesiones = await obtenerSesionesPlanificadasPorPersona(userId); // Llama a la función obtenerSesionesPlanificadasPorPersona con el ID recibido
-    if (sesiones) {
-      res.status(200).json({ sesiones }); // Devuelve las sesiones planificadas encontradas
-    } else {
-      res.status(404).json({ error: 'Sessions not found' }); // Devuelve un error si no se encuentran sesiones planificadas
-    }
-  } catch (error) {
-    console.error('Error obtaining planned sessions:', error);
-    res.status(500).json({ error: 'Internal server error' }); // Devuelve un error en caso de error interno del servidor
-  }
 });
 
 
@@ -624,29 +587,6 @@ app.post('/api/cancel-session/:sessionID', authenticateToken, async (req, res) =
 });
 
 
-// app.get('/api/average-rating', authenticateToken, async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-//         let query = `
-//             SELECT AVG(rating) as averageRating 
-//             FROM userRatings 
-//             WHERE user_id = ?`; 
-//         let params = [userId];
-
-//         const [results] = await pool.query(query, params);
-
-//         if (results.length > 0 && results[0].averageRating !== null) {
-//             res.json({ success: true, averageRating: results[0].averageRating });
-//         } else {
-//             res.status(404).json({ success: false, message: "No ratings found for user" });
-//         }
-//     } catch (error) {
-//         console.error('Database error:', error);
-//         res.status(500).json({ success: false, message: "Internal server error" });
-//     }
-// });
-
-
 //Endpoint para listar todas las sesiones pasadas de un usuario
 app.get('/api/session-history', authenticateToken, async (req, res) => {
     try {
@@ -695,12 +635,10 @@ app.get('/api/session-history', authenticateToken, async (req, res) => {
 });
 
 
-// Endpoint to get all courses
-app.get('/api/courses', async (req, res) => {
+app.get('/api/courses', authenticateToken, async (req, res) => {
     try {
         const query = 'SELECT course_code, namecourse FROM course';
         const [results] = await pool.query(query);
-        // console.log(results);
         if (results.length > 0) {
             res.json(results);
         } else {
@@ -713,8 +651,7 @@ app.get('/api/courses', async (req, res) => {
 });
 
 
-// Endpoint to get all tutors with their courses and average rating
-app.get('/api/tutors', async (req, res) => {
+app.get('/api/tutors', authenticateToken, async (req, res) => {
     try {
         const query = `
             SELECT x.id, x.username, x.email, x.typeuser, 
@@ -745,8 +682,8 @@ app.get('/api/tutors', async (req, res) => {
     }
 });
 
-// Endpoint para obtener la lista de estudiantes
-app.get('/api/students', async (req, res) => {
+
+app.get('/api/students', authenticateToken, async (req, res) => {
     try {
         const query = `
             SELECT u.id, u.username, u.email, 
@@ -757,14 +694,14 @@ app.get('/api/students', async (req, res) => {
                 FROM comment
                 GROUP BY id_receiver
             ) avg_rating ON u.id = avg_rating.id_receiver
-            WHERE u.typeuser = 1  -- Estudiantes tienen el tipo de usuario 1
+            WHERE u.typeuser = 1
             GROUP BY u.id, u.username, u.email, avg_rating.avg_rating;
         `;
 
         const [results] = await pool.query(query);
 
         if (results.length > 0) {
-            res.json(results); // Devuelve los estudiantes encontrados
+            res.json(results);
         } else {
             res.status(404).json({ message: 'No se encontraron estudiantes' });
         }
@@ -773,6 +710,7 @@ app.get('/api/students', async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 });
+
 
 app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
     const chatId = req.params.chatId;
