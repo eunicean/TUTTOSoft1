@@ -25,6 +25,4 @@ const pool = createPool({
     queueLimit: 0
 });
 
-console.log("esto prueba que se ejecutó");
-console.log(DATABASE_USERNAME);
 module.exports = pool;

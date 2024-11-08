@@ -5,7 +5,7 @@ async function buscarUsuarioPorEmail(email) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`SELECT * FROM user WHERE email = ?`, [email]);
-        console.log(usuarios);
+
     } catch (error) {
         console.error('Error al buscar usuario:', error);
     }
@@ -38,7 +38,6 @@ async function eliminarUsuarioPorID(id) {
     const conexion = await conn;
     try {
         const [result] = await conexion.execute(`DELETE FROM user WHERE id = ?`, [id]);
-        console.log(result);
     } catch (error) {
         console.error('Error al eliminar usuario:', error);
     }
@@ -49,7 +48,6 @@ async function borrarChatsConUsuario(idChat) {
     const conexion = await conn;
     try {
         const [usuarios] = await conexion.execute(`DELETE FROM chat_integrants WHERE id_chat = ?`, [idChat]);
-        console.log(usuarios);
     } catch (error) {
         console.error('Error al borrar chats:', error);
     }
@@ -60,7 +58,6 @@ async function verSesionesEnCurso() {
     const conexion = await conn;
     try {
         const [sesion] = await conexion.execute(`SELECT * FROM sessionPlanned WHERE date = CURDATE() AND start_hour <= CURTIME() AND end_hour >= CURTIME()`);
-        console.log(sesion);
     } catch (error) {
         console.error('Error al ver sesiones en curso:', error);
     }
@@ -71,7 +68,6 @@ async function borrarSesion(date) {
     const conexion = await conn;
     try {
         const [sesion] = await conexion.execute(`DELETE FROM sessionPlanned WHERE date = ?`, [date]);
-        console.log(sesion);
     } catch (error) {
         console.error('Error al borrar sesión:', error);
     }
@@ -82,7 +78,6 @@ async function obtenerEstudiantes() {
     const conexion = await conn;
     try {
         const [estudiantes] = await conexion.execute(`SELECT u.id, u.username, u.email FROM user u JOIN student s ON u.id = s.id`);
-        console.log(estudiantes);
     } catch (error) {
         console.error('Error al obtener estudiantes:', error);
     }
@@ -93,7 +88,6 @@ async function obtenerMensajesDeChat(idChat) {
     const conexion = await conn;
     try {
         const [mensajes] = await conexion.execute(`SELECT m.content, m.time_sent FROM messages m JOIN chat_messages cm ON m.id_message = cm.id_message WHERE cm.id_chat = ?`, [idChat]);
-        console.log(mensajes);
     } catch (error) {
         console.error('Error al obtener mensajes de chat:', error);
     }
@@ -104,7 +98,6 @@ async function obtenerSesionesPlanificadas() {
     const conexion = await conn;
     try {
         const [sesiones] = await conexion.execute(`SELECT sp.id, c.namecourse, sp.date, sp.start_hour, sp.end_hour, sp.mode FROM sessionPlanned sp JOIN course c ON sp.course_code = c.course_code`);
-        console.log(sesiones);
     } catch (error) {
         console.error('Error al obtener sesiones planificadas:', error);
     }
@@ -115,7 +108,6 @@ async function obtenerSesionesPlanificadasPorPersona(userId) {
     const conexion = await conn;
     try {
         const [sesiones] = await conexion.execute(`SELECT sp.id, c.namecourse, sp.date, sp.start_hour, sp.end_hour, sp.mode, ss.id_student FROM sessionPlanned sp JOIN course c ON sp.course_code = c.course_code JOIN students_Session ss ON sp.id = ss.id_session WHERE ss.id_student = ?`, [userId]);
-        console.log(sesiones);
         return sesiones;
     } catch (error) {
         console.error('Error al obtener sesiones planificadas:', error);
@@ -127,7 +119,6 @@ async function obtenerReportesDeAusencia() {
     const conexion = await conn;
     try {
         const [reportes] = await conexion.execute(`SELECT ar.comment, ar.id_session, u1.username AS 'Sender', u2.username AS 'Absent Party' FROM ausentReport ar JOIN user u1 ON ar.id_sender = u1.id JOIN user u2 ON ar.id_ausentparty = u2.id`);
-        console.log(reportes);
     } catch (error) {
         console.error('Error al obtener reportes de ausencia:', error);
     }
@@ -138,7 +129,6 @@ async function obtenerDisponibilidadEstudiantes() {
     const conexion = await conn;
     try {
         const [disponibilidad] = await conexion.execute(`SELECT u.username, hd.hournumber, hd.day_week FROM hoursdisponibility hd JOIN user u ON hd.studentID = u.id`);
-        console.log(disponibilidad);
     } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
@@ -149,7 +139,6 @@ async function obtenerHorasDisponiblesPersona(id) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(`SELECT * FROM hoursdisponibility WHERE studentID = ?`, [id]);
-        console.log(horas);
     } catch (error) {
         console.error('Error al obtener disponibilidad de estudiantes:', error);
     }
@@ -160,7 +149,6 @@ async function ingresarNuevasHoras(hora, day, studentID) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(`INSERT INTO hoursdisponibility(hournumber, day_week, studentID) VALUES(?, ?, ?)`, [hora, day, studentID]);
-        console.log(horas);
     } catch (error) {
         console.error('Error al ingresar nuevas horas de disponibilidad:', error);
     }
@@ -171,7 +159,7 @@ async function eliminarHoras(hora, day, studentID) {
     const conexion = await conn;
     try {
         const [horas] = await conexion.execute(`DELETE FROM hoursdisponibility WHERE studentID = ? AND hournumber = ? AND day_week = ?`, [studentID, hora, day]);
-        console.log(horas);
+        
     } catch (error) {
         console.error('Error al eliminar horas de disponibilidad:', error);
     }
@@ -193,7 +181,7 @@ async function calificarSesion(calificacion, comentario, id_sender, id_receiver,
     const conexion = await conn;
     try {
         const [comentarios] = await conexion.execute(`INSERT INTO comment(rating, commentContent, id_sender, id_receiver, id_session) VALUES(?, ?, ?, ?, ?)`, [calificacion, comentario, id_sender, id_receiver, id_session]);
-        console.log(comentarios);
+        
     } catch (error) {
         console.error('Error al intentar calificar sesión:', error);
     }

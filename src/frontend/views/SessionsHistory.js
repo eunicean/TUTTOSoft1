@@ -69,9 +69,9 @@ function SessionsHistory(){
     }, []);
 
     const handleSessionClick = (sessionId, session) => {
-        console.log("Click detected:", sessionId, session); // Verifica si el clic es detectado
+        // console.log("Click detected:", sessionId, session); // Verifica si el clic es detectado
         navigate(`/SessionVistaEstudiante/${sessionId}`, { state: session });
-        console.log("Click");
+        // console.log("Click");
     };
 
     return (

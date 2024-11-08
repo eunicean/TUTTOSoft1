@@ -75,7 +75,7 @@ function ProfileView() {
 
             const data = await response.json();
             if (data.success) {
-                console.log('Perfil actualizado correctamente.');
+                // console.log('Perfil actualizado correctamente.');
                 setEditing(false); // Desactiva el modo de edición después de guardar
             } else {
                 throw new Error(data.message || 'Error al actualizar el perfil.');

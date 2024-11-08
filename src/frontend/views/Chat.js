@@ -33,7 +33,7 @@ const Chat = () => {
       });
       if (response.data.success) {
         setUser(response.data.user);
-        console.log("Perfil del usuario:", response.data.user);  // Verifica que el ID del usuario sea correcto
+        // console.log("Perfil del usuario:", response.data.user);  // Verifica que el ID del usuario sea correcto
       }
     } catch (error) {
       console.error('Error al obtener el perfil del usuario:', error);
@@ -87,7 +87,7 @@ function removeDuplicateChats(chats) {
         setIsLoadingMessages(true);
         setMessages([]);  // Limpiar los mensajes actuales
         setSelectedChat(chatId);
-        console.log(baseUrl);
+        // console.log(baseUrl);
         const url = `${baseUrl}/api/chats/${chatId}`;
   
         const response = await axios.get(url, {
@@ -95,15 +95,15 @@ function removeDuplicateChats(chats) {
         });
   
         if (response.data.success) {
-          console.log("API response:", response.data.messages);  // Agrega este log para ver los datos de los mensajes
+          // console.log("API response:", response.data.messages);  // Agrega este log para ver los datos de los mensajes
           setMessages(response.data.messages);
           cachedMessages.set(chatId, response.data.messages);  // Guardar en caché
   
           // Aquí agregamos los logs para verificar los mensajes y el user.id
-          console.log("user.id:", user.id);
-          console.log("messages:", response.data.messages);
+          // console.log("user.id:", user.id);
+          // console.log("messages:", response.data.messages);
           response.data.messages.forEach(msg => {
-            console.log("msg.senderId:", msg.senderId, "=>", msg.senderId === user.id ? "Enviado" : "Recibido");
+            // console.log("msg.senderId:", msg.senderId, "=>", msg.senderId === user.id ? "Enviado" : "Recibido");
           });
         }
       } catch (error) {

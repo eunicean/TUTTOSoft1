@@ -155,6 +155,24 @@ select:hover {
 -moz-osx-font-smoothing: grayscale;
 }
 
+
+.suggestions-dropdown :hover{
+  list-style: none;
+  background-color: #b8d1da;
+}
+
+.suggestions-dropdown li{
+  list-style: none;
+  padding: 15px;
+  background-color: #f1f1f1;
+  color: black;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 18px; /* Tamaño de fuente más grande para los elementos del historial */
+
+}
 /* Media queries para pantallas pequeñas */
 @media (max-width: 768px) {
   .sessions-container-create {
@@ -214,3 +232,4 @@ select:hover {
   background-color: #b7b7b7;
   border-radius: 10px;
 }
+

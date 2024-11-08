@@ -36,10 +36,15 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      const token = localStorage.getItem('token');
       try {
-        
-        const url = `${baseUrl}/api/courses`;
-        const response = await fetch(url);
+        const response = await fetch('/api/courses', {
+          headers: {
+              'Authorization': `Bearer ${token}`, 
+          }
+      });
+        // const url = `${baseUrl}/api/courses`;
+        // const response = await fetch(url);
         const data = await response.json();
         setCourses(data);  // Guardar los cursos obtenidos
       } catch (error) {
@@ -77,10 +82,14 @@ const TutorsPage = () => {
 
   useEffect(() => {
     const fetchTutors = async () => {
+      const token = localStorage.getItem('token');
       try {
-        
-        const url = `${baseUrl}/api/tutors`;
-        const response = await fetch(url);
+
+        const response = await fetch('/api/tutors', {
+          headers: {
+              'Authorization': `Bearer ${token}`, 
+          }
+        });
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({

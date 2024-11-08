@@ -52,7 +52,7 @@ function Login() {
   
       const data = await response.json();
       localStorage.setItem('token', data.token); // Guarda el token recibido en localStorage
-      console.log('Inicio de sesión exitoso:', data);
+      // console.log('Inicio de sesión exitoso:', data);
       navigate('/sessions'); // Navega a las sesiones tras un inicio de sesión exitoso
     } catch (error) {
       console.error('Error de inicio de sesión:', error);

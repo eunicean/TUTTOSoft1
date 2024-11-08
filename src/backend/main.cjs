@@ -37,7 +37,6 @@ const getMaxSessionId = async () => {
 
 const initializeMaxSessionId = async () => {
     currentMaxSessionId = await getMaxSessionId();
-    console.log(`Current max session ID is: ${currentMaxSessionId}`);
 };
 
 initializeMaxSessionId();
@@ -54,23 +53,35 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+
 app.get('/api/get-username-by-email', authenticateToken, async (req, res) => {
-    const { email } = req.query;
+    const { search } = req.query;
+
+    if (!search) {
+        return res.status(400).json({ message: 'Search term is required' });
+    }
 
     try {
-        const query = 'SELECT username FROM user WHERE email = ?';
-        const [results] = await pool.query(query, [email]);
+        const query = `
+            SELECT username, email 
+            FROM user 
+            WHERE (email LIKE ? OR username LIKE ?) AND typeuser = 1
+            LIMIT 10;
+        `;
+        const [results] = await pool.query(query, [`%${search}%`, `%${search}%`]);
 
         if (results.length > 0) {
-            res.json({ username: results[0].username });
+            res.json(results);
         } else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: 'No users found' });
         }
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+
 
 
 // Login endpoint
@@ -104,7 +115,6 @@ app.post('/api/login', async (req, res) => {
                     );
                     
                     res.json({ success: true, message: "Login successful", token });
-                    console.log(results);
 
                 } else {
                     res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -277,7 +287,6 @@ app.get('/api/sessions', authenticateToken, async (req, res) => {
         // Incluye "" en los periodos válidos
         const validPeriodos = ["", "manana", "tarde", "noche"];
 
-        console.log("Valor de `periodo` recibido en el servidor:", periodo);
 
         // Validar si el parámetro periodo es válido
         if (!validPeriodos.includes(periodo)) {
@@ -385,7 +394,6 @@ app.get('/api/sessions/:sessionId', authenticateToken, async (req, res) => {
                 studentName: sessionResults[0].studentName
             };
             
-            // console.log(sessionResults);
             res.json({ success: true, session });
         } else {
             res.status(404).json({ success: false, message: "Session not found" });
@@ -410,7 +418,6 @@ app.post('/api/grade-session/:sessionID', authenticateToken, async (req, res) =>
         const conexion = await pool.getConnection();
         try {
             // Verificar si el usuario es tutor en esta sesión
-            console.log(id_sender);
             const [tutorResult] = await conexion.query(
                 `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
                 [sessionID, id_sender]
@@ -449,7 +456,6 @@ app.post('/api/grade-session/:sessionID', authenticateToken, async (req, res) =>
                 [calificacion, comentario, id_sender, id_receiver, sessionID]
             );
 
-            console.log('Comentario insertado:', comentarios);
             res.json({ success: true, message: 'Sesión calificada exitosamente' });
         } finally {
             conexion.release();
@@ -475,7 +481,6 @@ app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) =
     try {
         const conexion = await pool.getConnection();
         try {
-            console.log(`Remitente -> ${id_sender}`);
             // Verificar si el usuario es tutor en esta sesión
             const [tutorResult] = await conexion.query(
                 `SELECT id_tutor FROM sessionPlanned WHERE id = ? AND id_tutor = ?`,
@@ -520,7 +525,6 @@ app.post('/api/report-absence/:sessionID', authenticateToken, async (req, res) =
                 [id_sender, id_absentParticipant, message, sessionID, absentDate]
             );
 
-            console.log('Reporte de ausencia insertado:', result);
             res.json({
                 success: true,
                 message: 'Reporte de ausencia registrado exitosamente',
@@ -748,9 +752,6 @@ app.get('/api/chats/:chatId', authenticateToken, async (req, res) => {
                         timeSent: result.timeSent
                     }));
 
-                    // Aquí agregamos un console.log para ver los mensajes formateados que se enviarán al cliente
-                    console.log('Mensajes formateados que se enviarán:', formattedMessages);
-
                     res.json({ success: true, chatId: chatId, messages: formattedMessages });
                 } else {
                     res.status(404).json({ success: false, message: "Chat not found or no messages in the chat" });
@@ -816,7 +817,6 @@ app.get('/api/chats', authenticateToken, async (req, res) => {
         }));
 
         res.json({ success: true, chats: chatList });
-        console.log(chatList);
       } else {
         res.json({ success: true, message: "No chats found", chats: [] });
       }
@@ -860,7 +860,6 @@ app.post('/api/send-message', authenticateToken, async (req, res) => {
         await pool.query(insertMessageQuery, [chatId, id_sender, message]);
 
         res.json({ success: true, message: "Mensaje enviado con éxito", chatId: chatId });
-        console.log("ID SENDER", id_sender,"CHAT ID",chatId, "MESSAGE", message)
     } catch (error) {
         console.error('Error al enviar el mensaje:', error);
         res.status(500).json({ success: false, message: "Internal server error", error: error.message });
