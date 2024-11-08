@@ -42,9 +42,8 @@ const TutorsPage = ({ isAdmin }) => {
     setSearchTerm(e.target.value);
   };
 
-  // Función para manejar el clic en el botón de "Reportes"
   const handleReportClick = (tutor) => {
-    navigate(`/report/${tutor.id}`, { state: { tutor } });  // Redirigir a la ruta con el ID del tutor y los datos del tutor
+    navigate(`/report/${tutor.id}`, { state: { tutor } });  
   };
 
   useEffect(() => {
@@ -62,7 +61,7 @@ const TutorsPage = ({ isAdmin }) => {
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({
-          id: tutor.id,  // Asegúrate de que cada tutor tenga un ID
+          id: tutor.id,  
           name: tutor.username,
           subjects: tutor.courses.split(', '),
           rating: Math.round(tutor.avg_rating)
@@ -113,7 +112,7 @@ const TutorsPage = ({ isAdmin }) => {
                     year={tutor.year}
                     rating={tutor.rating}
                     isAdmin={isAdmin}
-                    handleReportClick={() => handleReportClick(tutor)}  // Pasar el tutor seleccionado
+                    handleReportClick={() => handleReportClick(tutor)}  
                   />
                 ))
               ) : (

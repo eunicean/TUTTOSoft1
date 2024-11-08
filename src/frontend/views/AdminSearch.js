@@ -28,15 +28,15 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
 
 const AdminPageContent = () => {
   const { users, toggleUserRole } = useData();
-  const [viewTutors, setViewTutors] = useState(true); // true: buscar tutor, false: buscar estudiante
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para la barra de búsqueda
-  const [selectedSubject, setSelectedSubject] = useState(''); // Estado para la lista de materias
+  const [viewTutors, setViewTutors] = useState(true); 
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const [selectedSubject, setSelectedSubject] = useState(''); 
 
   const toggleView = () => setViewTutors(!viewTutors);
 
   const handleToggleRole = (userIndex) => {
-    toggleUserRole(userIndex); // Cambiar el rol del usuario
-    setViewTutors(prevViewTutors => !prevViewTutors); // Cambiar la vista automáticamente
+    toggleUserRole(userIndex); 
+    setViewTutors(prevViewTutors => !prevViewTutors); 
   };
 
   const filteredUsers = users.filter(user => {
