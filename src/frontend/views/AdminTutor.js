@@ -49,10 +49,16 @@ const TutorsPage = ({ isAdmin }) => {
 
   useEffect(() => {
     const fetchTutors = async () => {
+      const token = localStorage.getItem('token');
       try {
-        const url = `${baseUrl}/api/tutors`;
+        
+        // const url = `${baseUrl}/api/tutors`;
 
-        const response = await fetch(url);
+        const response = await fetch('/api/tutors', {
+          headers: {
+              'Authorization': `Bearer ${token}`, 
+          }
+        });
         const data = await response.json();
 
         const formattedTutors = data.map(tutor => ({

@@ -16,7 +16,7 @@ function CreateSession({ isOpen, onClose }) {
         startHour: '',
         endHour: '',
         mode: '',
-        studentEmail: ''  // Añadir campo de correo electrónico del estudiante
+        studentEmail: ''  
     });
     const [studentUsername, setStudentUsername] = useState(''); 
     const [error, setError] = useState(null);
@@ -31,9 +31,15 @@ function CreateSession({ isOpen, onClose }) {
 
     useEffect(() => {
         const fetchCourses = async () => {
+            const token = localStorage.getItem('token');
+            
             try {
-                const url = `${baseUrl}/api/courses`;
-                const response = await fetch(url);
+                const response = await fetch('/api/courses', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, 
+                    }
+                });
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
