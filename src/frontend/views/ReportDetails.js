@@ -15,20 +15,31 @@ const ReportDetails = () => {
     }, [navigate]);
 
     return (
-        <div className="vista-container">
-            <div className="header1">
+        <div className="vista-container-details">
+            <div className="header1-details">
                 <span className="session-text">Reporte de Tutorías</span>
+                <button>Marcar revisión</button>
                 <button onClick={() => navigate(-1)} className="cancel-sessionBTN">Regresar</button>
             </div>
             
-            <div className="content">
+            <div className="content-details">
                 <div className="card1">
                     <img src="https://via.placeholder.com/150" alt="Profile" className="profile-pic" />
                     <h3>Nombre: {tutor?.name || 'N/A'}</h3>
+                    <p>Tipo de Usuario: {tutor.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
                     <div className="stars">
                         {'★'.repeat(tutor?.rating || 0) + '☆'.repeat(5 - (tutor?.rating || 0))}
                     </div>
-                    <button>Marcar revisión</button>
+                    <div>
+                      <h3>Cursos Impartidos:</h3>
+                      <ul style={{ listStyleType: 'none' }}>
+                          {subjects.map((subject, index) => (
+                              <li key={index}>
+                                  {index + 1}. {subject}
+                              </li>
+                          ))}
+                      </ul>
+                  </div>
                 </div>
 
                 <div className="info">
