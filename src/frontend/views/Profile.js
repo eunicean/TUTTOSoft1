@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
-
-// import Sidebar from '../components/Sidebar.js';
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
@@ -24,7 +22,7 @@ function ProfileView() {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
             
-            const url = `${baseUrl}/api/profile`
+            const url = `${baseUrl}/api/profile`;
 
             try {
                 const response = await fetch(url, {
@@ -37,7 +35,6 @@ function ProfileView() {
                 const data = await response.json();
                 if (data.success) {
                     setUser(data.user);
-                    // console.log("datos usuario", data.user)
                 } else {
                     throw new Error(data.message || 'Failed to fetch profile');
                 }
@@ -75,7 +72,7 @@ function ProfileView() {
 
             const data = await response.json();
             if (data.success) {
-                console.log('Perfil actualizado correctamente.');
+                // console.log('Perfil actualizado correctamente.');
                 setEditing(false); // Desactiva el modo de edición después de guardar
             } else {
                 throw new Error(data.message || 'Error al actualizar el perfil.');
@@ -104,42 +101,38 @@ function ProfileView() {
                                 defaultValue={user.username}
                                 onChange={handleInputChange}
                             />
-                            {/* <input
-                                name="email"
-                                defaultValue={user.email}
-                                onChange={handleInputChange}
-                            /> */}
                             <button onClick={handleSave}>Guardar</button>
                         </>
                     ) : (
                         <>  
-                        <div className="profile-avatar"></div>
-                        <h2>{user.username || 'Nombre no disponible'}</h2>
-                        <p>Email: {user.email || 'Email no disponible'}</p>
-                        <p>Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : 'Tutor'}</p>
+                            <div className="profile-avatar"></div>
+                            <h2>{user.username || 'Nombre no disponible'}</h2>
+                            <p>Email: {user.email || 'Email no disponible'}</p>
+                            <p>
+                                Tipo de Usuario: {user.typeuser === '1' ? 'Estudiante' : user.typeuser === '2' ? 'Tutor' : 'Admin'}
+                            </p>
 
-                        {user.typeuser === '2' && (
-                        <div>
-                            <p>Cursos Impartidos:</p>
-                            <ul>
-                            {user.specialties && user.specialties.length > 0 ? (
-                                user.specialties.map((specialty) => (
-                                <li key={specialty.course_code}>
-                                    {specialty.course_name}
-                                </li>
-                                ))
-                            ) : (
-                                <li>No tiene cursos asignados.</li>
+                            {user.typeuser === '2' && (
+                                <div>
+                                    <p>Cursos Impartidos:</p>
+                                    <ul>
+                                        {user.specialties && user.specialties.length > 0 ? (
+                                            user.specialties.map((specialty) => (
+                                                <li key={specialty.course_code}>
+                                                    {specialty.course_name}
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li>No tiene cursos asignados.</li>
+                                        )}
+                                    </ul>
+                                </div>
                             )}
-                            </ul>
-                        </div>
-                        )}
 
-                        <button onClick={() => setEditing(true)}>Editar Perfil</button>
-
+                            <button onClick={() => setEditing(true)}>Editar Perfil</button>
                         </>
                     )}
-                    <button onClick={handleLogout}  >Cerrar Sesión</button>
+                    <button onClick={handleLogout}>Cerrar Sesión</button>
                     <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
                 </div>
             </div>
