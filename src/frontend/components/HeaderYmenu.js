@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
-//import { Link } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; // Para redirigir después de cerrar sesión
+
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuTransition, setMenuTransition] = useState('transform 0.3s ease');
   const [headerTransition, setHeaderTransition] = useState('width 0.3s ease');
+  const navigate = useNavigate();
+
+
+  // Obtener el rol del usuario (typeuser) de localStorage
+  const typeuser = parseInt(localStorage.getItem('typeuser'), 10);
+
 
   useEffect(() => {
     // Sincronizar las duraciones de las transiciones del Header y el menú
@@ -12,9 +19,18 @@ const Header = () => {
     setHeaderTransition(menuOpen ? 'width 0.3s ease 0.3s' : 'width 0.3s ease');
   }, [menuOpen]);
 
+
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
+
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('typeuser');
+    navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+  };
+
 
   const headerStyle = {
     display: 'flex',
@@ -30,7 +46,8 @@ const Header = () => {
     overflowX: 'hidden',
   };
 
-  const menuStyle = { 
+
+  const menuStyle = {
     position: 'absolute',
     top: 0,
     right: 0,
@@ -48,13 +65,14 @@ const Header = () => {
     alignItems: 'center',
   };
 
+
   const menuButton = {
     marginLeft: 'auto',
     backgroundColor: 'transparent',
     color: 'white',
     border: 'none',
     cursor: 'pointer',
-  }; 
+  };
   const imageStyle = {
     width: '100px',
     height: '100px',
@@ -62,16 +80,20 @@ const Header = () => {
     marginBottom: '20px',
   };
 
+
   const optionStyle = {
     marginBottom: '50px',
     textAlign: 'center',
   };
+
+
   const HomeButton = {
     backgroundColor: 'transparent',
     color: 'white',
     border: 'none',
     cursor: 'pointer',
-  }
+  };
+
 
   return (
     <div style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
@@ -85,15 +107,33 @@ const Header = () => {
       </div>
       <div style={menuStyle}>
         <img src="FPerfil.jpg" alt="Imagen" style={imageStyle} />
-        <a href="/pagina1" style={optionStyle}>Perfil</a>
-        <a href="/pagina2" style={optionStyle}>Buscar tutores</a>
-        <a href="/pagina3" style={optionStyle}>Calendario</a>
-        <a href="/pagina4" style={optionStyle}>Historia sesiones</a>
-        <a href="/pagina5" style={optionStyle}>Chat</a>
-        <a href="/pagina6" style={optionStyle}>Cerrar mi sesión</a>
+        <a href="/profile" style={optionStyle}>Perfil</a>
+
+
+        {/* Opciones Condicionales según el Rol */}
+        {typeuser === 3 ? (
+          <>
+            <a href="/adminsearch" style={optionStyle}>Cambiar Rol</a>
+            <a href="/admintutor" style={optionStyle}>Buscar Tutor</a>
+          </>
+        ) : (
+          <>
+            <a href="/seachtutor" style={optionStyle}>Buscar Tutores</a>
+            <a href="/calendar" style={optionStyle}>Calendario</a>
+          </>
+        )}
+
+
+        <a href="/sessions-history" style={optionStyle}>Historia sesiones</a>
+        <a href="/chat" style={optionStyle}>Chat</a>
+       
+        <button onClick={handleLogout} style={{ ...optionStyle, background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}>
+          Cerrar Sesión
+        </button>
       </div>
     </div>
   );
 }
+
 
 export default Header;
