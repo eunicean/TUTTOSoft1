@@ -65,7 +65,7 @@ app.get('/api/get-username-by-email', authenticateToken, async (req, res) => {
         const query = `
             SELECT username, email 
             FROM user 
-            WHERE (email LIKE ? OR username LIKE ?) AND typeuser = 1
+            WHERE (email LIKE ? OR username LIKE ?) AND typeuser = 1 OR typeuser = 2
             LIMIT 10;
         `;
         const [results] = await pool.query(query, [`%${search}%`, `%${search}%`]);
