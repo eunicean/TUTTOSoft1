@@ -14,7 +14,6 @@ const TutorCard = ({ name, subjects, year, rating, isAdmin, handleReportClick })
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4>
-          <h4>{year} año</h4>
           <div className="stars">
             {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
           </div>
@@ -43,7 +42,7 @@ const TutorsPage = ({ isAdmin }) => {
   };
 
   const handleReportClick = (tutor) => {
-    navigate(`/report/${tutor.id}`, { state: { tutor } });  
+    navigate(`/report/${tutor.id}`, { state: { tutor, subjects: tutor.subjects } });
   };
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const TutorsPage = ({ isAdmin }) => {
             <div className="search-container">
               <input
                 type="text"
-                placeholder="Nombre, materia, año"
+                placeholder="Nombre, materia"
                 value={searchTerm}
                 onChange={handleSearch}
                 className="search-input"
@@ -109,7 +108,6 @@ const TutorsPage = ({ isAdmin }) => {
                     key={index}
                     name={tutor.name}
                     subjects={tutor.subjects}
-                    year={tutor.year}
                     rating={tutor.rating}
                     isAdmin={isAdmin}
                     handleReportClick={() => handleReportClick(tutor)}  

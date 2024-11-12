@@ -1,61 +1,115 @@
+/* Importa una fuente más moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Contenedor principal */
 .report-details-container {
+  font-family: 'Poppins', sans-serif;
+  padding: 30px;
+  margin-top: 5vh;
+  background-color: #f7f9fc;
+  color: #333;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Título principal */
+.report-header {
+  font-size: 36px;
+  font-weight: bold;
+  color: #865a3c;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Información del tutor */
+.tutor-info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #dfc1a9;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tutor-info-card h2 {
+  font-size: 24px;
+  color: #865a3c;
+  margin-bottom: 5px;
+}
+
+.tutor-info-card p {
+  font-size: 18px;
+  color: #865a3c;
+}
+
+/* Contenedor de información del reporte */
+.report-info-section h3 {
+  font-size: 24px;
+  color: #865a3c;
+  margin-bottom: 15px;
+}
+
+/* Tabla de materias y asistencia */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.report-table thead th {
+  background-color: #dfc1a9;
+  color: #8c6246;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #c29574;
+}
+
+.report-table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #dfc1a9;
+  text-align: left;
+}
+
+.report-table tbody tr:nth-child(even) {
+  background-color: #f7f9fc;
+}
+
+/* Botón de "Marcar revisión" */
+.mark-revision-button {
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #9d4d1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.mark-revision-button:hover {
+  background-color: #e74c3c;
+}
+
+/* Estilos para responsividad */
+@media (max-width: 768px) {
+  .report-details-container {
+    width: 90%;
     padding: 20px;
-    background-color: #f9f5f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 100vw; /* Ocupa todo el ancho de la pantalla */
-    max-width: 100%; /* Asegura que no se quede centrado con un ancho limitado */
   }
- 
-  .back-button {
-    background-color: #8C6239;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: none;
-    font-size: 16px;
-    margin-bottom: 20px;
-    align-self: flex-start; /* Ajusta el botón a la izquierda */
+
+  .tutor-info-card {
+    width: 100%;
   }
- 
-  .tutor-info {
-    background-color: #f0c490;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 20px;
-    width: 80%; /* Aumentar el ancho para que abarque más pantalla */
-    max-width: 1000px; /* Un límite de ancho mayor */
+
+  .report-header {
+    font-size: 30px;
   }
- 
-  .report-info {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #f5e0c3;
-    width: 80%; /* Ajustar el ancho al 80% del contenedor */
-    max-width: 1000px; /* Límite de ancho para pantallas grandes */
-    text-align: left;
-  }
- 
-  table {
-    width: 100%; /* Hacer que la tabla ocupe todo el ancho disponible */
-    border-collapse: collapse;
-  }
- 
-  th, td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
- 
-  th {
-    background-color: #f0c490;
-  }
- 
-  td {
-    background-color: #f9f5f0;
-  }
- 
+}

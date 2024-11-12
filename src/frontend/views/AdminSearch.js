@@ -69,7 +69,6 @@ const AdminPageContent = () => {
               )}
             </div>
             <div className="toggle-container">
-              <label>Buscar Estudiantes</label>
               <div className="checkbox-container">
                 <input
                   type="checkbox"
@@ -79,7 +78,6 @@ const AdminPageContent = () => {
                 />
                 <label className="custom-checkbox" htmlFor="toggleView"></label>
               </div>
-              <label>Buscar Tutores</label>
             </div>
           </div>
           <UserList users={filteredUsers} viewTutors={viewTutors} onToggleRole={handleToggleRole} />
