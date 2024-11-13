@@ -87,8 +87,8 @@ const Register = () => {
               <option value="tutor">Tutor</option>
             </select>
           </div> */}
-          <div className="Div-final"> 
-            {error && <span className="error">{error}</span>} 
+<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+{error && <span className="error">{error}</span>} 
             <button type='submit' className="BtnRegister">Registrarse</button>
             <a href="/" className="back-link">Volver a inicio de sesion </a>
             </div>
