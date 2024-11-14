@@ -141,19 +141,28 @@ const Chat = () => {
     if (inputMessage.trim() !== '' && selectedChat !== null) {
       try {
         const url = `${baseUrl}/api/send-message`;
-
+  
         const recipientId = chats.find(chat => chat.chatId === selectedChat)?.otherUserId;
         const response = await axios.post(url, { id_recipient: recipientId, message: inputMessage }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-
+  
         if (response.data.success) {
           const newMessage = { content: inputMessage, senderUsername: user.username, senderId: user.id };
+          
+          // Añade el mensaje al historial de mensajes
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           setInputMessage('');
           setStatusMessage('Mensaje enviado');
           setTimeout(() => setStatusMessage(''), 2000);
           cachedMessages.current.set(selectedChat, [...messages, newMessage]);
+  
+          // Reorganiza el historial de chats para que el chat seleccionado aparezca al inicio
+          setChats((prevChats) => {
+            const updatedChats = prevChats.filter(chat => chat.chatId !== selectedChat);
+            const currentChat = prevChats.find(chat => chat.chatId === selectedChat);
+            return [currentChat, ...updatedChats];
+          });
         }
       } catch (error) {
         console.error('Error al enviar el mensaje:', error);
@@ -161,6 +170,7 @@ const Chat = () => {
       }
     }
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
