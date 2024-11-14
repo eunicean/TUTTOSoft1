@@ -31,16 +31,20 @@ const ReportDetails = () => {
                         {'★'.repeat(tutor?.rating || 0) + '☆'.repeat(5 - (tutor?.rating || 0))}
                     </div>
                     <div>
-                      <h3>Cursos Impartidos:</h3>
-                      <ul style={{ listStyleType: 'none' }}>
-                          {subjects.map((subject, index) => (
-                              <li key={index}>
-                                  {index + 1}. {subject}
-                              </li>
-                          ))}
-                      </ul>
-                  </div>
+                        <h3>Cursos Impartidos:</h3>
+                        <table className="courses-table">
+                            <tbody>
+                                {subjects.map((subject, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}.</td>
+                                        <td>{subject}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
 
                 <div className="info">
                     <div className="TitulosInfo">
