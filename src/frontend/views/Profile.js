@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
+import ProfileAvatar from '../components/Imagen.js';
 import baseUrl from '../../config.js';
 
 function ProfileView() {
@@ -96,6 +97,7 @@ function ProfileView() {
                 <div className="profile-card">
                     {editing ? (
                         <>
+                        <ProfileAvatar />
                             <input
                                 name="username"
                                 defaultValue={user.username}
@@ -138,7 +140,6 @@ function ProfileView() {
                         </>
                     )}
                     <button onClick={handleLogout}>Cerrar Sesión</button>
-                    <button onClick={() => console.log('Abrir ayuda')}>Ayuda</button>
                 </div>
             </div>
         </>
