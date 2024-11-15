@@ -58,26 +58,35 @@ function ProfileView() {
 
     // Callback para recibir la imagen desde ProfileAvatar
     const handleImageChange = (base64Image) => {
+        console.log("Imagen recibida desde ProfileAvatar:", base64Image);
         setProfileImage(base64Image);
     };
 
     const handleSave = async () => {
         const token = localStorage.getItem('token');
         const url = `${baseUrl}/api/profile/update`;
-
+    
         try {
-            console.log("Imagen base64 lista para enviar:", profileImage);
+            // Crear el objeto `body` que incluye `user` y `profileImage`
+            const body = {
+                ...user,          // Incluye todos los datos de `user`
+                profileImage      // Asegúrate de incluir `profileImage` aquí
+            };
+    
+            console.log("Cuerpo que se enviará al backend:", body); // Verifica que `profileImage` esté en el objeto
+    
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(user,profileImage)
+                body: JSON.stringify(body) // Convierte el objeto combinado en JSON
             });
-
+    
             const data = await response.json();
             if (data.success) {
+                console.log("Perfil actualizado correctamente.");
                 setEditing(false); 
             } else {
                 throw new Error(data.message || 'Error al actualizar el perfil.');
@@ -87,6 +96,7 @@ function ProfileView() {
             setError(error.message || 'Error al actualizar el perfil');
         }
     };
+    
 
     const handleLogout = () => {
         localStorage.removeItem('token');
