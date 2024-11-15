@@ -230,9 +230,8 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
 
     try {
         // Actualización en la tabla `user`
-        console.log("Imagen base64 lista para enviar:", username);
         await pool.query(
-            'UPDATE user SET username = ?, WHERE id = ?', 
+            'UPDATE user SET username = ? WHERE id = ?', 
             [username, req.user.id]
         );
 
@@ -241,8 +240,9 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
             [req.user.id, "prueba_base64"]
         );
 
-        if (image) {
+        if (profileImage) {
             // Verificar si ya existe un registro para el estudiante en `user_avatar`
+            console.log("Imagen base64 lista para enviar:", username);
             const [rows] = await pool.query(
                 'SELECT id FROM user_avatar WHERE student_id = ?', 
                 [req.user.id]
@@ -255,6 +255,7 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
                     [profileImage, req.user.id]
                 );
             } else {
+                console.log("no existe una imagen");
                 // Si no existe, insertar un nuevo registro
                 await pool.query(
                     'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
