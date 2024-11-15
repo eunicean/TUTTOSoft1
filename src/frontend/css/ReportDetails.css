@@ -24,6 +24,7 @@
     gap: 0px;
     align-content: stretch;
     justify-content: space-evenly;
+    align-items: flex-start;
   }
 
   .header1-details {
@@ -83,6 +84,23 @@
  
   td {
     background-color: #f9f5f0;
+  }
+
+    /* Estilo solo para la tabla de cursos impartidos */
+  .courses-table {
+    width: 100%; /* Hacer que la tabla ocupe todo el ancho disponible */
+    border-collapse: collapse;
+    background-color: transparent; /* Fondo transparente para ver el fondo detrás */
+  }
+
+  .courses-table tr, .courses-table td {
+    border: none; /* Sin bordes en filas ni celdas */
+    background-color: transparent; /* Fondo transparente en filas y celdas */
+    padding: 4px 0; /* Espaciado vertical para mejor legibilidad */
+  }
+
+  .courses-table td {
+    text-align: left; /* Alinear el contenido a la izquierda */
   }
 
 
