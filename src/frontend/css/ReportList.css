@@ -1,56 +1,102 @@
+body {
+  font-family: 'Calibri', sans-serif;
+}
+
 .report-list-container {
-    padding: 20px;
-    background-color: #f9f5f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 100vw; /* Ocupa todo el ancho de la pantalla */
-    max-width: 100%; /* Asegura que no se quede centrado con un ancho limitado */
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  color: #8B5E3C;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.tutor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.report-card {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(202, 133, 67, 0.541);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+.report-card:hover {
+  transform: translateY(-5px);
+}
+
+.report-info h4 {
+  color: #8B5E3C;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.report-info h5 {
+  color: #8B5E3C;
+  font-size: 1em;
+  margin: 5px 0;
+}
+
+.report-info p {
+  font-family: Arial, sans-serif; /* Cambiar fuente para las materias */
+  color: #6a452d;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #fde0d6;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.stars {
+  color: #8B5E3C;
+}
+
+.report-btn {
+  background-color: #8B5E3C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 0.9em;
+  transition: background-color 0.3s;
+}
+
+.report-btn:hover {
+  background-color: #6a452d;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .report-list-container {
+    width: 100%;
+    padding: 10px;
   }
- 
-  .employee-card {
-    background-color: #f0c490;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    width: 90%; /* Aumentar el ancho para que abarque más pantalla */
-    max-width: 1200px; /* Un límite de ancho mayor */
-    text-align: center;
-  }
- 
+  
   .tutor-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%; /* Ajustar el ancho al 90% del contenedor */
-    max-width: 1200px; /* Límite de ancho para pantallas grandes */
+    grid-template-columns: 1fr;
   }
- 
-  .tutor-card {
-    background-color: #f5e0c3;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    width: 100%; /* Aumentar el ancho de la tarjeta del tutor al 100% del contenedor */
-  }
- 
-  .view-report-button {
-    background-color: #c19a6b;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
- 
-  .logout-button {
-    background-color: #8C6239;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
- 
+}
