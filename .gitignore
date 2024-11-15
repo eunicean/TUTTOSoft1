@@ -16,3 +16,7 @@ build/static/js/main.0ccffe50.js
 build/static/js/main.0ccffe50.js.LICENSE.txt
 build/static/js/main.0ccffe50.js.map
 .scannerwork/
+.env copy.deployment
+.env copy.production
+src/backend/.env.deployment
+src/backend/.env.production
