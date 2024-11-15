@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
@@ -10,6 +10,7 @@ function ProfileView() {
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
+    const [profileImage, setProfileImage] = useState(null); // Estado para almacenar la imagen en base64
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +23,6 @@ function ProfileView() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            
             const url = `${baseUrl}/api/profile`;
 
             try {
@@ -56,25 +56,29 @@ function ProfileView() {
         }));
     };
 
+    // Callback para recibir la imagen desde ProfileAvatar
+    const handleImageChange = (base64Image) => {
+        setProfileImage(base64Image);
+    };
+
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        
         const url = `${baseUrl}/api/profile/update`;
 
         try {
+            console.log("Imagen base64 lista para enviar:", profileImage);
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(user)
+                body: JSON.stringify(user,profileImage)
             });
 
             const data = await response.json();
             if (data.success) {
-                // console.log('Perfil actualizado correctamente.');
-                setEditing(false); // Desactiva el modo de edición después de guardar
+                setEditing(false); 
             } else {
                 throw new Error(data.message || 'Error al actualizar el perfil.');
             }
@@ -85,8 +89,12 @@ function ProfileView() {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
-        navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    const handleCancelation = () => {
+        setEditing(false); 
     };
 
     if (error) return <div>Error: {error}</div>;
@@ -97,18 +105,15 @@ function ProfileView() {
                 <div className="profile-card">
                     {editing ? (
                         <>
-                        <ProfileAvatar />
+                            {/* Pasar el callback para actualizar la imagen */}
+                            <ProfileAvatar onImageChange={handleImageChange} />
                             <input
                                 name="username"
                                 defaultValue={user.username}
                                 onChange={handleInputChange}
                             />
-                            <input 
-                            name='email'    
-                            defaultValue={user.email}
-                            onChange={handleInputChange}
-                            />
                             <button onClick={handleSave}>Guardar</button>
+                            <button onClick={handleCancelation}>Cancelar</button>
                         </>
                     ) : (
                         <>  
@@ -137,9 +142,9 @@ function ProfileView() {
                             )}
 
                             <button onClick={() => setEditing(true)}>Editar Perfil</button>
+                            <button onClick={handleLogout}>Cerrar Sesión</button>
                         </>
                     )}
-                    <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
             </div>
         </>
