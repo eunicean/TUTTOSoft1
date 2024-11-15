@@ -12,7 +12,7 @@ function ProfileView() {
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
-    const [profileImage, setProfileImage] = useState(null); // Estado para almacenar la imagen en base64
+    const [profileImage, setProfileImage] = useState(null); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -57,20 +57,26 @@ function ProfileView() {
     }, [user.id]);
 
     async function fetchAvatar(userId) {
-        console.log(userId)
         try {
             const response = await fetch(`${baseUrl}/api/profile/avatar/${userId}`);
-            const data = await response.json();
             
+            if (!response.ok) {
+                console.error(`Error al obtener la imagen: ${response.statusText}`);
+                return; // Maneja errores como 404
+            }
+    
+            const data = await response.json();
+    
             if (data.success) {
-                setProfileImage(data.image);
+                setProfileImage(data.image); // Guarda la imagen base64 en el estado
             } else {
-                console.error('Error:', data.message);
+                console.error('Error en la respuesta del servidor:', data.message);
             }
         } catch (error) {
             console.error('Error al obtener la imagen:', error);
         }
-    };
+    }
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -82,7 +88,7 @@ function ProfileView() {
 
     // Callback para recibir la imagen desde ProfileAvatar
     const handleImageChange = (base64Image) => {
-        console.log("Imagen recibida desde ProfileAvatar:", base64Image);
+        // console.log("Imagen recibida desde ProfileAvatar:", base64Image);
         setProfileImage(base64Image);
     };
 
@@ -139,7 +145,7 @@ function ProfileView() {
                 <div className="profile-card">
                     {editing ? (
                         <>
-                            {/* Pasar el callback para actualizar la imagen */}
+                            {}
                             <ProfileAvatar onImageChange={handleImageChange} />
                             <input
                                 name="username"
