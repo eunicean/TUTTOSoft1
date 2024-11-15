@@ -101,6 +101,11 @@ function ProfileView() {
                                 defaultValue={user.username}
                                 onChange={handleInputChange}
                             />
+                            <input 
+                            name='email'    
+                            defaultValue={user.email}
+                            onChange={handleInputChange}
+                            />
                             <button onClick={handleSave}>Guardar</button>
                         </>
                     ) : (

@@ -14,6 +14,9 @@ const Chat = () => {
   const [user, setUser] = useState({});
   const [isLoadingMessages, setIsLoadingMessages] = useState(false); 
   const cachedMessages = useRef(new Map()); // Usamos useRef para mantener el caché entre renders
+  // para pantallas mas pequeñas 
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isSmallscreen, setIsSmallscreen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,6 +29,21 @@ const Chat = () => {
 
   useEffect(() => {
     scrollToBottom();
+    // detecta de que tamaño es la pantalla. 
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsSmallscreen(true);
+      } else {
+        setIsSmallscreen(false);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Ejecutar al cargar la página
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
   }, [messages]);
 
   useEffect(() => {
@@ -195,7 +213,17 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
-      <div className="chat-history">
+            {isSmallscreen && (
+        <button 
+          className="show-history-button" 
+          onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18m-1 5v5l4.25 2.52l.77-1.28l-3.52-2.09V8z"/></svg>
+          <span className="button-title">Chats</span>
+        </button>
+      )}
+
+        <div className={`chat-history ${isHistoryOpen ? 'open' : ''}`}>
         <h2>Historial de Chats</h2>
         {chats.length > 0 ? (
           <ul>
