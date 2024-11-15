@@ -218,20 +218,58 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 
 app.post('/api/profile/update', authenticateToken, async (req, res) => {
-    const { username, email } = req.body;
+    const { username, profileImage } = req.body;
 
     // Verificación de campos obligatorios
-    if (!username || !email) {
-        return res.status(400).json({ success: false, message: "Missing required field(s): username or email" });
+    if (!username) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Missing required field(s): username or email" 
+        });
     }
 
     try {
-        // Actualización en la base de datos
-        await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
+        // Actualización en la tabla `user`
+        console.log("Imagen base64 lista para enviar:", username);
+        await pool.query(
+            'UPDATE user SET username = ?, WHERE id = ?', 
+            [username, req.user.id]
+        );
+
+        await pool.query(
+            'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
+            [req.user.id, "prueba_base64"]
+        );
+
+        if (image) {
+            // Verificar si ya existe un registro para el estudiante en `user_avatar`
+            const [rows] = await pool.query(
+                'SELECT id FROM user_avatar WHERE student_id = ?', 
+                [req.user.id]
+            );
+
+            if (rows.length > 0) {
+                // Si el registro existe, actualizar la imagen
+                await pool.query(
+                    'UPDATE user_avatar SET image = ? WHERE student_id = ?', 
+                    [profileImage, req.user.id]
+                );
+            } else {
+                // Si no existe, insertar un nuevo registro
+                await pool.query(
+                    'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
+                    [req.user.id, profileImage]
+                );
+            }
+        }
+
         res.json({ success: true, message: 'Perfil actualizado correctamente.' });
     } catch (error) {
         console.error('Error en la base de datos:', error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor.' });
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor.' 
+        });
     }
 });
 
