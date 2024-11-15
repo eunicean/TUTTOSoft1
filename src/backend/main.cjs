@@ -237,7 +237,7 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
 
         await pool.query(
             'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
-            [req.user.id, "prueba_base64"]
+            [req.user.id, profileImage]
         );
 
         if (profileImage) {
@@ -274,7 +274,36 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/api/profile/avatar/:id', async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        // Consulta para obtener la imagen del usuario
+        const [rows] = await pool.query(
+            'SELECT image FROM user_avatar WHERE student_id = ?',
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontró una imagen para este usuario.'
+            });
+        }
+
+        // Devuelve la imagen en base64
+        res.json({
+            success: true,
+            image: rows[0].image
+        });
+    } catch (error) {
+        console.error('Error al obtener la imagen:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor.'
+        });
+    }
+});
 
 // Endpoint to create a new session
 app.post('/api/sessions/create', authenticateToken, async (req, res) => {

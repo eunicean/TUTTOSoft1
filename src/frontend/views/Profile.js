@@ -6,6 +6,8 @@ import '../css/ProfileCard.css';
 import ProfileAvatar from '../components/Imagen.js';
 import baseUrl from '../../config.js';
 
+import profiledafault from '../resources/default.jpg';
+
 function ProfileView() {
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
@@ -47,6 +49,28 @@ function ProfileView() {
 
         fetchProfile();
     }, []);
+
+    useEffect(() => {
+        if (user.id) {
+            fetchAvatar(user.id);
+        }
+    }, [user.id]);
+
+    async function fetchAvatar(userId) {
+        console.log(userId)
+        try {
+            const response = await fetch(`${baseUrl}/api/profile/avatar/${userId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                setProfileImage(data.image);
+            } else {
+                console.error('Error:', data.message);
+            }
+        } catch (error) {
+            console.error('Error al obtener la imagen:', error);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -127,7 +151,13 @@ function ProfileView() {
                         </>
                     ) : (
                         <>  
-                            <div className="profile-avatar"></div>
+                            <div className="profile-avatar">
+                                {profileImage ? (
+                                    <img src={`${profileImage}`} alt="Avatar del usuario" />
+                                ) : (
+                                    <img src={profiledafault}  width={200} height={200} />
+                                )}
+                            </div>
                             <h2>{user.username || 'Nombre no disponible'}</h2>
                             <p>Email: {user.email || 'Email no disponible'}</p>
                             <p>
