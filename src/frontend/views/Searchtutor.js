@@ -3,7 +3,7 @@ import '../css/Seachtutor.css';
 import { useNavigate } from 'react-router-dom'; 
 import baseUrl from '../../config.js';
 
-const TutorCard = ({ name, subjects, year, rating }) => {
+const TutorCard = ({ id, name, subjects, year, rating, onStartChat }) => {
   return (
     <div className="tutor-card-search">
       <div className="tutor-info-search">
@@ -16,15 +16,13 @@ const TutorCard = ({ name, subjects, year, rating }) => {
           </div>
         </div>
       </div>
-      <button  className="chat-btn-search"> chat</button>
+      <button onClick={() => onStartChat(id)} className="chat-btn-search">Chat</button>
     </div>
   );
 };
 
 const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   const [courses, setCourses] = useState([]);
-
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,16 +41,14 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
               'Authorization': `Bearer ${token}`, 
           }
       });
-        // const url = `${baseUrl}/api/courses`;
-        // const response = await fetch(url);
         const data = await response.json();
-        setCourses(data);  // Guardar los cursos obtenidos
+        setCourses(data);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     };
 
-    fetchCourses();  // Llamar a la API cuando se cargue el componente
+    fetchCourses();
   }, []);
 
   return (
@@ -75,6 +71,7 @@ const TutorsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [tutors, setTutors] = useState([]);
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -84,18 +81,17 @@ const TutorsPage = () => {
     const fetchTutors = async () => {
       const token = localStorage.getItem('token');
       try {
-
         const response = await fetch('/api/tutors', {
           headers: {
               'Authorization': `Bearer ${token}`, 
           }
         });
         const data = await response.json();
-
         const formattedTutors = data.map(tutor => ({
+          id: tutor.id,
           name: tutor.username,
           subjects: tutor.courses.split(', '),
-          year: 5,  // Año fijo
+          year: 5,
           rating: Math.round(tutor.avg_rating)
         }));
         setTutors(formattedTutors);
@@ -103,9 +99,16 @@ const TutorsPage = () => {
         console.error('Error fetching tutors:', error);
       }
     };
-
     fetchTutors();
   }, []);
+
+  const startChat = (tutorId) => {
+    if (tutorId) {
+      navigate('/chat', { state: { tutorId } });
+    } else {
+      console.error("Tutor ID is invalid. Cannot start chat.");
+    }
+  };
 
   const filteredTutors = tutors.filter(tutor => {
     const matchesSubject = selectedSubject === '' || tutor.subjects.includes(selectedSubject);
@@ -118,7 +121,7 @@ const TutorsPage = () => {
 
   return (
     <div className='outer-container-search'>
-      <div className={`sessions-container-search`}>
+      <div className="sessions-container-search">
         <div className="tutors-page">
           <div className="header-search">
             <h2>Buscar Tutor</h2>
@@ -135,20 +138,22 @@ const TutorsPage = () => {
           </div>
           <div className="content">
             <div className="tutors-list">
-              {filteredTutors.map((tutor, index) => (
+              {filteredTutors.map((tutor) => (
                 <TutorCard
-                  key={index}
+                  key={tutor.id}
+                  id={tutor.id}
                   name={tutor.name}
                   subjects={tutor.subjects}
                   year={tutor.year}
                   rating={tutor.rating}
+                  onStartChat={startChat}
                 />
               ))}
             </div>
           </div>
         </div>
+      </div>
     </div>
-  </div>
   );
 };
 
