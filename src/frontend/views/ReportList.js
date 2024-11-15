@@ -1,55 +1,84 @@
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import '../css/ReportList.css'; // Estilos específicos para esta vista
+import '../css/ReportList.css';
 
-
-const ReportList = () => {
-  const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-        }
-    }, [navigate]);
-
-
-  const tutors = [
-    { id: 7, name: 'Nombre de Tutor', carnet: '111111', sessions: 15, subject: 'Cálculo 1' },
-    { id: 8, name: 'Nombre de Tutor', carnet: '145861', sessions: 7, subject: 'Cálculo 1' },
-    { id: 3, name: 'Nombre de Tutor', carnet: '157893', sessions: 5, subject: 'Cálculo 1' },
-  ];
-
-
-  const handleViewReport = (tutor) => {
-    navigate(`/report/${tutor.id}`, { state: { tutor } }); // Navegar a la vista de reporte con los datos del tutor
-  };
-
-
+const ReportCard = ({ tutor, handleReportClick }) => {
   return (
-    <div className="report-list-container">
-      <h1>Listado de reportes</h1>
-      <div className="employee-card">
-        <h2>Nombre Empleado</h2>
-        <p>Código: 12345</p>
-        <button className="logout-button">Cerrar Sesión</button>
-      </div>
-      <div className="tutor-list">
-        {tutors.map((tutor) => (
-          <div key={tutor.id} className="tutor-card">
-            <h3>{tutor.name}</h3>
-            <p>Carnet: {tutor.carnet}</p>
-            <p>Sesiones: {tutor.sessions}</p>
-            <p>Materia: {tutor.subject}</p>
-            <button onClick={() => handleViewReport(tutor)} className="view-report-button">
-              Ver reportes
-            </button>
+    <div className="report-card">
+      <div className="report-info">
+        <div className="avatar-placeholder"></div>
+        <div>
+          <h4>{tutor.name}</h4>
+          <h5>Materias:</h5>
+          <p>{tutor.subjects.join(', ')}</p> {/* Ajuste en la forma en que se renderizan las materias */}
+          <div className="stars">
+            {'★'.repeat(tutor.rating) + '☆'.repeat(5 - tutor.rating)}
           </div>
-        ))}
+        </div>
       </div>
+      <button onClick={() => handleReportClick(tutor)} className="report-btn">Ver Reportes</button>
     </div>
   );
 };
 
+const ReportList = () => {
+  const [tutors, setTutors] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/api/tutors', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        const formattedTutors = data.map(tutor => ({
+          id: tutor.id,
+          name: tutor.username,
+          subjects: tutor.courses.split(', '),
+          rating: Math.round(tutor.avg_rating),
+        }));
+        setTutors(formattedTutors);
+      } catch (error) {
+        console.error('Error fetching tutors:', error);
+      }
+    };
+
+    fetchTutors();
+  }, []);
+
+  const handleReportClick = (tutor) => {
+    navigate(`/report/${tutor.id}`, { state: { tutor, subjects: tutor.subjects } });
+  };
+
+  return (
+    <div className="report-list-container">
+      <h1>Listado de Reportes</h1>
+      <div className="tutor-list">
+        {tutors.length > 0 ? (
+          tutors.map((tutor, index) => (
+            <ReportCard
+              key={index}
+              tutor={tutor}
+              handleReportClick={handleReportClick}
+            />
+          ))
+        ) : (
+          <p>No se encontraron tutores.</p>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default ReportList;
