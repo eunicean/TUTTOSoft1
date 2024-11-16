@@ -4,11 +4,34 @@ import UserList from '../components/UserList.js';
 import '../css/AdminSearch.css';
 
 const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
-  const subjects = [
-    'Física I', 'Cálculo I', 'Cálculo II', 'Mate discreta',
-    'Teoría de probabilidades', 'Pensamiento cuantitativo', 'Razonamiento cuantitativo',
-    'Historia Universal', 'Matemáticas Básicas'
-  ];
+  const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          navigate('/login');
+      }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/api/courses', {
+          headers: {
+              'Authorization': `Bearer ${token}`, 
+          }
+      });
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   return (
     <select
@@ -17,9 +40,9 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
       className="filter-dropdown"
     >
       <option value="">Seleccionar materia</option>
-      {subjects.map((subject, index) => (
-        <option key={index} value={subject}>
-          {subject}
+      {courses.map((course) => (
+        <option key={course.course_code} value={course.namecourse}>
+          {course.namecourse}
         </option>
       ))}
     </select>
