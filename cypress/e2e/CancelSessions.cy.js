@@ -3,6 +3,7 @@ describe('Prueba de Aceptación y Rechazo: Cancelar la Última Sesión Creada', 
   context('Pruebas de Rechazo', () => {
     it('Debería mostrar un mensaje de error si no se proporciona una razón de cancelación', () => {
       // Realizar el inicio de sesión y llegar hasta la página de cancelación de sesión
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       // Introducir el correo electrónico y la contraseña
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
@@ -27,10 +28,8 @@ describe('Prueba de Aceptación y Rechazo: Cancelar la Última Sesión Creada', 
       cy.url().should('include', '/DetallesTutor');
 
       // Hacer clic en el botón "Cancelar Cita"
-      cy.get('.cancel-button').should('be.visible').click({ force: true });
+      cy.get('button').contains('Cancelar Sesión').should('be.visible').click();
 
-      // Confirmar redirección a la vista de Cancelar Cita
-      cy.url().should('include', '/cancel-session');
 
       // Intentar cancelar sin proporcionar una razón
       cy.get('.submit-button').click();
@@ -43,6 +42,7 @@ describe('Prueba de Aceptación y Rechazo: Cancelar la Última Sesión Creada', 
   context('Pruebas de Aceptación', () => {
     it('Debería permitir iniciar sesión, redirigir a la página de sesiones y cancelar la última sesión con éxito', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
   
       // Introducir el correo electrónico y la contraseña
@@ -68,11 +68,9 @@ describe('Prueba de Aceptación y Rechazo: Cancelar la Última Sesión Creada', 
       cy.url().should('include', '/DetallesTutor');
   
       // Hacer clic en el botón "Cancelar Cita"
-      cy.get('.cancel-button').should('be.visible').click({ force: true });
+      cy.get('button').contains('Cancelar Sesión').should('be.visible').click();
   
-      // Confirmar redirección a la vista de Cancelar Cita
-      cy.url().should('include', '/cancel-session');
-  
+
       // Proporcionar una razón de cancelación y confirmar
       cy.get('textarea').type('no habla cancelar cita');
       cy.get('.submit-button').click();

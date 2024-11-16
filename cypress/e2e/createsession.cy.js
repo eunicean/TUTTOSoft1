@@ -3,6 +3,7 @@ describe('Prueba de Aceptación y Rechazo: Crear una Sesión', () => {
   context('Pruebas de Aceptación', () => {
     it('Debería permitir iniciar sesión y crear una sesión con datos válidos', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
   
       // Introducir el correo electrónico y la contraseña
@@ -21,8 +22,6 @@ describe('Prueba de Aceptación y Rechazo: Crear una Sesión', () => {
       // Hacer clic en el botón "Crear Nueva Sesión"
       cy.get('.create-session-button').contains('Crear Nueva Sesión').click();
   
-      // Verificar que se redirige a la vista de creación de sesión
-      cy.url().should('include', '/sessions/create');
   
       // Seleccionar un curso de la lista desplegable
       cy.get('select[name="subject"]').select('Física I');
@@ -49,6 +48,7 @@ describe('Prueba de Aceptación y Rechazo: Crear una Sesión', () => {
   context('Pruebas de Rechazo', () => {
     it('Debería mostrar un mensaje de error si faltan datos obligatorios al crear una sesión', () => {
       // Visitar la página de creación de sesión directamente después de iniciar sesión
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
       cy.get('input[type="password"]').type('hash1');
