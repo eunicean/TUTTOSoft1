@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import FilterDropdown from '../components/FilterDropdown.js'; 
 import '../css/AdminTutor.css'; 
 import baseUrl from '../../config.js';
+import ProfilePicture from '../components/profilePicture.js';
 
 const TutorCard = ({ name, subjects, year, rating, isAdmin, handleReportClick }) => {
   return (
     <div className="tutor-card-searchadmin">
       <div className="tutor-info-searchadmin">
-        <div className="avatar-placeholder-searchadmin"></div>
+        <ProfilePicture></ProfilePicture>
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4>

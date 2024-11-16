@@ -229,17 +229,12 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
     }
 
     try {
-        // Actualización en la tabla `user`
         await pool.query(
             'UPDATE user SET username = ? WHERE id = ?', 
             [username, req.user.id]
         );
 
-        await pool.query(
-            'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
-            [req.user.id, profileImage]
-        );
-
+        
         if (profileImage) {
             // Verificar si ya existe un registro para el estudiante en `user_avatar`
             console.log("Imagen base64 lista para enviar:", username);
@@ -274,6 +269,7 @@ app.post('/api/profile/update', authenticateToken, async (req, res) => {
     }
 });
 
+
 app.get('/api/profile/avatar/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -284,14 +280,15 @@ app.get('/api/profile/avatar/:id', async (req, res) => {
             [id]
         );
 
-        if (rows.length === 0) {
+        if (rows.length === 0 || !rows[0].image) {
+            // Si no se encuentra la imagen, devuelve un error 404
             return res.status(404).json({
                 success: false,
-                message: 'No se encontró una imagen para este usuario.'
+                message: `No se encontró una imagen para el usuario con ID ${id}.`
             });
         }
 
-        // Devuelve la imagen en base64
+        // Devuelve la imagen del usuario
         res.json({
             success: true,
             image: rows[0].image
@@ -304,6 +301,8 @@ app.get('/api/profile/avatar/:id', async (req, res) => {
         });
     }
 });
+
+
 
 // Endpoint to create a new session
 app.post('/api/sessions/create', authenticateToken, async (req, res) => {

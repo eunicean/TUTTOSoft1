@@ -1,10 +1,11 @@
 import React from 'react';
+import ProfilePicture from '../components/profilePicture.js';
 
-const UserCard = ({ name, subjects, rating, role, onToggleRole, viewTutors }) => {
+const UserCard = ({ name, subjects, rating, role, onToggleRole, viewTutors, avatarUrl }) => {
   return (
     <div className="user-card">
       <div className="user-info">
-        <div className="avatar-placeholder"></div>
+        <ProfilePicture></ProfilePicture>
         <div>
           <h4>{name}</h4>
           {role === 'tutor' ? (
@@ -15,7 +16,7 @@ const UserCard = ({ name, subjects, rating, role, onToggleRole, viewTutors }) =>
               </div>
             </>
           ) : (
-            <p> (Estudiante)</p>
+            <p>(Estudiante)</p>
           )}
         </div>
       </div>

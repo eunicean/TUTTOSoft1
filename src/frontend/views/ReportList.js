@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/ReportList.css';
+import ProfilePicture from '../components/profilePicture.js';
+
 
 const ReportCard = ({ tutor, handleReportClick }) => {
   return (
     <div className="report-card">
       <div className="report-info">
-        <div className="avatar-placeholder"></div>
+        <ProfilePicture></ProfilePicture>
         <div>
           <h4>{tutor.name}</h4>
           <h5>Materias:</h5>
