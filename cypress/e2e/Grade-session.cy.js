@@ -3,6 +3,7 @@ describe('Prueba de Calificación del Tutor en la Última Sesión Creada', () =>
   context('Pruebas de Aceptación', () => {
     it('Debería permitir calificar al tutor después de ingresar a los detalles de la sesión', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
       cy.get('input[type="password"]').type('hash1');
@@ -41,6 +42,7 @@ describe('Prueba de Calificación del Tutor en la Última Sesión Creada', () =>
   context('Pruebas de Rechazo', () => {
     it('Debería mostrar un mensaje de error si no se proporciona un algun dato', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
       cy.get('input[type="password"]').type('hash1');

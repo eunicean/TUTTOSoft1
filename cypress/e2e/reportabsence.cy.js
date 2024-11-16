@@ -3,6 +3,7 @@ describe('Prueba de Aceptación y Rechazo: Reportar Ausencia en la Última Sesi�
   context('Pruebas de Rechazo', () => {
     it('Debería mostrar un mensaje de error si no se proporciona un motivo de ausencia', () => {
       // Realizar el inicio de sesión y llegar hasta la página de detalles de la sesión
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
       cy.get('input[type="password"]').type('hash1');
@@ -36,6 +37,7 @@ describe('Prueba de Aceptación y Rechazo: Reportar Ausencia en la Última Sesi�
   context('Pruebas de Aceptación', () => {
     it('Debería permitir iniciar sesión, redirigir a la página de sesiones y reportar ausencia con éxito', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
       cy.get('input[type="email"]').type('tutotest@uvg.edu.gt');
       cy.get('input[type="password"]').type('hash1');

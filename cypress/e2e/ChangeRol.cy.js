@@ -3,6 +3,7 @@ describe('Prueba de Aceptación y Rechazo: Cambio de Rol en la Vista AdminTutor'
   context('Pruebas de Aceptación', () => {
     it('Debería permitir iniciar sesión como tutor, acceder a la vista AdminTutor y alternar entre Buscar Tutor y Buscar Estudiante', () => {
       // Visitar la página de login
+      cy.viewport(1274, 920) // Set viewport to 550px x 750px
       cy.visit('http://localhost:5173/login');
   
       // Introducir el correo electrónico y la contraseña correctos
@@ -33,6 +34,7 @@ describe('Prueba de Aceptación y Rechazo: Cambio de Rol en la Vista AdminTutor'
 
     context('Pruebas de Rechazo', () => {
       it('Debería permitir iniciar sesión como tutor, acceder a la vista AdminTutor y cambiar un Tutor a Estudiante', () => {
+        cy.viewport(1274, 920) // Set viewport to 550px x 750px
         cy.visit('http://localhost:5173/login');
     
         // Introducir el correo electrónico y la contraseña correctos
