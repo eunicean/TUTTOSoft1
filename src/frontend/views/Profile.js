@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import '../css/Sidebar.css';
 import '../css/Navbar.css';
 import '../css/ProfileCard.css';
 import ProfileAvatar from '../components/Imagen.js';
 import baseUrl from '../../config.js';
 
+import profiledafault from '../resources/default.jpg';
+
 function ProfileView() {
     const [user, setUser] = useState({});
     const [error, setError] = useState(null);
     const [editing, setEditing] = useState(false);
+    const [profileImage, setProfileImage] = useState(null); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +25,6 @@ function ProfileView() {
     useEffect(() => {
         async function fetchProfile() {
             const token = localStorage.getItem('token');
-            
             const url = `${baseUrl}/api/profile`;
 
             try {
@@ -48,6 +50,34 @@ function ProfileView() {
         fetchProfile();
     }, []);
 
+    useEffect(() => {
+        if (user.id) {
+            fetchAvatar(user.id);
+        }
+    }, [user.id]);
+
+    async function fetchAvatar(userId) {
+        try {
+            const response = await fetch(`${baseUrl}/api/profile/avatar/${userId}`);
+            
+            if (!response.ok) {
+                console.error(`Error al obtener la imagen: ${response.statusText}`);
+                return; // Maneja errores como 404
+            }
+    
+            const data = await response.json();
+    
+            if (data.success) {
+                setProfileImage(data.image); // Guarda la imagen base64 en el estado
+            } else {
+                console.error('Error en la respuesta del servidor:', data.message);
+            }
+        } catch (error) {
+            console.error('Error al obtener la imagen:', error);
+        }
+    }
+    
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUser(prevUser => ({
@@ -56,25 +86,38 @@ function ProfileView() {
         }));
     };
 
+    // Callback para recibir la imagen desde ProfileAvatar
+    const handleImageChange = (base64Image) => {
+        // console.log("Imagen recibida desde ProfileAvatar:", base64Image);
+        setProfileImage(base64Image);
+    };
+
     const handleSave = async () => {
         const token = localStorage.getItem('token');
-        
         const url = `${baseUrl}/api/profile/update`;
-
+    
         try {
+            // Crear el objeto `body` que incluye `user` y `profileImage`
+            const body = {
+                ...user,          // Incluye todos los datos de `user`
+                profileImage      // Asegúrate de incluir `profileImage` aquí
+            };
+    
+            console.log("Cuerpo que se enviará al backend:", body); // Verifica que `profileImage` esté en el objeto
+    
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(user)
+                body: JSON.stringify(body) // Convierte el objeto combinado en JSON
             });
-
+    
             const data = await response.json();
             if (data.success) {
-                // console.log('Perfil actualizado correctamente.');
-                setEditing(false); // Desactiva el modo de edición después de guardar
+                console.log("Perfil actualizado correctamente.");
+                setEditing(false); 
             } else {
                 throw new Error(data.message || 'Error al actualizar el perfil.');
             }
@@ -83,10 +126,15 @@ function ProfileView() {
             setError(error.message || 'Error al actualizar el perfil');
         }
     };
+    
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
-        navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    const handleCancelation = () => {
+        setEditing(false); 
     };
 
     if (error) return <div>Error: {error}</div>;
@@ -97,22 +145,25 @@ function ProfileView() {
                 <div className="profile-card">
                     {editing ? (
                         <>
-                        <ProfileAvatar />
+                            {}
+                            <ProfileAvatar onImageChange={handleImageChange} />
                             <input
                                 name="username"
                                 defaultValue={user.username}
                                 onChange={handleInputChange}
                             />
-                            <input 
-                            name='email'    
-                            defaultValue={user.email}
-                            onChange={handleInputChange}
-                            />
                             <button onClick={handleSave}>Guardar</button>
+                            <button onClick={handleCancelation}>Cancelar</button>
                         </>
                     ) : (
                         <>  
-                            <div className="profile-avatar"></div>
+                            <div className="profile-avatar">
+                                {profileImage ? (
+                                    <img src={`${profileImage}`} alt="Avatar del usuario" />
+                                ) : (
+                                    <img src={profiledafault}  width={200} height={200} />
+                                )}
+                            </div>
                             <h2>{user.username || 'Nombre no disponible'}</h2>
                             <p>Email: {user.email || 'Email no disponible'}</p>
                             <p>
@@ -137,9 +188,9 @@ function ProfileView() {
                             )}
 
                             <button onClick={() => setEditing(true)}>Editar Perfil</button>
+                            <button onClick={handleLogout}>Cerrar Sesión</button>
                         </>
                     )}
-                    <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
             </div>
         </>

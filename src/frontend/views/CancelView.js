@@ -4,6 +4,7 @@ import '../css/CancelSessionView.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal.js';
 import baseUrl from '../../config.js';
+import ProfilePicture from '../components/profilePicture.js';
 
 function CancelView({isOpen, onClose}) {
     const { sessionId } = useParams();
@@ -86,7 +87,7 @@ function CancelView({isOpen, onClose}) {
                         </label>
                     </div>
                     <div className="cancel-session-tutor">
-                        <div className="tutor-avatar"></div>
+                        <ProfilePicture></ProfilePicture>
                         <div className="tutor-info">
                             <p>Nombre de Tutor</p>
                             <p>5to año</p>

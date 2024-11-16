@@ -218,20 +218,87 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 
 
 app.post('/api/profile/update', authenticateToken, async (req, res) => {
-    const { username, email } = req.body;
+    const { username, profileImage } = req.body;
 
     // Verificación de campos obligatorios
-    if (!username || !email) {
-        return res.status(400).json({ success: false, message: "Missing required field(s): username or email" });
+    if (!username) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Missing required field(s): username or email" 
+        });
     }
 
     try {
-        // Actualización en la base de datos
-        await pool.query('UPDATE user SET username = ?, email = ? WHERE id = ?', [username, email, req.user.id]);
+        await pool.query(
+            'UPDATE user SET username = ? WHERE id = ?', 
+            [username, req.user.id]
+        );
+
+        
+        if (profileImage) {
+            // Verificar si ya existe un registro para el estudiante en `user_avatar`
+            console.log("Imagen base64 lista para enviar:", username);
+            const [rows] = await pool.query(
+                'SELECT id FROM user_avatar WHERE student_id = ?', 
+                [req.user.id]
+            );
+
+            if (rows.length > 0) {
+                // Si el registro existe, actualizar la imagen
+                await pool.query(
+                    'UPDATE user_avatar SET image = ? WHERE student_id = ?', 
+                    [profileImage, req.user.id]
+                );
+            } else {
+                console.log("no existe una imagen");
+                // Si no existe, insertar un nuevo registro
+                await pool.query(
+                    'INSERT INTO user_avatar (student_id, image) VALUES (?, ?)', 
+                    [req.user.id, profileImage]
+                );
+            }
+        }
+
         res.json({ success: true, message: 'Perfil actualizado correctamente.' });
     } catch (error) {
         console.error('Error en la base de datos:', error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor.' });
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno del servidor.' 
+        });
+    }
+});
+
+
+app.get('/api/profile/avatar/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Consulta para obtener la imagen del usuario
+        const [rows] = await pool.query(
+            'SELECT image FROM user_avatar WHERE student_id = ?',
+            [id]
+        );
+
+        if (rows.length === 0 || !rows[0].image) {
+            // Si no se encuentra la imagen, devuelve un error 404
+            return res.status(404).json({
+                success: false,
+                message: `No se encontró una imagen para el usuario con ID ${id}.`
+            });
+        }
+
+        // Devuelve la imagen del usuario
+        res.json({
+            success: true,
+            image: rows[0].image
+        });
+    } catch (error) {
+        console.error('Error al obtener la imagen:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor.'
+        });
     }
 });
 
@@ -690,16 +757,9 @@ app.get('/api/tutors', authenticateToken, async (req, res) => {
 app.get('/api/students', authenticateToken, async (req, res) => {
     try {
         const query = `
-            SELECT u.id, u.username, u.email, 
-                   COALESCE(avg_rating.avg_rating, 0) AS avg_rating
-            FROM user u
-            LEFT JOIN (
-                SELECT id_receiver, AVG(rating) AS avg_rating
-                FROM comment
-                GROUP BY id_receiver
-            ) avg_rating ON u.id = avg_rating.id_receiver
-            WHERE u.typeuser = 1
-            GROUP BY u.id, u.username, u.email, avg_rating.avg_rating;
+            SELECT x.id, x.username, x.email, x.typeuser
+            FROM user x
+            WHERE x.typeuser = 1;
         `;
 
         const [results] = await pool.query(query);

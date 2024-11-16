@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import '../css/Seachtutor.css';
 import { useNavigate } from 'react-router-dom'; 
 import baseUrl from '../../config.js';
+import ProfilePicture from '../components/profilePicture.js';
 
-const TutorCard = ({ id, name, subjects, year, rating, onStartChat }) => {
+const TutorCard = ({ id, name, subjects, year, rating, onStartChat, profileImage }) => {
   return (
     <div className="tutor-card-search">
       <div className="tutor-info-search">
-        <div className="avatar-placeholder-search"></div>
+        <ProfilePicture></ProfilePicture>
         <div>
           <h4>{name}</h4>
           <h4>{subjects.join(', ')}</h4> {/* Mostrar todas las materias */}
@@ -26,21 +27,21 @@ const FilterDropdown = ({ selectedSubject, setSelectedSubject }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-          navigate('/login');
-      }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
   }, [navigate]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch('/api/courses', {
+        const response = await fetch(`${baseUrl}/api/courses`, {
           headers: {
-              'Authorization': `Bearer ${token}`, 
+            'Authorization': `Bearer ${token}`, 
           }
-      });
+        });
         const data = await response.json();
         setCourses(data);
       } catch (error) {
@@ -81,24 +82,46 @@ const TutorsPage = () => {
     const fetchTutors = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch('/api/tutors', {
+        const response = await fetch(`${baseUrl}/api/tutors`, {
           headers: {
-              'Authorization': `Bearer ${token}`, 
+            'Authorization': `Bearer ${token}`, 
           }
         });
         const data = await response.json();
-        const formattedTutors = data.map(tutor => ({
+
+        const tutorsWithImages = await Promise.all(
+          data.map(async (tutor) => {
+            try {
+              const imageResponse = await fetch(`${baseUrl}/api/profile/avatar/${tutor.id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              const imageData = await imageResponse.json();
+
+              return {
+                ...tutor,
+                profileImage: imageData.success ? imageData.image : null
+              };
+            } catch {
+              return { ...tutor, profileImage: null };
+            }
+          })
+        );
+
+        const formattedTutors = tutorsWithImages.map(tutor => ({
           id: tutor.id,
           name: tutor.username,
           subjects: tutor.courses.split(', '),
-          year: 5,
-          rating: Math.round(tutor.avg_rating)
+          year: tutor.year || 5,
+          rating: Math.round(tutor.avg_rating),
+          profileImage: tutor.profileImage
         }));
+
         setTutors(formattedTutors);
       } catch (error) {
         console.error('Error fetching tutors:', error);
       }
     };
+
     fetchTutors();
   }, []);
 
@@ -146,6 +169,7 @@ const TutorsPage = () => {
                   subjects={tutor.subjects}
                   year={tutor.year}
                   rating={tutor.rating}
+                  profileImage={tutor.profileImage}
                   onStartChat={startChat}
                 />
               ))}
