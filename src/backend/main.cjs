@@ -758,16 +758,9 @@ app.get('/api/tutors', authenticateToken, async (req, res) => {
 app.get('/api/students', authenticateToken, async (req, res) => {
     try {
         const query = `
-            SELECT u.id, u.username, u.email, 
-                   COALESCE(avg_rating.avg_rating, 0) AS avg_rating
-            FROM user u
-            LEFT JOIN (
-                SELECT id_receiver, AVG(rating) AS avg_rating
-                FROM comment
-                GROUP BY id_receiver
-            ) avg_rating ON u.id = avg_rating.id_receiver
-            WHERE u.typeuser = 1
-            GROUP BY u.id, u.username, u.email, avg_rating.avg_rating;
+            SELECT x.id, x.username, x.email, x.typeuser
+            FROM user x
+            WHERE x.typeuser = 1;
         `;
 
         const [results] = await pool.query(query);
