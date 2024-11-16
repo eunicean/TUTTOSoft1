@@ -18,7 +18,7 @@ const ReportDetails = () => {
         <div className="vista-container-details">
             <div className="header1-details">
                 <span className="session-text">Reporte de Tutorías</span>
-                <button>Marcar revisión</button>
+                <button onClick={() => navigate(-1)}>Marcar revisión</button>
                 <button onClick={() => navigate(-1)} className="cancel-sessionBTN">Regresar</button>
             </div>
             
