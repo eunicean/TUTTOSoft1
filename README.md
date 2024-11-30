@@ -31,3 +31,15 @@ Este proyecto es un Sistema de Gestión de Tutorías diseñado para facilitar la
 | React.js | Node.js | Cypress |
 | css | Express.js | Jest |
 |      | MySQL |  |
+
+- React.js: Para la interfaz de usuario.
+- CSS: Para el diseño y estilo de las páginas.
+- Node.js: Para la lógica del servidor.
+- Express.js: Para la gestión de rutas y API.
+- MySQL: Base de datos para gestionar la información de usuarios, sesiones y reportes.
+-Cypress: Pruebas de vista para validar la funcionalidad del sistema.
+- Jest: Para pruebas unitarias y de integración.
+
+
+### Ejecutar el proyecto 
+```npm start
