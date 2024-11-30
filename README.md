@@ -39,7 +39,12 @@ Este proyecto es un Sistema de Gestión de Tutorías diseñado para facilitar la
 - MySQL: Base de datos para gestionar la información de usuarios, sesiones y reportes.
 -Cypress: Pruebas de vista para validar la funcionalidad del sistema.
 - Jest: Para pruebas unitarias y de integración.
-
+### Instalar Proyecto 
+1. Clonar repositorio
+2. Instalar Dependencias
+```
+npm install
+````
 
 ### Ejecutar el proyecto 
 ```
